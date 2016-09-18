@@ -1,3 +1,4 @@
+package model;
 import java.util.ArrayList;
 
 import javafx.scene.layout.GridPane;
