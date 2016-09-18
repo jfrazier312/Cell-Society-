@@ -56,6 +56,10 @@ public abstract class Cell {
 	}
 	
 	public abstract void render();
+	
+	public abstract int[] getRowDeltas();
+	
+	public abstract int[] getColDeltas();
 
 	public abstract Shapes getShape();
 	

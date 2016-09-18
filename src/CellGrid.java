@@ -68,10 +68,9 @@ public class CellGrid extends GridPane {
 		ArrayList<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
-		neighbors.add(grid[rowPos - 1][colPos]);
-		neighbors.add(grid[rowPos + 1][colPos]);
-		neighbors.add(grid[rowPos][colPos - 1]);
-		neighbors.add(grid[rowPos][colPos + 1]);
+		for(int i = 0; i < cell.getRowDeltas().length; i++) {
+			neighbors.add(grid[rowPos + cell.getRowDeltas()[i]][colPos + cell.getColDeltas()[i]]);
+		}
 		return neighbors;
 	}
 
