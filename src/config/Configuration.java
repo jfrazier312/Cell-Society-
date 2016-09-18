@@ -15,11 +15,11 @@ public class Configuration {
 		return this;
 	}
 	
-	public ControllerConfiguration getCtrlrConfig() {
+	public ControllerConfiguration getControllerConfig() {
 		return ctrlrConfig;
 	}
 	
-	public Configuration setCtrlrConfig(ControllerConfiguration ctrlrConfig) {
+	public Configuration setControllerConfig(ControllerConfiguration ctrlrConfig) {
 		this.ctrlrConfig = ctrlrConfig;
 		return this;
 	}

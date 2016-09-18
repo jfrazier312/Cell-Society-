@@ -12,12 +12,16 @@ import org.xml.sax.SAXException;
 
 public class XMLParser {
 	
-	public static Document parse(String sourcePath)
-			throws SAXException, IOException, ParserConfigurationException{
+	public static Document parse(String sourcePath) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(new File(sourcePath));
-		doc.getDocumentElement().normalize();
+		Document doc = null;
+		try {
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			doc = builder.parse(new File(sourcePath));
+			doc.getDocumentElement().normalize();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
 		return doc;
 	}
 
