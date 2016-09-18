@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<simulation name="The Game of Life" author="team19">
+	<grid width="20" height="20"/>
+	<neighborhood size="5">
+		<edge type="constant" value="alive">
+		</edge>
+	</neighborhood>
+	<states>
+		<state value="alive" color="white"></state>
+		<state value="dead" color="black"></state>
+	</states>
+	<transitions>
+		<rule currentState="dead">
+			<!-- neighbors start north, clockwise onward -->
+			<kv neighbors="alive alive alive alive" 
+		        nextState="dead">
+			</kv>
+			<count neighbors="dead"
+				   lowerBound="2"
+				   upperBound="3"
+				   nextState="dead"> 
+			</count>
+			<!-- nested [count] means AND, parallel [count] means OR -->
+			<match neighborIndex="1"
+				   neighbor="dead"
+				   nextState="alive">
+			</match>
+		</rule>
+		<rule currentState="alive">
+		</rule>
+	</transitions>
+</simulation>
