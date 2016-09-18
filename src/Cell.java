@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
-public class Cell {
+public abstract class Cell {
+
 	private int rowPos;
 	private int colPos;
-	private Shapes shape;
 	private ArrayList<Cell> neighbors;
 	
 	//what is type of state? 
@@ -46,15 +46,7 @@ public class Cell {
 	public void setCurrentstate(int currentstate) {
 		this.currentstate = currentstate;
 	}
-
-	public Shapes getShape() {
-		return shape;
-	}
-
-	public void setShape(Shapes shape) {
-		this.shape = shape;
-	}
-
+	
 	public ArrayList<Cell> getNeighbors() {
 		return neighbors;
 	}
@@ -63,5 +55,8 @@ public class Cell {
 		this.neighbors = neighbors;
 	}
 	
+	public abstract void render();
 
+	public abstract Shapes getShape();
+	
 }

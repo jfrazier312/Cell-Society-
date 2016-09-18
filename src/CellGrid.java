@@ -4,8 +4,6 @@ import javafx.scene.layout.GridPane;
 
 public class CellGrid extends GridPane {
 
-	// private int numRows;
-	// private int numCols;
 	private Cell[][] grid; // probably should rename Cell
 
 	public CellGrid(int rows, int cols) {
@@ -21,20 +19,19 @@ public class CellGrid extends GridPane {
 	}
 
 	private void updateGrid() {
-		//touch each cell and figure out future state 
+		// touch each cell and figure out future state 
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				// Should I get the cell inside other methods and have them take in x,y?
 				Cell currentCell = grid[i][j];
+				setNeighbors(currentCell);
 				// update future state based on simulation rules;
 				// which is done in rules engine class? 
 			}
 		}
 		
-		//loop and update each cell
+		// loop and update each cell
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				//should I get the cell inside of other methods? 
 				Cell currentCell = grid[i][j];
 				updateCurrentState(currentCell);
 			}
