@@ -14,7 +14,7 @@ public class Utils {
 	}
 	
 	public static String getAttrFromNode(Node n, String attr) {
-		return n.getParentNode().getAttributes().getNamedItem(attr).getTextContent();
+		return n.getAttributes().getNamedItem(attr).getTextContent();
 	}
 	
 	public static List<String> getAttrFromAllMatches(Document doc, String tag, String attr) {
