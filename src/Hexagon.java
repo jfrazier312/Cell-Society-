@@ -1,25 +1,23 @@
 
-public class Rectangle extends Cell {
-	
-	//included diagonals
+public class Hexagon extends Cell {
+
 	private int[] rowDeltas = {-1, 0, 1, 0, 1, 1, -1, -1};
 	private int[] colDeltas = {0, -1, 0, 1, 1, -1, 1, -1};
-
-	public Rectangle(int row, int col) {
+	
+	public Hexagon(int row, int col, boolean isEven) {
 		super(row, col);
-		
 	}
 
 	@Override
 	public void render() {
 		// yeah
 	}
-	
+
 	@Override
 	public int[] getRowDeltas() {
 		return rowDeltas;
 	}
-	
+
 	@Override
 	public int[] getColDeltas() {
 		return colDeltas;
@@ -27,7 +25,6 @@ public class Rectangle extends Cell {
 
 	@Override
 	public Shapes getShape() {
-		return Shapes.RECTANGLE;
-	}	
-
+		return Shapes.HEXAGON;
+	}
 }
