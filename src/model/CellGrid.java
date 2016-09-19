@@ -14,7 +14,12 @@ public class CellGrid extends GridPane {
 		grid = new Cell[rows][cols];
 		// set row/column constraints?
 	}
-
+	
+	//added so that I can find an empty cell in the grid to update future value of in segregation model
+	public Cell[][] getGrid(){
+		return grid;
+	}
+	
 	private void renderGrid() {
 		// render the grid graphically somehow...
 	}
@@ -63,14 +68,20 @@ public class CellGrid extends GridPane {
 		}
 		return neighbors;
 	}
-
-	private ArrayList<Cell> getRectangleNeighbors(Cell cell) {
+	
+	//changed to protected so that the segregation simulation could see, not sure if that's good design
+	protected ArrayList<Cell> getRectangleNeighbors(Cell cell) {
 		// could change implementation based on definition of 'neighbor'
 		ArrayList<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
+		//added check for valid location
 		for(int i = 0; i < cell.getRowDeltas().length; i++) {
-			neighbors.add(grid[rowPos + cell.getRowDeltas()[i]][colPos + cell.getColDeltas()[i]]);
+			int newRowPos = rowPos + cell.getRowDeltas()[i];
+			int newColPos = colPos + cell.getColDeltas()[i];
+			if(isValidLocation(grid[newRowPos][newColPos])){ 
+				neighbors.add(grid[newRowPos][newColPos]);
+			}
 		}
 		return neighbors;
 	}
