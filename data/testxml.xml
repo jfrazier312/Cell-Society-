@@ -9,6 +9,10 @@
 		<state value="alive" color="white"></state>
 		<state value="dead" color="black"></state>
 	</states>
+	<init default="dead">
+		<cell state="alive" row="10" col="20"></cell>
+		<cell state="alive" row="11" col="20"></cell>
+	</init>
 	<transitions>
 		<rule currentState="dead">
 			<!-- neighbors start north, clockwise onward -->
@@ -27,6 +31,8 @@
 			</match>
 		</rule>
 		<rule currentState="alive">
+			<!-- more goes here -->
 		</rule>
 	</transitions>
+	<animation framesPerSec="1"></animation>
 </simulation>

@@ -8,7 +8,9 @@ public class Main {
 		Configuration config;
 		try {
 			config = ConfigurationLoader.loader().setSource("testxml.xml").load().getConfig();
-			System.out.println(config.getModelConfig().getSimulationName());
+			for (String s : config.getModelConfig().getAllStates().getValues()) {
+				System.out.println(s);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

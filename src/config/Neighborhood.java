@@ -1,9 +1,6 @@
 package config;
 
-import java.util.ArrayList;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 import utils.Utils;
 
@@ -15,8 +12,8 @@ public class Neighborhood {
 	
 	public Neighborhood init(Document doc) {
 		size = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
-		edgeType = Utils.getAttrFromFirstMatch(doc, "neighborhood", "type");
-		edgeValue = Utils.getAttrFromFirstMatch(doc, "neighborhood", "value");
+		edgeType = Utils.getAttrFromFirstMatch(doc, "edge", "type");
+		edgeValue = Utils.getAttrFromFirstMatch(doc, "edge", "value");
 		return this;
 	}
 	

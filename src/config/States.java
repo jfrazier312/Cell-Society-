@@ -1,6 +1,7 @@
 package config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ public class States {
 	public States init(Document doc) {
 		NodeList nl = doc.getElementsByTagName("state");
 		values = new ArrayList<String>();
+		colors = new HashMap<String, String>();
 		for (int i = 0; i < nl.getLength(); i++) {
 			String val = nl.item(i).getAttributes().getNamedItem("value").getTextContent();
 			values.add(val);

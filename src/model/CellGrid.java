@@ -79,7 +79,7 @@ public class CellGrid extends GridPane {
 		cell.setCurrentstate(cell.getFuturestate());
 	}
 
-	private void setFutureState(Cell cell, int futurestate) {
+	private void setFutureState(Cell cell, String futurestate) {
 		cell.setFuturestate(futurestate);
 	}
 

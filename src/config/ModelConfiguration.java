@@ -9,8 +9,9 @@ public class ModelConfiguration {
 	private String author;
 	private int girdWidth;
 	private int girdHeight;
-	private States states;
+	private States allStates;
 	private Neighborhood neighborhood;
+	// TODO: build initial CellGrid
 	
 	public ModelConfiguration(Document doc) {
 		// TODO (cx15): have tags and attrs defined as const for validation and reference
@@ -18,7 +19,7 @@ public class ModelConfiguration {
 		author = Utils.getAttrFromFirstMatch(doc, "simulation", "author");
 		girdWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "width"));
 		girdHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
-		states = new States().init(doc);
+		allStates = new States().init(doc);
 		neighborhood = new Neighborhood().init(doc);
 	}
 
@@ -41,8 +42,8 @@ public class ModelConfiguration {
 		return girdHeight;
 	}
 
-	public States getStates() {
-		return states;
+	public States getAllStates() {
+		return allStates;
 	}
 
 	public Neighborhood getNeighborhood() {

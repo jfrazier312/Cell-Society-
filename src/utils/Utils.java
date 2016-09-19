@@ -4,12 +4,17 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 
 
 public class Utils {
 	
 	public static String getAttrFromFirstMatch(Document doc, String tag, String attr) {
 		return doc.getElementsByTagName(tag).item(0).getAttributes().getNamedItem(attr).getTextContent();
+	}
+	
+	public static String getAttrFromNode(Node n, String attr) {
+		return n.getParentNode().getAttributes().getNamedItem(attr).getTextContent();
 	}
 	
 	public static List<String> getAttrFromAllMatches(Document doc, String tag, String attr) {
