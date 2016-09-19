@@ -1,8 +1,9 @@
 
 public class Rectangle extends Cell {
 	
-	private int[] rowDeltas = {-1, 0, 1, 0};
-	private int[] colDeltas = {0, -1, 0, 1};
+	//included diagonals
+	private int[] rowDeltas = {-1, 0, 1, 0, 1, 1, -1, -1};
+	private int[] colDeltas = {0, -1, 0, 1, 1, -1, 1, -1};
 
 	public Rectangle(int row, int col) {
 		super(row, col);
