@@ -21,7 +21,11 @@ public class Triangle extends Cell {
 
 	@Override
 	public void render() {
-		// yeah
+		if (isEven) {
+			// render it rightside up
+		} else {
+			// render upside down
+		}
 	}
 
 	@Override
