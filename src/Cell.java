@@ -57,9 +57,9 @@ public abstract class Cell {
 	
 	public abstract void render();
 	
-	public abstract int[] getRowDeltas();
+	public abstract int[] getRowDeltas(boolean diagonalIncluded);
 	
-	public abstract int[] getColDeltas();
+	public abstract int[] getColDeltas(boolean diagonalIncluded);
 
 	public abstract Shapes getShape();
 	

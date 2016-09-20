@@ -2,6 +2,8 @@ import java.util.ArrayList;
 
 import javafx.scene.layout.GridPane;
 
+//need to create the grid as well
+
 public class CellGrid extends GridPane {
 
 	private Cell[][] grid; // probably should rename Cell
@@ -23,12 +25,12 @@ public class CellGrid extends GridPane {
 		// render the grid graphically somehow...
 	}
 
-	private void updateGrid() {
+	private void updateGrid(boolean diagonalIncluded) {
 		// touch each cell and figure out future state 
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
-				setNeighbors(currentCell);
+				setNeighbors(currentCell, diagonalIncluded);
 				// update future state based on simulation rules;
 				// which is done in rules engine class? 
 			}
@@ -43,12 +45,12 @@ public class CellGrid extends GridPane {
 		}
 	}
 
-	private void setNeighbors(Cell cell) {
+	private void setNeighbors(Cell cell, boolean diagonalIncluded) {
 		// need this in case user updates cell row/col to illegal spot
 		if (!isValidLocation(cell)) {
 			throw new IllegalArgumentException("Location not valid");
 		}
-		ArrayList<Cell> neighbors = getNeighbors(cell);
+		ArrayList<Cell> neighbors = getNeighbors(cell, diagonalIncluded);
 		cell.setNeighbors(neighbors);
 	}
 
@@ -58,26 +60,27 @@ public class CellGrid extends GridPane {
 	 * @param cell
 	 * @return
 	 */
-	private ArrayList<Cell> getNeighbors(Cell cell) {
+	private ArrayList<Cell> getNeighbors(Cell cell, boolean diagonalsIncluded) {
 		ArrayList<Cell> neighbors = new ArrayList<>();
 		if (cell.getShape() == Shapes.RECTANGLE) {
-			neighbors = getRectangleNeighbors(cell);
-		} else if (cell.getShape() == Shapes.OTHERSHIT) {
+			neighbors = getRectangleNeighbors(cell, diagonalsIncluded);
+		}
+		else if (cell.getShape() == Shapes.OTHERSHIT) {
 			// neighbors = getOtherShit(cell);
 		}
 		return neighbors;
 	}
 	
 	//changed to protected so that the segregation simulation could see, not sure if that's good design
-	protected ArrayList<Cell> getRectangleNeighbors(Cell cell) {
+	protected ArrayList<Cell> getRectangleNeighbors(Cell cell, boolean diagonalsIncluded) {
 		// could change implementation based on definition of 'neighbor'
 		ArrayList<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
 		//added check for valid location
-		for(int i = 0; i < cell.getRowDeltas().length; i++) {
-			int newRowPos = rowPos + cell.getRowDeltas()[i];
-			int newColPos = colPos + cell.getColDeltas()[i];
+		for(int i = 0; i < cell.getRowDeltas(false).length; i++) {
+			int newRowPos = rowPos + cell.getRowDeltas(diagonalsIncluded)[i];
+			int newColPos = colPos + cell.getColDeltas(diagonalsIncluded)[i];
 			if(isValidLocation(grid[newRowPos][newColPos])){ 
 				neighbors.add(grid[newRowPos][newColPos]);
 			}
