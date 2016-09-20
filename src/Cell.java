@@ -6,7 +6,7 @@ public abstract class Cell {
 	private int colPos;
 	private ArrayList<Cell> neighbors;
 	
-	//what is type of state? 
+	// TODO: change state to class in charles branch
 	private int futurestate;
 	private int currentstate;
 	
