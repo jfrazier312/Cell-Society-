@@ -13,26 +13,6 @@
 		<cell state="alive" row="10" col="20"></cell>
 		<cell state="alive" row="11" col="20"></cell>
 	</init>
-	<transitions>
-		<rule currentState="dead">
-			<!-- neighbors start north, clockwise onward -->
-			<kv neighbors="alive alive alive alive" 
-		        nextState="dead">
-			</kv>
-			<count neighbors="dead"
-				   lowerBound="2"
-				   upperBound="3"
-				   nextState="dead"> 
-			</count>
-			<!-- nested [count] means AND, parallel [count] means OR -->
-			<match neighborIndex="1"
-				   neighbor="dead"
-				   nextState="alive">
-			</match>
-		</rule>
-		<rule currentState="alive">
-			<!-- more goes here -->
-		</rule>
-	</transitions>
 	<animation framesPerSec="1"></animation>
+	<param name="probability" value="0.8"></param>
 </simulation>

@@ -8,10 +8,9 @@ public class Main {
 		Configuration config;
 		try {
 			config = ConfigurationLoader.loader().setSource("testxml.xml").load().getConfig();
-			System.out.println(config.getControllerConfig().getRulesOnState("dead").get(2).getNextState());
+			System.out.println(config.getAuthor());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 }

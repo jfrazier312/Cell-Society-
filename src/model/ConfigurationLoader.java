@@ -3,9 +3,6 @@ package model;
 import org.w3c.dom.Document;
 
 import config.Configuration;
-import config.ControllerConfiguration;
-import config.ModelConfiguration;
-import config.ViewConfiguration;
 
 public class ConfigurationLoader {
 	
@@ -44,10 +41,7 @@ public class ConfigurationLoader {
 		Document doc = XMLParser.parse(sourcePath);
 		if (doc == null)
 			throw new Exception("sourcePath provided unfound");
-		config = new Configuration();
-		config.setModelConfig(new ModelConfiguration(doc))
-			  .setControllerConfig(new ControllerConfiguration(doc))
-			  .setViewConfig(new ViewConfiguration(doc));
+		config = new Configuration(doc);
 		return this;
 	}
 	

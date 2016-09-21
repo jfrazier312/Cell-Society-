@@ -1,35 +1,53 @@
 package config;
 
+import org.w3c.dom.Document;
+
+import utils.Utils;
+
 public class Configuration {
 	
-	private ModelConfiguration modelConfig;
-	private ControllerConfiguration ctrlrConfig;
-	private ViewConfiguration viewConfig;
+	private String simulationName;
+	private String author;
+	private int girdWidth;
+	private int girdHeight;
+	private States allStates;
+	private Neighborhood neighborhood;
+	// TODO: >>>>>>>>> build initial CellGrid
 	
-	public ModelConfiguration getModelConfig() {
-		return modelConfig;
+	public Configuration(Document doc) {
+		// TODO (cx15): have tags and attrs defined as const for validation and reference
+		simulationName = Utils.getAttrFromFirstMatch(doc, "simulation", "name");
+		author = Utils.getAttrFromFirstMatch(doc, "simulation", "author");
+		girdWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "width"));
+		girdHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
+		allStates = new States().init(doc);
+		neighborhood = new Neighborhood().init(doc);
 	}
+
+	// expose only limited setters to frontend, add here as needed
+	// every other setting should be set by loading xml using loader, set once update everywhere
 	
-	public Configuration setModelConfig(ModelConfiguration modelConfig) {
-		this.modelConfig = modelConfig;
-		return this;
+	public String getSimulationName() {
+		return simulationName;
 	}
-	
-	public ControllerConfiguration getControllerConfig() {
-		return ctrlrConfig;
+
+	public String getAuthor() {
+		return author;
 	}
-	
-	public Configuration setControllerConfig(ControllerConfiguration ctrlrConfig) {
-		this.ctrlrConfig = ctrlrConfig;
-		return this;
+
+	public int getGirdWidth() {
+		return girdWidth;
 	}
-	
-	public ViewConfiguration getViewConfig() {
-		return viewConfig;
+
+	public int getGirdHeight() {
+		return girdHeight;
 	}
-	
-	public Configuration setViewConfig(ViewConfiguration viewConfig) {
-		this.viewConfig = viewConfig;
-		return this;
+
+	public States getAllStates() {
+		return allStates;
+	}
+
+	public Neighborhood getNeighborhood() {
+		return neighborhood;
 	}
 }
