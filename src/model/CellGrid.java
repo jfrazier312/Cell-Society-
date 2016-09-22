@@ -32,7 +32,8 @@ public class CellGrid extends GridPane {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
 				currentCell.render(); //TODO: implement render in each shape class
-				// Place inside of root 
+				
+				// Place node inside of root 
 			}
 		}
 		

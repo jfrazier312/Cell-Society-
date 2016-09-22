@@ -22,9 +22,4 @@ public class Hexagon extends Cell {
 	public int[] getColDeltas() {
 		return colDeltas;
 	}
-
-	@Override
-	public Shapes getShape() {
-		return Shapes.HEXAGON;
-	}
 }

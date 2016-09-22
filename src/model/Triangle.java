@@ -38,9 +38,4 @@ public class Triangle extends Cell {
 	public int[] getColDeltas() {
 		return isEven ? evenColDeltas : oddColDeltas;
 	}
-
-	@Override
-	public Shapes getShape() {
-		return Shapes.TRIANGLE;
-	}
 }
