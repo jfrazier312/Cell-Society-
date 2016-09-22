@@ -14,6 +14,12 @@ public class MainView extends Application implements ButtonHandler {
 	private BorderPane root;
 	private FlowPane cellPane;
 	Configuration config;
+	
+	private final String RESET = "Reset";
+	private final String PLAY = "Play";
+	private final String PAUSE = "Pause";
+	private final String RESUME = "Resume";
+
 		
 	public static void main(String[] args) {
 		launch(args);
@@ -47,16 +53,16 @@ public class MainView extends Application implements ButtonHandler {
 	public void createAllButtons() throws Exception { 
 		VBox buttonContainer = new VBox(PADDING);
 		
-		SimulationButton playBtn = new SimulationButton("Play");
+		SimulationButton playBtn = new SimulationButton(PLAY);
 		setStartEventHandler(playBtn);
 	
-		SimulationButton resumeBtn = new SimulationButton("Resume");
+		SimulationButton resumeBtn = new SimulationButton(RESUME);
 		setStartEventHandler(resumeBtn);
 		
-		SimulationButton pauseBtn = new SimulationButton("Pause");
+		SimulationButton pauseBtn = new SimulationButton(PAUSE);
 		setStopEventHandler(pauseBtn);
 		
-		SimulationButton resetBtn = new SimulationButton("Reset");
+		SimulationButton resetBtn = new SimulationButton(RESET);
 		setStopEventHandler(resetBtn);
 		
 		VBox basicBtnBox = new VBox(PADDING); 
@@ -83,10 +89,12 @@ public class MainView extends Application implements ButtonHandler {
 	public void setStopEventHandler(SimulationButton btn) {
 		btn.setOnAction(e -> {
 			// If button is reset, then reset parameters back to what's on XML file
-			if (btn.getDisplayName().equals("Reset")) {
+			// Might should have constants for all these buttons / and or enum for fun
+			if (btn.getDisplayName().equals(RESET)) {
 				try {
 					config = ConfigurationLoader.loader().setSource("testxml.xml").load().getConfig();
 				} catch (Exception e1) {
+					e1.printStackTrace();
 					throw new IllegalArgumentException("Failed loading XML file");
 				}
 			}
