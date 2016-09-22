@@ -36,6 +36,5 @@ public class Rectangle extends Cell {
 	@Override
 	public int[] getColDeltas() {
 		return colDeltas;
-	}
-
+	}	
 }
