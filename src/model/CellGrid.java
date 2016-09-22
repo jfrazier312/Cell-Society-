@@ -1,6 +1,8 @@
 package model;
 import java.util.ArrayList;
 
+import javafx.scene.Node;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public class CellGrid extends GridPane {
@@ -23,17 +25,15 @@ public class CellGrid extends GridPane {
 		// set row/column constraints?
 	}
 
-	private void renderGrid() {
-		
+	public void renderGrid(BorderPane root) {
 		// loop through 2d grid, render each cell. should have already set up state correctly, 
 		// this just needs to display it.
 		
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
-				currentCell.render(); //TODO: implement render in each shape class
-				
-				// Place node inside of root 
+				Node guy = currentCell.render();
+				root.getChildren().add(guy);
 			}
 		}
 		

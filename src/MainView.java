@@ -12,7 +12,7 @@ public class MainView extends Application implements ButtonHandler {
 	private Scene scene;
 	private BorderPane root;
 	Configuration config;
-	
+		
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -27,8 +27,12 @@ public class MainView extends Application implements ButtonHandler {
 //		scene = new Scene(root, config.getSceneWidth(), config.getSceneHeight());
 		stage = primaryStage;
 		
+		//Configuration.getConfig();
+		
 		// add the grid
 		createAllButtons();
+		
+		//create timeline 
 		
 		stage.setScene(scene);
 		stage.show();

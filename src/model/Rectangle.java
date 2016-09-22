@@ -1,5 +1,8 @@
 package model;
 
+import config.Configuration;
+import javafx.scene.Node;
+
 public class Rectangle extends Cell {
 	
 	//included diagonals
@@ -12,8 +15,17 @@ public class Rectangle extends Cell {
 	}
 
 	@Override
-	public void render() {
-		// yeah
+	public Node render() {
+		javafx.scene.shape.Rectangle a = new javafx.scene.shape.Rectangle(10, 10);
+		// based on size of grid
+		// based on pixels on windows 
+		Configuration config = ConfigurationLoader.loader().getConfig();
+		String color = config.getAllStates().getColors().get(this.getCurrentstate());
+		
+		//figure out how to change string into color
+		a.setFill(color);
+		
+		return a;
 	}
 	
 	@Override
