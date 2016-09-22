@@ -6,7 +6,6 @@ public class CellGrid extends GridPane {
 
 	private Cell[][] grid;
 	
-	
 	// TODO: reset grid
 	// TODO: change parameters 
 	//       number of initially empty (resets grid)
@@ -32,12 +31,14 @@ public class CellGrid extends GridPane {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
 				currentCell.render(); //TODO: implement render in each shape class
+				// Place inside of root 
 			}
 		}
 		
 	}
 
-	// Needs what simulation to input each time and similarity factor? 
+	// Backend does this
+	/*
 	private void updateGrid() { 
 		// touch each cell and figure out future state
 		for (int i = 0; i < getNumRows(); i++) {
@@ -57,7 +58,9 @@ public class CellGrid extends GridPane {
 			}
 		}
 	}
-
+	*/
+	
+	// Not needed. backend will just call getNeighbors()
 	private void setNeighbors(Cell cell) {
 		// need this in case user updates cell row/col to illegal spot?
 		if (!isValidLocation(cell)) {
@@ -66,24 +69,6 @@ public class CellGrid extends GridPane {
 		ArrayList<Cell> neighbors = getNeighbors(cell);
 		cell.setNeighbors(neighbors);
 	}
-
-
-	/* 
-	private ArrayList<Cell> getNeighbors(Cell cell) {
-		ArrayList<Cell> neighbors = new ArrayList<>();
-		if (cell.getShape() == Shapes.RECTANGLE) {
-			neighbors = getRectangleNeighbors(cell);
-		} else if (cell.getShape() == Shapes.TRIANGLE) {
-			neighbors = getTriangleNeighbors(cell);
-		} else if (cell.getShape() == Shapes.HEXAGON) {
-			neighbors = getHexagonNeighbors(cell);
-		} else {
-			throw new IllegalArgumentException("Shape not implemented yet");
-		}
-		return neighbors;
-	}*/
-
-	// changed to protected so that the segregation simulation could see
 	
 	/**
 	 * Returns the neighbors of a shape. May need to change
