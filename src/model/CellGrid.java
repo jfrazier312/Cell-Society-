@@ -93,6 +93,7 @@ public class CellGrid extends GridPane {
 		return neighbors;
 	}
 
+	/* backend does this too
 	private void updateCurrentState(Cell cell) {
 		cell.setCurrentstate(cell.getFuturestate());
 	}
@@ -100,6 +101,7 @@ public class CellGrid extends GridPane {
 	private void setFutureState(Cell cell, String futurestate) {
 		cell.setFuturestate(futurestate);
 	}
+	*/
 
 	private boolean isValidLocation(Cell cell) {
 		return 0 <= cell.getRowPos() && 0 <= cell.getColPos() && cell.getRowPos() < getNumRows()
