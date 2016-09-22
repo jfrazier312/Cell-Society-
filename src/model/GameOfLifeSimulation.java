@@ -21,7 +21,7 @@ public class GameOfLifeSimulation extends CellGrid {
 	
 	public void updateCell(Cell myCell){
 		String myState = myCell.getCurrentstate();
-		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
 		int liveCount = 0;
 		for(Cell neighborCell: currentNeighbors){
 			if(neighborCell.getCurrentstate().equals(ALIVE)){

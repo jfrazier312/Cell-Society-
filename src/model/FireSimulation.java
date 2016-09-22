@@ -22,7 +22,7 @@ public class FireSimulation extends CellGrid {
 	public void updateCell(Cell myCell, int probOfBurning){
 		generator = new Random();
 		String myState = myCell.getCurrentstate();
-		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
 		if(myState.equals(BURNING)){
 			myCell.setFuturestate(EMPTY);
 		}

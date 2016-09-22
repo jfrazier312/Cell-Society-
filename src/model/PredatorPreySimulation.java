@@ -20,7 +20,7 @@ public class PredatorPreySimulation extends CellGrid {
 	public void updateCell(Fish myCell, int energyIncrease){
 		generator = new Random();
 		String state = myCell.getCurrentstate();
-		ArrayList<Cell> neighbors = getRectangleNeighbors(myCell);
+		ArrayList<Cell> neighbors = getNeighbors(myCell);
 		if(state == SHARK){
 			sharkMove(neighbors, myCell);
 		}
@@ -37,7 +37,7 @@ public class PredatorPreySimulation extends CellGrid {
 			direction = generator.nextInt(myFriends.size());
 			//myCell.decrementReproductionTime();
 			//direction = myNeighbors.get(direction);
-			Fish cellToUpdate = (Fish) getRectangleNeighbors(myCell).get(direction);
+			Fish cellToUpdate = (Fish) getNeighbors(myCell).get(direction);
 		}
 	}
 	
@@ -102,7 +102,7 @@ public class PredatorPreySimulation extends CellGrid {
 		else{
 			myCell.setCurrentstate(EMPTY);
 		}
-		Fish cellToUpdate = (Fish) getRectangleNeighbors(myCell).get(direction);
+		Fish cellToUpdate = (Fish) getNeighbors(myCell).get(direction);
 		cellToUpdate.setFuturestate(SHARK);
 		transferInformation(myCell, cellToUpdate);
 	}

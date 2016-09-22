@@ -29,7 +29,7 @@ public class SegregationSimulation extends CellGrid {
 		if(myCell.getCurrentstate() == EMPTY){
 			return;
 		}
-		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
 		double matchingCellCount = 0.0;
 		//start at 1 to avoid divide by 0 error
 		int nonEmptyCellCount = 1;

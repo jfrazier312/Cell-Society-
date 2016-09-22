@@ -2,15 +2,14 @@ package model;
 import java.util.ArrayList;
 
 import javafx.scene.Node;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 
 public class CellGrid extends GridPane {
 
 	private Cell[][] grid;
 	
-	// TODO: reset grid
-	// TODO: change parameters 
+	// TODO: Jordan: change parameters 
 	//       number of initially empty (resets grid)
 	// 		 percentage of states to each other (resets)
 	// 		 step delay
@@ -22,47 +21,24 @@ public class CellGrid extends GridPane {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
 		grid = new Cell[rows][cols];
-		// set row/column constraints?
+		// TODO: Jordan set row/column constraints. maybe
 	}
 
-	public void renderGrid(BorderPane root) {
+	// Need to change spacing in flowpane if shape is different than rectangle
+	public void renderGrid(FlowPane cellPane) {
 		// loop through 2d grid, render each cell. should have already set up state correctly, 
 		// this just needs to display it.
 		
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
-				Node guy = currentCell.render();
-				root.getChildren().add(guy);
+				Node updatedCell = currentCell.render();
+				cellPane.getChildren().add(updatedCell);
 			}
-		}
-		
+		}	
 	}
-
-	// Backend does this
-	/*
-	private void updateGrid() { 
-		// touch each cell and figure out future state
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = grid[i][j];
-				setNeighbors(currentCell); //dont need to do this. calls getNeighbors() in backend
-				// update future state based on simulation rules;
-				// which is done in Simulation backend
-			}
-		}
-
-		// loop and update each cell
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = grid[i][j];
-				updateCurrentState(currentCell);
-			}
-		}
-	}
-	*/
 	
-	// Not needed. backend will just call getNeighbors()
+	// TODO: Jordan Not needed. backend will just call getNeighbors()
 	private void setNeighbors(Cell cell) {
 		// need this in case user updates cell row/col to illegal spot?
 		if (!isValidLocation(cell)) {

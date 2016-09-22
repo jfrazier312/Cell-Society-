@@ -1,5 +1,8 @@
 package model;
 
+import javafx.scene.Node;
+import javafx.scene.shape.Polygon;
+
 public class Triangle extends Cell {
 
 	private int[] rowDeltas = { -1, 0, 1 };
@@ -14,19 +17,26 @@ public class Triangle extends Cell {
 	 */
 	private int[] evenColDeltas = { 0, 1, 0 };
 	private int[] oddColDeltas = { 0, -1, 0 };
+	
+	// Will need to scale this based on XML inputs? 
+	private Double[] normalTrianglePoints = { 10.0, 0.0, 0.0, 20.0, 20.0, 20.0 };
+	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, 20.0, 0.0, 10.0, 20.0 };
 
 	public Triangle(int row, int col, boolean isEven) {
 		super(row, col);
 		this.isEven = isEven;
 	}
 
+	// Need to change spacing in flowpane if its a triangle
 	@Override
-	public void render() {
+	public Node render() {
+		Polygon triangle = new Polygon();
 		if (isEven) {
-			// render it rightside up
+			triangle.getPoints().addAll(normalTrianglePoints);
 		} else {
-			// render upside down
+			triangle.getPoints().addAll(upsideDownTrianglePoints);
 		}
+		return triangle;
 	}
 
 	@Override

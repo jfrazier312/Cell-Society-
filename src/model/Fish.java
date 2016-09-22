@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.Node;
+
 public class Fish extends RectangleNoDiagonals{
 	
 	private int[] noDiagonalRowDeltas = {-1, 0, 1, 0,};
@@ -47,8 +49,8 @@ public class Fish extends RectangleNoDiagonals{
 	
 
 	@Override
-	public void render() {
-		// TODO Auto-generated method stub
+	public Node render() {
+		
 	}
 
 	@Override

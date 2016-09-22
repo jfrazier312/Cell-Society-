@@ -6,6 +6,7 @@ public class SimulationSlider extends SliderCreator {
 
 	public SimulationSlider(String displayName) {
 		super(displayName);
+		hbox = super.getSlider();
 	}
 	
 	public HBox getSlider() {
