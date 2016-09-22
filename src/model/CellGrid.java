@@ -3,11 +3,22 @@ import java.util.ArrayList;
 
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid; // probably should rename Cell
+
+	private Cell[][] grid;
+	
+	// TODO: reset grid
+	// TODO: change parameters 
+	//       number of initially empty (resets grid)
+	// 		 percentage of states to each other (resets)
+	// 		 step delay
+	// 		 size of cells
+	// 		 have a percentage of satisfied cells (dynamically)	 
 
 	public CellGrid(int rows, int cols) {
 		if (rows <= 0 || cols <= 0) {
