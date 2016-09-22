@@ -11,9 +11,9 @@ import java.util.ArrayList;
 //Should we do getting neighbors in each simulation since the definition can vary?
 public class SegregationSimulation extends CellGrid {
 	
-	public static final int EMPTY = 0;
-	public static final int TYPE1 = 1;
-	public static final int TYPE2 = 2;
+	public static final String EMPTY = "EMPTY";
+	public static final String TYPE1 = "TYPE1";
+	public static final String TYPE2 = "TYPE2";
 
 	public SegregationSimulation(int rows, int cols) {
 		super(rows, cols);
@@ -25,14 +25,14 @@ public class SegregationSimulation extends CellGrid {
 		if(myCell.getCurrentstate() == EMPTY){
 			return;
 		}
-		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell, true);
+		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);
 		double matchingCellCount = 0.0;
 		//start at 1 to avoid divide by 0 error
 		int nonEmptyCellCount = 1;
 		for(int i = 0; i<currentNeighbors.size(); i++){
-			int neighborState = currentNeighbors.get(i).getCurrentstate();
+			String neighborState = currentNeighbors.get(i).getCurrentstate();
 			//assuming empty cell state equals 0
-			if(neighborState!=EMPTY){
+			if(!neighborState.equals(EMPTY)){
 				nonEmptyCellCount++;
 				if(neighborState == myCell.getCurrentstate()){
 					matchingCellCount++;
@@ -53,7 +53,7 @@ public class SegregationSimulation extends CellGrid {
 	public Cell findEmptyCell(CellGrid myGrid){
 		for(int i = 0; i<myGrid.getNumRows(); i++){
 			for(int j = 0; j<myGrid.getNumCols(); j++){
-				if(myGrid.getGrid()[i][j].getCurrentstate() == EMPTY){
+				if(myGrid.getGrid()[i][j].getCurrentstate().equals(EMPTY)){
 					return myGrid.getGrid()[i][j];
 				}
 			}

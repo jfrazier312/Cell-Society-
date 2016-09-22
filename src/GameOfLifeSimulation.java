@@ -10,23 +10,23 @@ import java.util.ArrayList;
 
 public class GameOfLifeSimulation extends CellGrid {
 	
-	public static final int DEAD = 0;
-	public static final int ALIVE = 1;
+	public static final String DEAD = "DEAD";
+	public static final String ALIVE = "ALIVE";
 	
 	public GameOfLifeSimulation(int rows, int cols) {
 		super(rows, cols);
 	}
 	
 	public void updateCell(Cell myCell){
-		int myState = myCell.getCurrentstate();
-		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell, false);
+		String myState = myCell.getCurrentstate();
+		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);
 		int liveCount = 0;
 		for(Cell neighborCell: currentNeighbors){
-			if(neighborCell.getCurrentstate() == ALIVE){
+			if(neighborCell.getCurrentstate().equals(ALIVE)){
 				liveCount++;
 			}
 		}
-		if(myState == DEAD){
+		if(myState.equals(DEAD)){
 			if(liveCount == 3){
 				myCell.setFuturestate(ALIVE);
 			}

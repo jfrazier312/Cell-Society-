@@ -8,9 +8,9 @@ import java.util.Random;
  */ 
 
 public class FireSimulation extends CellGrid {
-	public static final int EMPTY = 0;
-	public static final int TREE = 1;
-	public static final int BURNING = 2;
+	public static final String EMPTY = "EMPTY";
+	public static final String TREE = "TREE";
+	public static final String BURNING = "BURNING";
 	Random generator;
 
 	public FireSimulation(int rows, int cols) {
@@ -19,12 +19,12 @@ public class FireSimulation extends CellGrid {
 	
 	public void updateCell(Cell myCell, int probOfBurning){
 		generator = new Random();
-		int myState = myCell.getCurrentstate();
-		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell, false);
-		if(myState == BURNING){
+		String myState = myCell.getCurrentstate();
+		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);
+		if(myState.equals(BURNING)){
 			myCell.setFuturestate(EMPTY);
 		}
-		else if(myState == TREE){
+		else if(myState.equals(TREE)){
 			for(Cell neighbor: currentNeighbors){
 				if(neighbor.getCurrentstate() == BURNING){
 					int seeIfBurn = generator.nextInt(100);

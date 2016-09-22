@@ -1,3 +1,5 @@
 # cellsociety 
 
-Put your source code, resources, and property files here.
+
+Charles
+Duke CompSci 308 Cell Society Project

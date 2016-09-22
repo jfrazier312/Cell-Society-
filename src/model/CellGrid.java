@@ -1,8 +1,7 @@
+package model;
 import java.util.ArrayList;
 
 import javafx.scene.layout.GridPane;
-
-//need to create the grid as well
 
 public class CellGrid extends GridPane {
 
@@ -25,12 +24,12 @@ public class CellGrid extends GridPane {
 		// render the grid graphically somehow...
 	}
 
-	private void updateGrid(boolean diagonalIncluded) {
+	private void updateGrid() {
 		// touch each cell and figure out future state 
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
-				setNeighbors(currentCell, diagonalIncluded);
+				setNeighbors(currentCell);
 				// update future state based on simulation rules;
 				// which is done in rules engine class? 
 			}
@@ -45,12 +44,12 @@ public class CellGrid extends GridPane {
 		}
 	}
 
-	private void setNeighbors(Cell cell, boolean diagonalIncluded) {
+	private void setNeighbors(Cell cell) {
 		// need this in case user updates cell row/col to illegal spot
 		if (!isValidLocation(cell)) {
 			throw new IllegalArgumentException("Location not valid");
 		}
-		ArrayList<Cell> neighbors = getNeighbors(cell, diagonalIncluded);
+		ArrayList<Cell> neighbors = getNeighbors(cell);
 		cell.setNeighbors(neighbors);
 	}
 
@@ -60,14 +59,8 @@ public class CellGrid extends GridPane {
 	 * @param cell
 	 * @return
 	 */
-	private ArrayList<Cell> getNeighbors(Cell cell, boolean diagonalsIncluded) {
+	private ArrayList<Cell> getNeighbors(Cell cell) {
 		ArrayList<Cell> neighbors = new ArrayList<>();
-		if (cell.getShape() == Shapes.RECTANGLE) {
-			neighbors = getRectangleNeighbors(cell);
-		}
-		else if (cell.getShape() == Shapes.OTHERSHIT) {
-			// neighbors = getOtherShit(cell);
-		}
 		return neighbors;
 	}
 	
@@ -84,14 +77,10 @@ public class CellGrid extends GridPane {
 			if(isValidLocation(grid[newRowPos][newColPos])){ 
 				neighbors.add(grid[newRowPos][newColPos]);
 			}
-//			else{
-//				//cell that is out of bounds but need full array list for the sake of keeping track which fish is in which direction
-//				neighbors.add(new Rectangle(0, 0, true));
-//			}
 		}
 		return neighbors;
 	}
-	
+
 	private void updateCurrentState(Cell cell) {
 		cell.setCurrentstate(cell.getFuturestate());
 	}
