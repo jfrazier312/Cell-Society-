@@ -6,8 +6,8 @@ public class Shark extends Fish{
 	private int myTimeToDeath;
 	
 	public Shark(int row, int col, int reproductionTime, int timeToDeath) {
-		super(row, col, reproductionTime);
-		myTimeToDeath = timeToDeath;	
+		super(row, col, reproductionTime, timeToDeath);
+		//myTimeToDeath = timeToDeath;	
 	}
 	
 	public void increaseTimeToDeath(int energyGained){
@@ -28,12 +28,12 @@ public class Shark extends Fish{
 	}
 
 	@Override
-	public int[] getRowDeltas(boolean diagonalIncluded) {
+	public int[] getRowDeltas() {
 		return noDiagonalRowDeltas;
 	}
 
 	@Override
-	public int[] getColDeltas(boolean diagonalIncluded) {
+	public int[] getColDeltas() {
 		return noDiagonalColDeltas;
 	}
 
