@@ -28,21 +28,26 @@ public abstract class CellGrid extends GridPane {
 				Cell currentCell = grid[i][j];
 				Node updatedCell = currentCell.render();
 				cellPane.getChildren().add(updatedCell);
+				// Place node inside of root 
 			}
 		}
+		
+		
 	}
 
-	public abstract void updateGrid(); //{
-		// touch each cell and figure out future state 
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				Cell currentCell = grid[i][j];
-//				setNeighbors(currentCell);
-//				// update future state based on simulation rules;
-//				// which is done in rules engine class? 
-//			}
-//		}
-		
+	// Backend does this
+	/*
+	private void updateGrid() { 
+		// touch each cell and figure out future state
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				Cell currentCell = grid[i][j];
+				setNeighbors(currentCell); //dont need to do this. calls getNeighbors() in backend
+				// update future state based on simulation rules;
+				// which is done in Simulation backend
+			}
+		}
+
 		// loop and update each cell
 //		for (int i = 0; i < getNumRows(); i++) {
 //			for (int j = 0; j < getNumCols(); j++) {
@@ -63,6 +68,9 @@ public abstract class CellGrid extends GridPane {
 
 	/**
 	 * Add to this method if implementing new shape
+	 * Returns the neighbors of a shape. May need to change
+	 * row/column deltas based on definition of 'neighbor'
+	 * (diagonals or not)
 	 * 
 	 * @param cell
 	 * @return

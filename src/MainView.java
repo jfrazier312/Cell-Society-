@@ -67,13 +67,13 @@ public class MainView extends Application implements ButtonHandler {
 	
 	public void setStartEventHandler(SimulationButton btn) {
 		btn.setOnAction(e -> {
-			config.setIsRunning(true);
+			config.setRunning(true);
 		});
 	}
 	
 	public void setPauseEventHandler(SimulationButton pauseBtn) {
 		pauseBtn.setOnAction(e -> {
-			config.setIsRunning(false);
+			config.setRunning(false);
 		});
 	}
 	
@@ -81,7 +81,7 @@ public class MainView extends Application implements ButtonHandler {
 		resetBtn.setOnAction(e -> {
 			try {
 				config = ConfigurationLoader.loader().setSource("testxml.xml").load().getConfig();
-				config.setIsRunning(false);
+				config.setRunning(false);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
