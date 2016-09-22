@@ -2,6 +2,7 @@ package model;
 
 import config.Configuration;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 
 public class Rectangle extends Cell {
 	
@@ -22,9 +23,8 @@ public class Rectangle extends Cell {
 		Configuration config = ConfigurationLoader.loader().getConfig();
 		String color = config.getAllStates().getColors().get(this.getCurrentstate());
 		
-		//figure out how to change string into color
-		a.setFill(color);
-		
+		// Needs to be a hex value ( ##0000FF, or 0x0000FF)
+		a.setFill(Color.web(color));
 		return a;
 	}
 	

@@ -9,7 +9,7 @@ public class Hexagon extends Cell {
 	}
 
 	@Override
-	public void render() {
+	public Node render() {
 		// yeah
 	}
 

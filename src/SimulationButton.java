@@ -14,5 +14,9 @@ public class SimulationButton extends Button {
 	private void setDisplayName(String displayName) {
 		this.setText(displayName);
 	}
+	
+	public String getDisplayName() {
+		return displayName;
+	}
 
 }

@@ -3,7 +3,6 @@ import java.util.ArrayList;
 
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public abstract class CellGrid extends GridPane {
@@ -12,8 +11,7 @@ public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid;
 	
-	// TODO: reset grid
-	// TODO: change parameters 
+	// TODO: Jordan: change parameters 
 	//       number of initially empty (resets grid)
 	// 		 percentage of states to each other (resets)
 	// 		 step delay
@@ -25,11 +23,10 @@ public abstract class CellGrid extends GridPane {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
 		grid = new Cell[rows][cols];
-		// set row/column constraints?
+		// TODO: Jordan set row/column constraints. maybe
 	}
 	
-	//added so that I can find an empty cell in the grid to update future value of in segregation model
-	public Cell[][] getGrid(){
+	public void renderGrid(BorderPane root) {
 		return grid;
 	}
 	
@@ -65,7 +62,7 @@ public abstract class CellGrid extends GridPane {
 //				Cell currentCell = grid[i][j];
 //				updateCurrentState(currentCell);
 //			}
-//		}
+		}
 	//s}
 
 //	private void setNeighbors(Cell cell) {
