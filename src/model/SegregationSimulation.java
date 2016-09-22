@@ -1,3 +1,4 @@
+package model;
 import java.util.ArrayList;
 /*
  * for convention going to assume the following
@@ -7,6 +8,9 @@ import java.util.ArrayList;
  * 
  * gonna need some check in cellgrid to see if the simulation is done or not
  */
+
+//import Cell;
+//import CellGrid;
 
 //Should we do getting neighbors in each simulation since the definition can vary?
 public class SegregationSimulation extends CellGrid {

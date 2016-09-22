@@ -1,5 +1,8 @@
+package model;
 import java.util.ArrayList;
+
 import java.util.Random;
+
 public class PredatorPreySimulation extends CellGrid {
 
 	public static final String EMPTY = "EMPTY";

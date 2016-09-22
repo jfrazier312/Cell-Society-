@@ -1,3 +1,4 @@
+package model;
 
 public class Fish extends RectangleNoDiagonals{
 	
@@ -58,11 +59,6 @@ public class Fish extends RectangleNoDiagonals{
 	@Override
 	public int[] getColDeltas() {
 		return noDiagonalColDeltas;
-	}
-
-	@Override
-	public Shapes getShape() {
-		return Shapes.RECTANGLE;
 	}
 	
 	//shark stuff

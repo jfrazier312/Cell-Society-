@@ -1,4 +1,6 @@
+package model;
 import java.util.ArrayList;
+
 
 /*
  * for convention purposes:

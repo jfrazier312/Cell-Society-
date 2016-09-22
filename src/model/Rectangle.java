@@ -24,11 +24,6 @@ public class Rectangle extends Cell {
 	@Override
 	public int[] getColDeltas() {
 		return colDeltas;
-	}
-
-	@Override
-	public Shapes getShape() {
-		return Shapes.RECTANGLE;
 	}	
 
 }
