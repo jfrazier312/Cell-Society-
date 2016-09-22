@@ -1,13 +1,12 @@
 package model;
 import java.util.ArrayList;
 
-public abstract class Cell {
+public class Cell {
 
 	private int rowPos;
 	private int colPos;
 	private ArrayList<Cell> neighbors;
 	
-	//what is type of state? 
 	private String futurestate;
 	private String currentstate;
 	
@@ -56,12 +55,9 @@ public abstract class Cell {
 		this.neighbors = neighbors;
 	}
 	
-	public abstract void render();
+	public void render() {}
 	
-	public abstract int[] getRowDeltas();
+	public int[] getRowDeltas() { return null; }
 	
-	public abstract int[] getColDeltas();
-
-	public abstract Shapes getShape();
-	
+	public int[] getColDeltas() { return null; }
 }

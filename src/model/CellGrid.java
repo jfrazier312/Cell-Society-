@@ -61,11 +61,6 @@ public class CellGrid extends GridPane {
 	 */
 	private ArrayList<Cell> getNeighbors(Cell cell) {
 		ArrayList<Cell> neighbors = new ArrayList<>();
-		if (cell.getShape() == Shapes.RECTANGLE) {
-			neighbors = getRectangleNeighbors(cell);
-		} else if (cell.getShape() == Shapes.OTHERSHIT) {
-			// neighbors = getOtherShit(cell);
-		}
 		return neighbors;
 	}
 	
