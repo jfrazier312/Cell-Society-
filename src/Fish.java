@@ -1,5 +1,5 @@
 
-public class Fish extends Cell{
+public class Fish extends RectangleNoDiagonals{
 	
 	private int[] noDiagonalRowDeltas = {-1, 0, 1, 0,};
 	private int[] noDiagonalColDeltas = {0, -1, 0, 1};
@@ -17,7 +17,10 @@ public class Fish extends Cell{
 	
 	public void setReproductionTime(int reproductionTime){
 		myReproductionTime = reproductionTime;
-		myMaxReproductionTime = reproductionTime;
+	}
+	
+	public void setMaxReproductionTime(int maxReproductionTime){
+		myMaxReproductionTime = maxReproductionTime;
 	}
 	
 	public void setTimeToDeath(int timeToDeath){
@@ -27,6 +30,10 @@ public class Fish extends Cell{
 	
 	public int getReproductionTime(){
 		return myReproductionTime;
+	}
+	
+	public int getMaxReproductionTime(){
+		return myMaxReproductionTime;
 	}
 	
 	public void decrementReproductionTime(){
@@ -60,16 +67,20 @@ public class Fish extends Cell{
 	
 	//shark stuff
 	
-	public void increaseTimeToDeath(int energyGained){
-		myTimeToDeath+=energyGained;
+	public void increaseTimeToDeath(){
+		myTimeToDeath+=10;
 	}
 	
 	public void decrementTimeToDeath(){
 		myTimeToDeath--;
 	}
+
+	public int getTimeToDeath() {
+		return myTimeToDeath;
+	}
 	
-	public boolean isDead(){
-		return myTimeToDeath == 0;
+	public int resetTimeToDeath() {
+		return myTimeToDeath;
 	}
 
 }
