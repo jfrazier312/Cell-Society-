@@ -86,6 +86,15 @@ public abstract class CellGrid extends GridPane {
 	}
 	
 	public abstract void updateCell(Cell myCell);
+	/* backend does this too
+	private void updateCurrentState(Cell cell) {
+		cell.setCurrentstate(cell.getFuturestate());
+	}
+
+	private void setFutureState(Cell cell, String futurestate) {
+		cell.setFuturestate(futurestate);
+	}
+	*/
 
 //	private void updateCurrentState(Cell cell) {
 //		cell.setCurrentstate(cell.getFuturestate());

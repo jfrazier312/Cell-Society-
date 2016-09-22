@@ -10,7 +10,6 @@ public abstract class Cell {
 	private int colPos;
 	private ArrayList<Cell> neighbors;
 	
-	// TODO: change state to class in charles branch
 	private String futurestate;
 	private String currentstate;
 	

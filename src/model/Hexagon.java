@@ -1,4 +1,4 @@
-
+package model;
 public class Hexagon extends Cell {
 
 	private int[] rowDeltas = {-1, 0, 1, 0, 1, 1, -1, -1};

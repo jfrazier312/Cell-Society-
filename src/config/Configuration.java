@@ -1,5 +1,7 @@
 package config;
 
+import java.util.List;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -14,8 +16,10 @@ public class Configuration {
 	
 	private String simulationName;
 	private String author;
-	private int girdWidth;
-	private int girdHeight;
+	private int gridWidth;
+	private int gridHeight;
+	private int sceneWidth;
+	private int sceneHeight;
 	private States allStates;
 	private Neighborhood neighborhood;
 	private Params customizedParams;
@@ -28,8 +32,10 @@ public class Configuration {
 		// TODO (cx15): have tags and attrs defined as const for validation and reference
 		simulationName = Utils.getAttrFromFirstMatch(doc, "simulation", "name");
 		author = Utils.getAttrFromFirstMatch(doc, "simulation", "author");
-		girdWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "width"));
-		girdHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
+		gridWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "width"));
+		gridHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
+		sceneWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "width"));
+		sceneHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "height"));
 		framesPerSec = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "animation", "framesPerSec"));
 		defaultState = Utils.getAttrFromFirstMatch(doc, "init", "default");
 		allStates = new States().init(doc);
@@ -78,12 +84,20 @@ public class Configuration {
 		return author;
 	}
 
-	public int getGirdWidth() {
-		return girdWidth;
+	public int getGridWidth() {
+		return gridWidth;
 	}
 
-	public int getGirdHeight() {
-		return girdHeight;
+	public int getGridHeight() {
+		return gridHeight;
+	}
+	
+	public int getSceneHeight() {
+		return sceneHeight;
+	}
+	
+	public int getSceneWidth() {
+		return sceneWidth;
 	}
 
 	public States getAllStates() {
