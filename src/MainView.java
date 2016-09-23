@@ -44,9 +44,7 @@ public class MainView extends Application implements ButtonHandler {
 		cellPane.setPrefHeight(300);
 //		cellPane.setPrefWidth(config.getGridWidth());
 //		cellPane.setPrefHeight(config.getGridHeight());
-		
-		CellGrid cellgrid = new CellGrid(100, 100);
-		
+				
 		//Configuration.getConfig();
 		
 		GameOfLifeSimulation a = new GameOfLifeSimulation(100, 100);

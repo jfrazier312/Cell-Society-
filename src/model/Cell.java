@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import javafx.scene.Node;
 
 public class Cell {
-public abstract class Cell {
-
+	
 	private int rowPos;
 	private int colPos;
 	private ArrayList<Cell> neighbors;

@@ -5,16 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 
-public class CellGrid extends GridPane {
-
-	private Cell[][] grid;
-	
-	// TODO: Jordan: change parameters 
-	//       number of initially empty (resets grid)
-	// 		 percentage of states to each other (resets)
-	// 		 step delay
-	// 		 size of cells
-	// 		 have a percentage of satisfied cells (dynamically)	 
+public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid;
 	
@@ -49,29 +40,6 @@ public class CellGrid extends GridPane {
 		
 		
 	}
-	
-	// TODO: Jordan Not needed. backend will just call getNeighbors()
-	private void setNeighbors(Cell cell) {
-		// need this in case user updates cell row/col to illegal spot?
-	public abstract void updateGrid(); //{
-	// Backend does this
-	/*
-	private void updateGrid() { 
-		// touch each cell and figure out future state
-		if (!isValidLocation(cell)) {
-			throw new IllegalArgumentException("Location not valid");
-		}
-		ArrayList<Cell> neighbors = getNeighbors(cell);
-		cell.setNeighbors(neighbors);
-	}
-		
-		// loop and update each cell
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				Cell currentCell = grid[i][j];
-//				updateCurrentState(currentCell);
-//			}
-		}
 	
 	/**
 	 * Returns the neighbors of a shape. May need to change
@@ -118,7 +86,6 @@ public class CellGrid extends GridPane {
 	private void setFutureState(Cell cell, String futurestate) {
 		cell.setFuturestate(futurestate);
 	}
-	*/
 
 	private boolean isValidLocation(Cell cell) {
 		return 0 <= cell.getRowPos() && 0 <= cell.getColPos() && cell.getRowPos() < getNumRows()
@@ -136,5 +103,9 @@ public class CellGrid extends GridPane {
 	public int getNumCols() {
 		return grid[0].length;
 	}
+
+	public abstract void updateGrid();
+
+	public abstract void updateCell(Cell myCell);
 
 }
