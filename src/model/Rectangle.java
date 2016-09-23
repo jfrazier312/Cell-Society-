@@ -14,7 +14,8 @@ public class Rectangle extends Cell {
 	}
 
 	@Override
-	public void render() {
+	public Node render() {
+		return null;
 		// yeah
 	}
 	

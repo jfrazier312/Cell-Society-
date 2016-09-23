@@ -17,15 +17,20 @@ public class FireSimulation extends CellGrid {
 	Random generator;
 
 	public FireSimulation(int rows, int cols) {
-		//super(rows, cols);
-		super();
+		super(rows, cols);
 		probOfBurning = .5;
+	}
+	
+	@Override
+	public void updateGrid() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	public void updateCell(Cell myCell){
 		generator = new Random();
 		String myState = myCell.getCurrentstate();
-		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
 		if(myState.equals(BURNING)){
 			myCell.setFuturestate(EMPTY);
 		}
@@ -45,5 +50,4 @@ public class FireSimulation extends CellGrid {
 		}
 		
 	}
-
 }

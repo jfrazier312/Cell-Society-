@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
-public class PredatorPreySimulation{
+public class PredatorPreySimulation extends CellGrid{
 
 	public static final String EMPTY = "EMPTY";
 	public static final String FISH = "FISH";
@@ -11,24 +11,30 @@ public class PredatorPreySimulation{
 	private int energyIncrease = 10;
 	private Random generator;
 	
-	RectangleNoDiagonals[][] myGrid;
+	//RectangleNoDiagonals[][] myGrid;
 	
 	//instead of changing the state, do I want to physically make a copy of my cell?
 	//because needs to retain reproduction time and time to birth etc. 
 	
-	public PredatorPreySimulation(int rows, int cols) {
-		//super(rows, cols);
-		//super();
-		myGrid = new RectangleNoDiagonals[rows][cols];
+	@Override
+	public void updateGrid() {
+		// TODO Auto-generated method stub
+		
 	}
 	
-	public int getNumRows() {
-		return myGrid.length;
+	public PredatorPreySimulation(int rows, int cols) {
+		super(rows, cols);
+		//super();
+		//myGrid = new RectangleNoDiagonals[rows][cols];
 	}
-
-	public int getNumCols() {
-		return myGrid[0].length;
-	}
+	
+//	public int getNumRows() {
+//		return myGrid.length;
+//	}
+//
+//	public int getNumCols() {
+//		return myGrid[0].length;
+//	}
 	
 	public void createGrid(){
 		Random generator = new Random();
@@ -49,37 +55,39 @@ public class PredatorPreySimulation{
 	}
 	
 	public void intializeState(int row, int col, String state){
+		Cell[][] myGrid = getGrid();
 		myGrid[row][col] = new RectangleNoDiagonals(row, col);
 		myGrid[row][col].setCurrentstate(state);
 		myGrid[row][col].setFuturestate("");
 	}
 	
-	public static void updateCell(RectangleNoDiagonals myPredator){
-		if(myPredator.getCurrentstate().equals(SHARK)){
+	@Override
+	public void updateCell(Cell myCell){
+		if(myCell.getCurrentstate().equals(SHARK)){
 			
 		}
 	}
 	
-	private void moveShark(RectangleNoDiagonals myShark){
-		ArrayList<RectangleNoDiagonals> myFishFriends = getFishNeighbors(myShark);
+	private void moveShark(Cell myShark){
+		ArrayList<Cell> myFishFriends = getFishNeighbors(myShark);
 		if(myFishFriends.size()>0){
-			RectangleNoDiagonals newSharkCell = getNewCell(myFishFriends);;
+			Cell newSharkCell = getNewCell(myFishFriends);;
 			transferInformation((Fish) myShark, (Fish) newSharkCell);
 		}
 		else{
-			ArrayList<RectangleNoDiagonals> availableCells = getAvailableCells(myShark);
+			ArrayList<Cell> availableCells = getAvailableCells(myShark);
 			if(availableCells.size() == 0){
 				noMove((Fish) myShark);
 				return;
 			}
-			RectangleNoDiagonals newSharkCell = getNewCell(availableCells);
+			Cell newSharkCell = getNewCell(availableCells);
 			transferInformation((Fish) myShark, (Fish) newSharkCell);
 		}
 	}
 	
-	private RectangleNoDiagonals getNewCell(ArrayList<RectangleNoDiagonals> availableCells){
+	private Cell getNewCell(ArrayList<Cell> availableCells){
 		int cellChoice = generator.nextInt(availableCells.size());
-		RectangleNoDiagonals newCell = availableCells.get(cellChoice);
+		Cell newCell = availableCells.get(cellChoice);
 		return newCell;
 	}
 	
@@ -91,10 +99,10 @@ public class PredatorPreySimulation{
 		}
 	}
 	
-	private ArrayList<RectangleNoDiagonals> getAvailableCells(RectangleNoDiagonals myCreature){
-		ArrayList<RectangleNoDiagonals> neighbors= myCreature.getNeighbors(myGrid);
-		ArrayList<RectangleNoDiagonals> availableCells = new ArrayList<RectangleNoDiagonals>();
-		for(RectangleNoDiagonals neighbor: neighbors){
+	private ArrayList<Cell> getAvailableCells(Cell myCreature){
+		ArrayList<Cell> neighbors= getNeighbors(myCreature);
+		ArrayList<Cell> availableCells = new ArrayList<Cell>();
+		for(Cell neighbor: neighbors){
 			if(neighbor.getCurrentstate().equals("") && !neighbor.getFuturestate().equals(myCreature.getCurrentstate())){
 				availableCells.add(neighbor);
 			}
@@ -110,16 +118,17 @@ public class PredatorPreySimulation{
 	}
 	
 	
-	private ArrayList<RectangleNoDiagonals> getFishNeighbors(RectangleNoDiagonals myShark){
-		ArrayList<RectangleNoDiagonals> neighbors= myShark.getNeighbors(myGrid);
-		ArrayList<RectangleNoDiagonals> myFishFriends= new ArrayList<RectangleNoDiagonals>();
-		for(RectangleNoDiagonals neighbor: neighbors){
+	private ArrayList<Cell> getFishNeighbors(Cell myShark){
+		ArrayList<Cell> neighbors= getNeighbors(myShark);
+		ArrayList<Cell> myFishFriends= new ArrayList<Cell>();
+		for(Cell neighbor: neighbors){
 			if(neighbor.getCurrentstate().equals(FISH) && neighbor.getFuturestate().equals("")){
 				myFishFriends.add(neighbor);
 			}
 		}
 		return myFishFriends;
 	}
+	
 	/*
 	public void updateCell(Fish myCell){
 		generator = new Random();

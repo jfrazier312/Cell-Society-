@@ -13,8 +13,7 @@ public class SegregationSimulation extends CellGrid {
 	PriorityQueue<Cell> myMovingCells;
 
 	public SegregationSimulation(int rows, int cols, int probability) {
-		//super(rows, cols);
-		super();
+		super(rows, cols);
 		myProbability  = probability;
 		myMovingCells = new PriorityQueue<Cell>();
 	}
@@ -40,7 +39,7 @@ public class SegregationSimulation extends CellGrid {
 		if(myCell.getCurrentstate() == EMPTY){
 			return;
 		}
-		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
 		double matchingCellCount = 0.0;
 		//start at 1 to avoid divide by 0 error
 		int nonEmptyCellCount = 1;

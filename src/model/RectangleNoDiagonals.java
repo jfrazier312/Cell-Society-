@@ -21,23 +21,23 @@ public class RectangleNoDiagonals extends Rectangle {
 		return noDiagonalColDeltas;
 	}
 	
-	public ArrayList<RectangleNoDiagonals> getNeighbors(RectangleNoDiagonals[][] grid) {
-		ArrayList<RectangleNoDiagonals> neighbors = new ArrayList<RectangleNoDiagonals>();
-		int rowPos = getRowPos();
-		int colPos = getColPos();
-		for(int i = 0; i < getRowDeltas().length; i++) {
-			int newRowPos = rowPos + getRowDeltas()[i];
-			int newColPos = colPos + getColDeltas()[i];
-			if(isValidLocation(newRowPos, newColPos, grid)){ 
-				neighbors.add(grid[newRowPos][newColPos]);
-			}
-		}
-		return neighbors;
-	}
-	
-	private boolean isValidLocation(int row, int col, Cell[][] grid) {
-		return 0 <= row && 0 <= col && row < grid.length
-				&& col < grid[0].length;
-	}
+//	public ArrayList<RectangleNoDiagonals> getNeighbors(RectangleNoDiagonals[][] grid) {
+//		ArrayList<RectangleNoDiagonals> neighbors = new ArrayList<RectangleNoDiagonals>();
+//		int rowPos = getRowPos();
+//		int colPos = getColPos();
+//		for(int i = 0; i < getRowDeltas().length; i++) {
+//			int newRowPos = rowPos + getRowDeltas()[i];
+//			int newColPos = colPos + getColDeltas()[i];
+//			if(isValidLocation(newRowPos, newColPos, grid)){ 
+//				neighbors.add(grid[newRowPos][newColPos]);
+//			}
+//		}
+//		return neighbors;
+//	}
+//	
+//	private boolean isValidLocation(int row, int col, Cell[][] grid) {
+//		return 0 <= row && 0 <= col && row < grid.length
+//				&& col < grid[0].length;
+//	}
 
 }
