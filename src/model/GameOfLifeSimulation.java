@@ -2,14 +2,6 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
-/*
- * for convention purposes:
- * 0 = dead
- * 1 = alive
- * could use booleans to simplify code, but only works for this sim with two states
- * how do we want to deal with edges?
- */
-
 public class GameOfLifeSimulation{
 	
 	public static final String DEAD = "DEAD";
@@ -91,9 +83,6 @@ public class GameOfLifeSimulation{
 		String myState = myCell.getCurrentstate();
 		ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myCell, myGrid);
 		int liveCount = countCellsOfState(currentNeighbors, ALIVE);
-		if(myCell.getRowPos() == 0 && myCell.getColPos() == 0){
-			System.out.println("This is live count " + liveCount);
-		}
 		if(myState.equals(DEAD)){
 			if(liveCount == 3){
 				myCell.setFuturestate(ALIVE);
