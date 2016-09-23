@@ -2,27 +2,29 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class GameOfLifeSimulation{
+import javafx.scene.Node;
+
+public class GameOfLifeSimulation extends CellGrid{
 	
 	public static final String DEAD = "DEAD";
 	public static final String ALIVE = "ALIVE";
-	RectangleWithDiagonals[][] myGrid;
 	
 	public GameOfLifeSimulation(int rows, int cols) {
-		//super(rows, cols);
-		myGrid = new RectangleWithDiagonals[rows][cols];
+		super(rows, cols);
 	}
 	
-	public int getNumRows() {
-		return myGrid.length;
-	}
-
-	public int getNumCols() {
-		return myGrid[0].length;
-	}
+//	private void renderGrid() {
+//		for (int i = 0; i < getNumRows(); i++) {
+//			for (int j = 0; j < getNumCols(); j++) {
+//				RectangleWithDiagonals currentCell = myGrid[i][j];
+//				Node updatedCell = currentCell.render();
+//			}
+//		}
+//	}
 	
 	public void createGrid(){
 		Random generator = new Random();
+		Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				int deadChance = generator.nextInt(2);
@@ -40,7 +42,7 @@ public class GameOfLifeSimulation{
 	//for testing
 //	public void printGrid(){
 //		Random generator = new Random();
-//		//Cell[][] myGrid = this.getGrid();
+//		Cell[][] myGrid = getGrid();
 //		for (int i = 0; i < getNumRows(); i++) {
 //			for (int j = 0; j < getNumCols(); j++) {
 //				if(myGrid[i][j].getCurrentstate().equals(DEAD)){
@@ -57,18 +59,20 @@ public class GameOfLifeSimulation{
 //	}
 	
 	public void updateFutureStates(){
-		//Cell[][] myGrid = this.getGrid();
+		Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				RectangleWithDiagonals currentCell = myGrid[i][j];
+				//RectangleWithDiagonals currentCell = (RectangleWithDiagonals)myGrid[i][j];
+				Cell currentCell = myGrid[i][j];
 				updateCell(currentCell);
 				//currentCell.setCurrentstate(currentCell.getFuturestate());
 			}
 		}
 	}
 	
+	@Override
 	public void updateGrid(){
-		//Cell[][] myGrid = this.getGrid();
+		Cell[][] myGrid = getGrid();
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -79,9 +83,12 @@ public class GameOfLifeSimulation{
 		}
 	}
 	
-	public void updateCell(RectangleWithDiagonals myCell){
+	//public void updateCell(RectangleWithDiagonals myCell){
+	public void updateCell(Cell myCell){
 		String myState = myCell.getCurrentstate();
-		ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myCell, myGrid);
+		//ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myCell, myGrid);
+		//ArrayList<RectangleWithDiagonals> currentNeighbors = getNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
 		int liveCount = countCellsOfState(currentNeighbors, ALIVE);
 		if(myState.equals(DEAD)){
 			if(liveCount == 3){
@@ -105,7 +112,7 @@ public class GameOfLifeSimulation{
 		}
 	}
 	
-	public int countCellsOfState(ArrayList<RectangleWithDiagonals> currentNeighbors, String state){
+	public int countCellsOfState(ArrayList<Cell> currentNeighbors, String state){
 		int stateCount = 0;
 		for(Cell neighborCell: currentNeighbors){
 			if(neighborCell.getCurrentstate().equals(state)){

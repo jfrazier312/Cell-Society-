@@ -13,13 +13,21 @@ public class FireSimulation extends CellGrid {
 	public static final String EMPTY = "EMPTY";
 	public static final String TREE = "TREE";
 	public static final String BURNING = "BURNING";
+	private double probOfBurning;
 	Random generator;
 
 	public FireSimulation(int rows, int cols) {
 		super(rows, cols);
+		probOfBurning = .5;
 	}
 	
-	public void updateCell(Cell myCell, int probOfBurning){
+	@Override
+	public void updateGrid() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void updateCell(Cell myCell){
 		generator = new Random();
 		String myState = myCell.getCurrentstate();
 		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
@@ -42,5 +50,4 @@ public class FireSimulation extends CellGrid {
 		}
 		
 	}
-
 }

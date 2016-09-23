@@ -1,16 +1,7 @@
 package model;
 import java.util.ArrayList;
-/*
- * for convention going to assume the following
- * 0 = empty
- * 1 = type 1
- * 2 = type 2
- * 
- * gonna need some check in cellgrid to see if the simulation is done or not
- */
-
-//import Cell;
-//import CellGrid;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 //Should we do getting neighbors in each simulation since the definition can vary?
 public class SegregationSimulation extends CellGrid {
@@ -18,13 +9,32 @@ public class SegregationSimulation extends CellGrid {
 	public static final String EMPTY = "EMPTY";
 	public static final String TYPE1 = "TYPE1";
 	public static final String TYPE2 = "TYPE2";
+	private int myProbability;
+	PriorityQueue<Cell> myMovingCells;
 
-	public SegregationSimulation(int rows, int cols) {
+	public SegregationSimulation(int rows, int cols, int probability) {
 		super(rows, cols);
+		myProbability  = probability;
+		myMovingCells = new PriorityQueue<Cell>();
+	}
+	
+	public void updateGrid(){
+		Cell[][] myGrid = this.getGrid();
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				Cell currentCell = myGrid[i][j];
+				if(currentCell.getCurrentstate() == EMPTY && myMovingCells.size()>0){
+					currentCell.setCurrentstate(myMovingCells.poll().getCurrentstate());
+				}
+				else{
+					updateCell(currentCell);
+				}
+			}
+		}
 	}
 	
 	
-	public void updateCell(int probability, Cell myCell, CellGrid myGrid){
+	public void updateCell(Cell myCell){
 		//do nothing for an empty cell
 		if(myCell.getCurrentstate() == EMPTY){
 			return;
@@ -43,26 +53,16 @@ public class SegregationSimulation extends CellGrid {
 				}
 			}		
 		}
-		if(matchingCellCount/(nonEmptyCellCount-1) < probability){
+		if(matchingCellCount/(nonEmptyCellCount-1) < myProbability){
 			myCell.setFuturestate(EMPTY);
 		}
 		else{
+			myMovingCells.add(myCell);
 			//need to move this state to a random cell somewhere else on the grid
-			Cell newLocation = findEmptyCell(myGrid);
-			newLocation.setFuturestate(myCell.getCurrentstate());
+			//Cell newLocation = findEmptyCell(myGrid);
+			//newLocation.setFuturestate(myCell.getCurrentstate());
+			
 		}
-	}
-	
-	//algorithm says if current cell "isn't satisfied" to move it to an empty cell, so need to find an empty cell
-	public Cell findEmptyCell(CellGrid myGrid){
-		for(int i = 0; i<myGrid.getNumRows(); i++){
-			for(int j = 0; j<myGrid.getNumCols(); j++){
-				if(myGrid.getGrid()[i][j].getCurrentstate().equals(EMPTY)){
-					return myGrid.getGrid()[i][j];
-				}
-			}
-		}
-		return null;
 	}
 
 }

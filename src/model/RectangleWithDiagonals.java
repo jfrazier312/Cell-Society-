@@ -19,23 +19,23 @@ public class RectangleWithDiagonals extends Rectangle {
 		return colDeltas;
 	}
 	
-	public ArrayList<RectangleWithDiagonals> getNeighbors(Cell myCell, RectangleWithDiagonals[][] grid) {
-		ArrayList<RectangleWithDiagonals> neighbors = new ArrayList<RectangleWithDiagonals>();
-		int rowPos = myCell.getRowPos();
-		int colPos = myCell.getColPos();
-		for(int i = 0; i < myCell.getRowDeltas().length; i++) {
-			int newRowPos = rowPos + myCell.getRowDeltas()[i];
-			int newColPos = colPos + myCell.getColDeltas()[i];
-			if(isValidLocation(newRowPos, newColPos, grid)){ 
-				neighbors.add(grid[newRowPos][newColPos]);
-			}
-		}
-		return neighbors;
-	}
+//	public ArrayList<RectangleWithDiagonals> getNeighbors(RectangleWithDiagonals[][] grid) {
+//		ArrayList<RectangleWithDiagonals> neighbors = new ArrayList<RectangleWithDiagonals>();
+//		int rowPos = getRowPos();
+//		int colPos = getColPos();
+//		for(int i = 0; i < getRowDeltas().length; i++) {
+//			int newRowPos = rowPos + getRowDeltas()[i];
+//			int newColPos = colPos + getColDeltas()[i];
+//			if(isValidLocation(newRowPos, newColPos, grid)){ 
+//				neighbors.add(grid[newRowPos][newColPos]);
+//			}
+//		}
+//		return neighbors;
+//	}
 	
-	private boolean isValidLocation(int row, int col, Cell[][] grid) {
-		return 0 <= row && 0 <= col && row < grid.length
-				&& col < grid[0].length;
-	}
+//	private boolean isValidLocation(int row, int col, Cell[][] grid) {
+//		return 0 <= row && 0 <= col && row < grid.length
+//				&& col < grid[0].length;
+//	}
 
 }

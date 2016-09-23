@@ -58,9 +58,7 @@ public class Fish extends RectangleNoDiagonals {
 
 		// Needs to be a hex value ( ##0000FF, or 0x0000FF)
 		a.setFill(Color.web(color));
-
 		return a;
-
 	}
 
 	@Override
