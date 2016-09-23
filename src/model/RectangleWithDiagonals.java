@@ -19,13 +19,13 @@ public class RectangleWithDiagonals extends Rectangle {
 		return colDeltas;
 	}
 	
-	public ArrayList<RectangleWithDiagonals> getNeighbors(Cell myCell, RectangleWithDiagonals[][] grid) {
+	public ArrayList<RectangleWithDiagonals> getNeighbors(RectangleWithDiagonals[][] grid) {
 		ArrayList<RectangleWithDiagonals> neighbors = new ArrayList<RectangleWithDiagonals>();
-		int rowPos = myCell.getRowPos();
-		int colPos = myCell.getColPos();
-		for(int i = 0; i < myCell.getRowDeltas().length; i++) {
-			int newRowPos = rowPos + myCell.getRowDeltas()[i];
-			int newColPos = colPos + myCell.getColDeltas()[i];
+		int rowPos = getRowPos();
+		int colPos = getColPos();
+		for(int i = 0; i < getRowDeltas().length; i++) {
+			int newRowPos = rowPos + getRowDeltas()[i];
+			int newColPos = colPos + getColDeltas()[i];
 			if(isValidLocation(newRowPos, newColPos, grid)){ 
 				neighbors.add(grid[newRowPos][newColPos]);
 			}

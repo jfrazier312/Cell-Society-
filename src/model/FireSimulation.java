@@ -13,13 +13,16 @@ public class FireSimulation extends CellGrid {
 	public static final String EMPTY = "EMPTY";
 	public static final String TREE = "TREE";
 	public static final String BURNING = "BURNING";
+	private double probOfBurning;
 	Random generator;
 
 	public FireSimulation(int rows, int cols) {
-		super(rows, cols);
+		//super(rows, cols);
+		super();
+		probOfBurning = .5;
 	}
 	
-	public void updateCell(Cell myCell, int probOfBurning){
+	public void updateCell(Cell myCell){
 		generator = new Random();
 		String myState = myCell.getCurrentstate();
 		ArrayList<Cell> currentNeighbors = getRectangleNeighbors(myCell);

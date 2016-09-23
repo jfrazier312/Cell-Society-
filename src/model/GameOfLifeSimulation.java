@@ -2,6 +2,8 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javafx.scene.Node;
+
 public class GameOfLifeSimulation{
 	
 	public static final String DEAD = "DEAD";
@@ -12,6 +14,15 @@ public class GameOfLifeSimulation{
 		//super(rows, cols);
 		myGrid = new RectangleWithDiagonals[rows][cols];
 	}
+	
+//	private void renderGrid() {
+//		for (int i = 0; i < getNumRows(); i++) {
+//			for (int j = 0; j < getNumCols(); j++) {
+//				RectangleWithDiagonals currentCell = myGrid[i][j];
+//				Node updatedCell = currentCell.render();
+//			}
+//		}
+//	}
 	
 	public int getNumRows() {
 		return myGrid.length;
@@ -81,7 +92,8 @@ public class GameOfLifeSimulation{
 	
 	public void updateCell(RectangleWithDiagonals myCell){
 		String myState = myCell.getCurrentstate();
-		ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myCell, myGrid);
+		//ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myCell, myGrid);
+		ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myGrid);
 		int liveCount = countCellsOfState(currentNeighbors, ALIVE);
 		if(myState.equals(DEAD)){
 			if(liveCount == 3){

@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.Node;
+
 public class Rectangle extends Cell {
 	
 	//included diagonals

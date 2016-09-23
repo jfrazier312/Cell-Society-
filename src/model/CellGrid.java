@@ -7,11 +7,12 @@ public class CellGrid extends GridPane {
 
 	private Cell[][] grid; // probably should rename Cell
 
-	public CellGrid(int rows, int cols) {
-		if (rows <= 0 || cols <= 0) {
-			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
-		}
-		grid = new Cell[rows][cols];
+	//public CellGrid(int rows, int cols) {
+	public CellGrid() {
+//		if (rows <= 0 || cols <= 0) {
+//			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
+//		}
+		//grid = new Cell[rows][cols];
 		// set row/column constraints?
 	}
 	
@@ -21,19 +22,19 @@ public class CellGrid extends GridPane {
 	}
 	
 	private void renderGrid() {
-		// render the grid graphically somehow...
+		
 	}
 
 	private void updateGrid() {
 		// touch each cell and figure out future state 
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = grid[i][j];
-				setNeighbors(currentCell);
-				// update future state based on simulation rules;
-				// which is done in rules engine class? 
-			}
-		}
+//		for (int i = 0; i < getNumRows(); i++) {
+//			for (int j = 0; j < getNumCols(); j++) {
+//				Cell currentCell = grid[i][j];
+//				setNeighbors(currentCell);
+//				// update future state based on simulation rules;
+//				// which is done in rules engine class? 
+//			}
+//		}
 		
 		// loop and update each cell
 		for (int i = 0; i < getNumRows(); i++) {
@@ -74,11 +75,15 @@ public class CellGrid extends GridPane {
 		for(int i = 0; i < cell.getRowDeltas().length; i++) {
 			int newRowPos = rowPos + cell.getRowDeltas()[i];
 			int newColPos = colPos + cell.getColDeltas()[i];
-			if(isValidLocation(grid[newRowPos][newColPos])){ 
+			if(isValidLocation(newRowPos, newColPos)){ 
 				neighbors.add(grid[newRowPos][newColPos]);
 			}
 		}
 		return neighbors;
+	}
+	
+	private void updateCell(Cell myCell){
+		//don't need anything
 	}
 
 	private void updateCurrentState(Cell cell) {
@@ -92,6 +97,10 @@ public class CellGrid extends GridPane {
 	private boolean isValidLocation(Cell cell) {
 		return 0 <= cell.getRowPos() && 0 <= cell.getColPos() && cell.getRowPos() < getNumRows()
 				&& cell.getColPos() < getNumCols();
+	}
+	private boolean isValidLocation(int row, int col) {
+		return 0 <= row && 0 <= col && row < getNumRows()
+				&& col < getNumCols();
 	}
 
 	public int getNumRows() {
