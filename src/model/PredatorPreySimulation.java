@@ -91,6 +91,7 @@ public class PredatorPreySimulation extends CellGrid{
 		return newCell;
 	}
 	
+	public void updateCell(Fish myCell, int energyIncrease){
 	private void noMove(Fish myCreature){
 		myCreature.setFuturestate(myCreature.getCurrentstate());
 		myCreature.decrementReproductionTime();
@@ -133,14 +134,14 @@ public class PredatorPreySimulation extends CellGrid{
 	public void updateCell(Fish myCell){
 		generator = new Random();
 		String state = myCell.getCurrentstate();
-		ArrayList<RectangleNoDiagonals> neighbors = myCell.getNeighbors(myCell, myGrid);
+		ArrayList<Cell> neighbors = getNeighbors(myCell);
 		ArrayList<Cell> neighbors = getNeighbors(myCell);
 		if(state == SHARK){
 			sharkMove(neighbors, myCell);
 		}
 	}
 	
-	public void fishMove(ArrayList<RectangleNoDiagonals> myNeighbors, Fish myCell){
+	public void fishMove(ArrayList<Cell> myNeighbors, Fish myCell){
 		int numEmptyNeighbors = countEmpty(myNeighbors);
 		int direction;
 		if(numEmptyNeighbors == 0 && myCell.getFuturestate() != "NULL"){
@@ -151,16 +152,19 @@ public class PredatorPreySimulation extends CellGrid{
 			direction = generator.nextInt(myFriends.size());
 			//myCell.decrementReproductionTime();
 			//direction = myNeighbors.get(direction);
+			Fish cellToUpdate = (Fish) getNeighbors(myCell).get(direction);
 			Fish cellToUpdate = (Fish) myCell.getNeighbors().get(direction);
 			Fish cellToUpdate = (Fish) getNeighbors(myCell).get(direction);
 		}
 	}
 	
+	public void sharkMove(ArrayList<Cell> myNeighbors, Fish myCell){
 	public void sharkMove(ArrayList<RectangleNoDiagonals> myNeighbors, Fish myCell){
 		ArrayList<Integer> myFriends= getNonEmptyNeighbors(myNeighbors, SHARK);
 		changeCellToShark(myCell, myFriends);
 	}
 	
+	public ArrayList<Integer> getNonEmptyNeighbors(ArrayList<Cell> myNeighbors, String state){
 	public ArrayList<Integer> getNonEmptyNeighbors(ArrayList<RectangleNoDiagonals> myNeighbors, String state){
 		ArrayList<Integer> myFriends = new ArrayList<Integer>();
 		for(int i = 0; i<myNeighbors.size(); i++){
@@ -171,6 +175,7 @@ public class PredatorPreySimulation extends CellGrid{
 		return myFriends;
 	}
 	
+	public int countEmpty(ArrayList<Cell> myNeighbors){
 	public int countEmpty(ArrayList<RectangleNoDiagonals> myNeighbors){
 		int emptyCount = 0;
 		for(Cell neighbor: myNeighbors){
@@ -195,9 +200,11 @@ public class PredatorPreySimulation extends CellGrid{
 		if(myFishFriends.size() == 0){
 			if(myCell.getTimeToDeath() == 1){
 				myCell.setFuturestate(EMPTY);
+				myCell.setCurrentstate(EMPTY);
 				//myCell.setCurrentstate(EMPTY);
 				return;
 			}
+			direction = generator.nextInt(4);
 			ArrayList<Integer> emptyCells = countCellsOfState(myCell.getNeighbors(myCell, myGrid), EMPTY);
 			if(emptyCells.size() == 0){
 				myCell.setFuturestate(SHARK);
@@ -222,7 +229,7 @@ public class PredatorPreySimulation extends CellGrid{
 		else{
 			myCell.setCurrentstate(EMPTY);
 		}
-		Fish cellToUpdate = (Fish) myCell.getNeighbors(myCell, myGrid).get(direction);
+		Fish cellToUpdate = (Fish) getNeighbors(myCell).get(direction);
 		Fish cellToUpdate = (Fish) getNeighbors(myCell).get(direction);
 		cellToUpdate.setFuturestate(SHARK);
 		transferInformation(myCell, cellToUpdate);
@@ -244,5 +251,5 @@ public class PredatorPreySimulation extends CellGrid{
 		myCell.resetTimeToDeath();
 	}
 
-		*/
+	*/
 }

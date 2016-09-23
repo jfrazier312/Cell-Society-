@@ -37,5 +37,4 @@ public class Rectangle extends Cell {
 	public int[] getColDeltas() {
 		return colDeltas;
 	}	
-
 }

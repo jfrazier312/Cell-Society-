@@ -38,6 +38,8 @@ public class Configuration {
 		sceneHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "height"));
 		framesPerSec = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "animation", "framesPerSec"));
 		defaultState = Utils.getAttrFromFirstMatch(doc, "init", "default");
+		sceneWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "width"));
+		sceneHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "height"));
 		allStates = new States().init(doc);
 		neighborhood = new Neighborhood().init(doc);
 		buildInitialCells(doc);

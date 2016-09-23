@@ -50,11 +50,7 @@ public class Fish extends RectangleNoDiagonals {
 
 	@Override
 	public Node render() {
-<<<<<<< 1191168ad962f297becaf1b7e5a043315968dd2a
-		return null;
-||||||| merged common ancestors
-		
-=======
+<<<<<<< HEAD
 		javafx.scene.shape.Rectangle a = new javafx.scene.shape.Rectangle(10, 10);
 		// based on size of grid
 		// based on pixels on windows
@@ -66,7 +62,19 @@ public class Fish extends RectangleNoDiagonals {
 
 		return a;
 
->>>>>>> Rendering changes to hexagon and fish
+||||||| merged common ancestors
+		return null;
+=======
+		javafx.scene.shape.Rectangle a = new javafx.scene.shape.Rectangle(10, 10);
+		// based on size of grid
+		// based on pixels on windows
+		Configuration config = ConfigurationLoader.loader().getConfig();
+		String color = config.getAllStates().getColors().get(this.getCurrentstate());
+
+		// Needs to be a hex value ( ##0000FF, or 0x0000FF)
+		a.setFill(Color.web(color));
+		return a;
+>>>>>>> c5967ff9cc6e8926d45c0d8618f319da358ad1fc
 	}
 
 	@Override
