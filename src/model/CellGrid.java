@@ -28,13 +28,11 @@ public abstract class CellGrid extends GridPane {
 	public void renderGrid(FlowPane cellPane) {
 		// loop through 2d grid, render each cell. should have already set up state correctly, 
 		// this just needs to display it.
-		
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = grid[i][j];
-				Node updatedCell = currentCell.render();
+				Rectangle currentCell = (Rectangle) grid[i][j];
+				Node updatedCell = currentCell.render(currentCell.getCurrentstate());
 				cellPane.getChildren().add(updatedCell);
-				// Place node inside of root 
 			}
 		}	
 		
@@ -62,7 +60,7 @@ public abstract class CellGrid extends GridPane {
 		for (int i = 0; i < cell.getRowDeltas().length; i++) {
 			int newRowPos = rowPos + cell.getRowDeltas()[i];
 			int newColPos = colPos + cell.getColDeltas()[i];
-			if (isValidLocation(grid[newRowPos][newColPos])) {
+			if (isValidLocation(newRowPos, newColPos)) {
 				neighbors.add(grid[newRowPos][newColPos]);
 			}
 		}
@@ -87,9 +85,9 @@ public abstract class CellGrid extends GridPane {
 		cell.setFuturestate(futurestate);
 	}
 
-	private boolean isValidLocation(Cell cell) {
-		return 0 <= cell.getRowPos() && 0 <= cell.getColPos() && cell.getRowPos() < getNumRows()
-				&& cell.getColPos() < getNumCols();
+	private boolean isValidLocation(int x, int y) {
+		return 0 <= x && 0 <= y && x < getNumRows()
+				&& y < getNumCols();
 	}
 	
 	public Cell[][] getGrid() {

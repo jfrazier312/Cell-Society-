@@ -57,6 +57,10 @@ public class Cell {
 		this.neighbors = neighbors;
 	}
 	
+	public Node render(String a) {
+		return null;
+	}
+	
 	public Node render() { return null; }
 	
 	public int[] getRowDeltas() { return null; }

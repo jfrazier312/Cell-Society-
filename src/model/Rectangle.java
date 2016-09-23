@@ -16,15 +16,19 @@ public class Rectangle extends Cell {
 	}
 
 	@Override
-	public Node render() {
+	public Node render(String state) {
 		javafx.scene.shape.Rectangle a = new javafx.scene.shape.Rectangle(10, 10);
 		// based on size of grid
 		// based on pixels on windows 
-		Configuration config = ConfigurationLoader.loader().getConfig();
-		String color = config.getAllStates().getColors().get(this.getCurrentstate());
+//		Configuration config = ConfigurationLoader.loader().getConfig();
+//		String color = config.getAllStates().getColors().get(this.getCurrentstate());
 		
 		// Needs to be a hex value ( ##0000FF, or 0x0000FF)
-		a.setFill(Color.web(color));
+		if(state.equals("ALIVE")){
+			a.setFill(Color.BLACK);
+		}else {
+			a.setFill(Color.RED);
+		}
 		return a;
 	}
 	
