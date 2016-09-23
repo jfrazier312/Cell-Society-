@@ -9,7 +9,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.CellGrid;
 import model.ConfigurationLoader;
 import model.GameOfLifeSimulation;
 
@@ -54,13 +53,11 @@ public class MainView extends Application implements ButtonHandler {
 		// CHECK BUTTON ACTION, UPDATE / RENDER GRID
 		
 		 timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60),
-				   new KeyValue (
-						   
-						   )));
+				 new KeyValue( )
 		 
 		
 		// add the buttons
-		createAllButtons();
+		createAllButtons();//
 		
 		//create timeline 
 		
