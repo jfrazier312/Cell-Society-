@@ -9,7 +9,7 @@
 		<state color="color1">state1</state>
 		<state color="color2" lifeTime="20">state2</state>
 	</states>
-	<init default="state1">
+	<init default="state1" mode="enum">
 		<cell state="state2" row="10" col="20"></cell>
 		<cell state="state2" row="11" col="20"></cell>
 	</init>
