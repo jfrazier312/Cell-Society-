@@ -2,15 +2,14 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javafx.scene.Node;
-
-public class GameOfLifeSimulation extends CellGrid{
+public class GameOfLifeSimulation extends CellGrid {
 	
 	public static final String DEAD = "DEAD";
 	public static final String ALIVE = "ALIVE";
 	
 	public GameOfLifeSimulation(int rows, int cols) {
 		super(rows, cols);
+		createGrid();
 	}
 	
 //	private void renderGrid() {
@@ -35,7 +34,15 @@ public class GameOfLifeSimulation extends CellGrid{
 				else{
 					myGrid[i][j] = new RectangleWithDiagonals(i, j);
 					myGrid[i][j].setCurrentstate(ALIVE);
-				}			
+				}		
+//				if(deadChance == 0){
+//					myGrid[i][j] = new Hexagon(i, j, true);
+//					myGrid[i][j].setCurrentstate(DEAD);
+//				}
+//				else{
+//					myGrid[i][j] = new Hexagon(i, j, true);
+//					myGrid[i][j].setCurrentstate(ALIVE);
+//				}	
 			}
 		}
 	}
@@ -77,7 +84,6 @@ public class GameOfLifeSimulation extends CellGrid{
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = myGrid[i][j];
-				//updateCell(currentCell);
 				currentCell.setCurrentstate(currentCell.getFuturestate());
 			}
 		}
@@ -125,7 +131,6 @@ public class GameOfLifeSimulation extends CellGrid{
 	//for testing
 //	public static void main(String[] args){
 //		GameOfLifeSimulation test = new GameOfLifeSimulation(3,3);
-//		test.createGrid();
 //		int num = 0;
 //		while(num<10){
 //			test.printGrid();

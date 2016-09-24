@@ -7,65 +7,49 @@ import javafx.scene.layout.GridPane;
 
 public abstract class CellGrid extends GridPane {
 
-	private Cell[][] grid; // probably should rename Cell
+	private Cell[][] grid;
+	
+	// TODO: Jordan: change parameters 
+	//       number of initially empty (resets grid)
+	// 		 percentage of states to each other (resets)
+	// 		 step delay
+	// 		 size of cells
+	// 		 have a percentage of satisfied cells (dynamically)	 
 
 	public CellGrid(int rows, int cols) {
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
 		grid = new Cell[rows][cols];
-		// set row/column constraints?
+		// TODO: Jordan set row/column constraints. maybe
 	}
-	
-	//added so that I can find an empty cell in the grid to update future value of in segregation model
-	public Cell[][] getGrid(){
-		return grid;
-	}
-	
-	private void renderGrid(FlowPane cellPane) {
+
+	// Need to change spacing in flowpane if shape is different than rectangle
+	public void renderGrid(FlowPane cellPane) {
+		// loop through 2d grid, render each cell. should have already set up state correctly, 
+		// this just needs to display it.
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
-				Node updatedCell = currentCell.render();
+//				Node updatedCell = currentCell.render();
+				Node updatedCell = currentCell.render(currentCell.getCurrentstate());
 				cellPane.getChildren().add(updatedCell);
 			}
-		}
-	}
-
-	public abstract void updateGrid(); //{
-		// touch each cell and figure out future state 
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				Cell currentCell = grid[i][j];
-//				setNeighbors(currentCell);
-//				// update future state based on simulation rules;
-//				// which is done in rules engine class? 
-//			}
-//		}
+		}	
 		
-		// loop and update each cell
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				Cell currentCell = grid[i][j];
-//				updateCurrentState(currentCell);
-//			}
-//		}
-	//s}
-
-//	private void setNeighbors(Cell cell) {
-//		// need this in case user updates cell row/col to illegal spot
-//		if (!isValidLocation(cell)) {
-//			throw new IllegalArgumentException("Location not valid");
-//		}
-//		ArrayList<Cell> neighbors = getNeighbors(cell);
-//		cell.setNeighbors(neighbors);
-//	}
-
+		
+	}
+	
 	/**
-	 * Add to this method if implementing new shape
+	 * Returns the neighbors of a shape. May need to change
+	 * row/column deltas based on definition of 'neighbor'
+	 * (diagonals or not)
+	 * Returns the neighbors of a shape. May need to change
+	 * row/column deltas based on definition of 'neighbor'
+	 * (diagonals or not)
 	 * 
-	 * @param cell
-	 * @return
+	 * @param cell - the shape
+	 * @return - ArrayList<Cell> of cell's neighbors
 	 */
 	
 	//changed to protected so that the segregation simulation could see, not sure if that's good design
@@ -74,31 +58,41 @@ public abstract class CellGrid extends GridPane {
 		ArrayList<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
-		//added check for valid location
-		for(int i = 0; i < cell.getRowDeltas().length; i++) {
+		for (int i = 0; i < cell.getRowDeltas().length; i++) {
 			int newRowPos = rowPos + cell.getRowDeltas()[i];
 			int newColPos = colPos + cell.getColDeltas()[i];
-			if(isValidLocation(newRowPos, newColPos)){ 
+			if (isValidLocation(newRowPos, newColPos)) {
 				neighbors.add(grid[newRowPos][newColPos]);
 			}
 		}
 		return neighbors;
 	}
+
+	/* backend does this too
+	private void updateCurrentState(Cell cell) {
+		cell.setCurrentstate(cell.getFuturestate());
+	}
+	/* backend does this too
+	private void updateCurrentState(Cell cell) {
+		cell.setCurrentstate(cell.getFuturestate());
+	}
+
+	private void setFutureState(Cell cell, String futurestate) {
+		cell.setFuturestate(futurestate);
+	}
+	*/
+
+	private void setFutureState(Cell cell, String futurestate) {
+		cell.setFuturestate(futurestate);
+	}
+
+	private boolean isValidLocation(int x, int y) {
+		return 0 <= x && 0 <= y && x < getNumRows()
+				&& y < getNumCols();
+	}
 	
-	public abstract void updateCell(Cell myCell);
-
-//	private void updateCurrentState(Cell cell) {
-//		cell.setCurrentstate(cell.getFuturestate());
-//	}
-//
-
-//	private boolean isValidLocation(Cell cell) {
-//		return 0 <= cell.getRowPos() && 0 <= cell.getColPos() && cell.getRowPos() < getNumRows()
-//				&& cell.getColPos() < getNumCols();
-//	}
-	private boolean isValidLocation(int row, int col) {
-		return 0 <= row && 0 <= col && row < getNumRows()
-				&& col < getNumCols();
+	public Cell[][] getGrid() {
+		return grid;
 	}
 
 	public int getNumRows() {
@@ -108,5 +102,9 @@ public abstract class CellGrid extends GridPane {
 	public int getNumCols() {
 		return grid[0].length;
 	}
+
+	public abstract void updateGrid();
+
+	public abstract void updateCell(Cell myCell);
 
 }
