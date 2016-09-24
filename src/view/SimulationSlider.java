@@ -1,3 +1,4 @@
+package view;
 import javafx.scene.layout.HBox;
 
 public class SimulationSlider extends SliderCreator {

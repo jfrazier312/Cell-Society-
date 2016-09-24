@@ -1,3 +1,4 @@
+package view;
 
 public enum Shapes {
 	
