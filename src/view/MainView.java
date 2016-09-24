@@ -25,7 +25,6 @@ public class MainView extends Application implements GameWorld {
 	private Configuration config;
 	private CellGrid simulation;
 	
-	private static final double GRID_PADDING = SCENE_WIDTH / 20;
 	private static final double BUTTON_WIDTH = 200;
 
 	private Timeline gameloop;

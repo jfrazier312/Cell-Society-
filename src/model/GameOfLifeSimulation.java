@@ -27,22 +27,22 @@ public class GameOfLifeSimulation extends CellGrid {
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				int deadChance = generator.nextInt(2);
-//				if(deadChance == 0){
-//					myGrid[i][j] = new RectangleWithDiagonals(i, j);
-//					myGrid[i][j].setCurrentstate(DEAD);
-//				}
-//				else{
-//					myGrid[i][j] = new RectangleWithDiagonals(i, j);
-//					myGrid[i][j].setCurrentstate(ALIVE);
-//				}		
 				if(deadChance == 0){
-					myGrid[i][j] = new Hexagon(i, j, true);
+					myGrid[i][j] = new RectangleWithDiagonals(i, j);
 					myGrid[i][j].setCurrentstate(DEAD);
 				}
 				else{
-					myGrid[i][j] = new Hexagon(i, j, true);
+					myGrid[i][j] = new RectangleWithDiagonals(i, j);
 					myGrid[i][j].setCurrentstate(ALIVE);
-				}	
+				}		
+//				if(deadChance == 0){
+//					myGrid[i][j] = new Hexagon(i, j, true);
+//					myGrid[i][j].setCurrentstate(DEAD);
+//				}
+//				else{
+//					myGrid[i][j] = new Hexagon(i, j, true);
+//					myGrid[i][j].setCurrentstate(ALIVE);
+//				}	
 			}
 		}
 	}

@@ -16,6 +16,9 @@ public interface GameWorld {
 	
 	public static double GRID_WIDTH = 400;
 	public static double GRID_HEIGHT = 400;
+	
+	public static final double GRID_PADDING = SCENE_WIDTH / 20;
+
 
 	
 	/*
