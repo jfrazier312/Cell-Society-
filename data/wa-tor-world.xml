@@ -10,9 +10,7 @@
 		<state value="shark" color="black" reproductionTime="20" lifeTime="21"></state>
 		<state value="empty" color="white"></state>
 	</states>
-	<init default="empty">
-		<cell state="alive" row="10" col="20"></cell>
-		<cell state="alive" row="11" col="20"></cell>
+	<init default="empty" mode="enum">
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="percentEmpty" value="0.1"></param>
