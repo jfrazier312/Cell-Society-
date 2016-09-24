@@ -56,5 +56,5 @@ public class Rectangle extends Cell implements view.GameWorld {
 	@Override
 	public int[] getColDeltas() {
 		return colDeltas;
-	}	
+	}
 }

@@ -1,48 +1,54 @@
 package config;
 
-import java.util.List;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import exceptions.UnrecognizedQueryMethodException;
 import utils.Utils;
 import model.Cell;
+import model.XMLParser;
 
 public class Configuration {
 	
 	private String simulationName;
 	private String author;
-	private int gridWidth;
-	private int gridHeight;
-	private int sceneWidth;
-	private int sceneHeight;
+	private int girdWidth;
+	private int girdHeight;
 	private States allStates;
 	private Neighborhood neighborhood;
 	private Params customizedParams;
 	private List<Cell> initialCells;
-	private String defaultState;
+	private State defaultInitState;
 	private boolean isRunning;
 	private int framesPerSec;
+	
+	// TODO: deserialize to new XML
 
-	public Configuration(Document doc) {
-		// TODO (cx15): have tags and attrs defined as const for validation and reference
-		simulationName = Utils.getAttrFromFirstMatch(doc, "simulation", "name");
-		author = Utils.getAttrFromFirstMatch(doc, "simulation", "author");
-		gridWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "width"));
-		gridHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
-		sceneWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "width"));
-		sceneHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "height"));
-		framesPerSec = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "animation", "framesPerSec"));
-		defaultState = Utils.getAttrFromFirstMatch(doc, "init", "default");
-		sceneWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "width"));
-		sceneHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "height"));
-		allStates = new States().init(doc);
-		neighborhood = new Neighborhood().init(doc);
-		buildInitialCells(doc);
+	public Configuration(Document doc, String queryMethod) {
+		XMLParser parser = new XMLParser(queryMethod, doc);
+		try {
+			simulationName = parser.getItem("SimulationName");
+			author = parser.getItem("SimulationAuthor");
+			girdWidth = parser.getItemAsInteger("GirdWidth");
+			girdHeight = parser.getItemAsInteger("GirdHeight");
+			framesPerSec = parser.getItemAsInteger("FramesPerSec");
+			allStates = new States().init(parser);
+			defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
+			neighborhood = new Neighborhood().init(parser);
+			customizedParams = new Params(parser);
+		} catch (XPathExpressionException | UnrecognizedQueryMethodException | NumberFormatException e) {
+			e.printStackTrace();
+		}
+		buildNonDefaultInitialCells(doc);
 		isRunning = false;
 	}
 	
@@ -54,8 +60,8 @@ public class Configuration {
 		this.isRunning = isRunning;
 	}
 	
-	public String getDefaultState() {
-		return defaultState;
+	public State getDefaultInitState() {
+		return defaultInitState;
 	}
 	
 	public int getFramesPerSec() {
@@ -86,20 +92,12 @@ public class Configuration {
 		return author;
 	}
 
-	public int getGridWidth() {
-		return gridWidth;
+	public int getGirdWidth() {
+		return girdWidth;
 	}
 
-	public int getGridHeight() {
-		return gridHeight;
-	}
-	
-	public int getSceneHeight() {
-		return sceneHeight;
-	}
-	
-	public int getSceneWidth() {
-		return sceneWidth;
+	public int getGirdHeight() {
+		return girdHeight;
 	}
 
 	public States getAllStates() {
@@ -110,7 +108,8 @@ public class Configuration {
 		return neighborhood;
 	}
 	
-	private void buildInitialCells(Document doc) {
+	// TODO: refactor, test, and move to CellGrid
+	private void buildNonDefaultInitialCells(Document doc) {
 		initialCells = new ArrayList<Cell>();
 		NodeList nl = doc.getElementsByTagName("cell");
 		for (int i = 0; i < nl.getLength(); i++) {

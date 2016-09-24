@@ -8,8 +8,9 @@ public class Main {
 		// testing purpose, will change
 		Configuration config;
 		try {
-			config = ConfigurationLoader.loader().setSource("testxml.xml").load().getConfig();
-			System.out.println(config.getAuthor());
+			ConfigurationLoader.loader().setSource("testxml.xml").load();
+			config = ConfigurationLoader.getConfig();
+			System.out.println(config.getAllStates());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
