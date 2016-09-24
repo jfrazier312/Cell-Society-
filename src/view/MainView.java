@@ -166,8 +166,7 @@ public class MainView extends Application implements GameWorld {
 	}
 
 	private void setStartEventHandler(SimulationButton btn) {
-		btn.setMaxWidth(BUTTON_WIDTH / 2);
-		btn.setMinWidth(BUTTON_WIDTH / 2);
+		setDimensions(btn);
 		btn.setOnAction(e -> {
 			gameloop.setCycleCount(Timeline.INDEFINITE);
 			gameloop.playFromStart();
@@ -176,9 +175,7 @@ public class MainView extends Application implements GameWorld {
 	}
 
 	private void setStepEventHandler(SimulationButton btn) {
-		btn.setMinWidth(BUTTON_WIDTH / 2);
-		btn.setMaxWidth(BUTTON_WIDTH / 2);
-
+		setDimensions(btn);
 		btn.setOnAction(e -> {
 			gameloop.pause();
 			gameloop.setCycleCount(1);
@@ -190,9 +187,7 @@ public class MainView extends Application implements GameWorld {
 	}
 
 	private void setStopEventHandler(SimulationButton btn) {
-		btn.setMinWidth(BUTTON_WIDTH / 2);
-		btn.setMaxWidth(BUTTON_WIDTH / 2);
-
+		setDimensions(btn);
 		btn.setOnAction(e -> {
 			// If button is reset, then reset parameters back to what's on XML
 			if (btn.getDisplayName().equals(RESET)) {
@@ -206,6 +201,11 @@ public class MainView extends Application implements GameWorld {
 			gameloop.pause();
 			// config.setRunning(false);
 		});
+	}
+	
+	private void setDimensions(SimulationButton btn) {
+		btn.setMinWidth(BUTTON_WIDTH / 2);
+		btn.setMaxWidth(BUTTON_WIDTH / 2);
 	}
 
 	private void createCellPane() {
