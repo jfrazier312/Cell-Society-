@@ -1,6 +1,6 @@
 package view;
 import config.Configuration;
-import model.ConfigurationLoader;
+import config.ConfigurationLoader;
 
 public class Main {
 

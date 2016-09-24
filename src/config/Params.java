@@ -10,7 +10,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import exceptions.UnrecognizedQueryMethodException;
-import model.XMLParser;
 import utils.Utils;
 
 public class Params {

@@ -1,8 +1,6 @@
-package model;
+package config;
 
 import org.w3c.dom.Document;
-
-import config.Configuration;
 
 public class ConfigurationLoader {
 	

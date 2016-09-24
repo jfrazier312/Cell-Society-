@@ -10,7 +10,6 @@ import org.w3c.dom.Document;
 import exceptions.UnrecognizedQueryMethodException;
 import model.Cell;
 import model.CellGrid;
-import model.XMLParser;
 
 public class Configuration {
 	
