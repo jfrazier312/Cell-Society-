@@ -26,6 +26,7 @@ public class MainView extends Application implements ButtonHandler {
 	private final String PLAY = "Play";
 	private final String PAUSE = "Pause";
 	private final String RESUME = "Resume";
+	private final String STEP = "Step";
 	
 	private int buttonCounter;
 	private Timeline gameloop;
@@ -45,9 +46,10 @@ public class MainView extends Application implements ButtonHandler {
 		// config.getSceneHeight());
 		stage = primaryStage;
 		cellPane = new FlowPane();
-		cellPane.setPrefWidth(300);
+		cellPane.setMaxWidth(100);
+		cellPane.setPrefWidth(50);
 		cellPane.setPrefHeight(300);
-		cellPane.setPrefWrapLength(5);
+		cellPane.setPrefWrapLength(50);
 		// cellPane.setPrefWidth(config.getGridWidth());
 		// cellPane.setPrefHeight(config.getGridHeight());
 
@@ -56,16 +58,18 @@ public class MainView extends Application implements ButtonHandler {
 		
 		buttonCounter = 0;
 		
-		CellGrid a = new GameOfLifeSimulation(5, 5);
+		CellGrid a = new GameOfLifeSimulation(10, 10);
+		a.updateGrid();
+		a.renderGrid(cellPane);
 
 		gameloop = new Timeline();
-		gameloop.setCycleCount(Timeline.INDEFINITE);
-		gameloop.getKeyFrames().add(new KeyFrame(Duration.seconds(2), e -> {
-			System.out.println(a.getGrid()[0][0].getCurrentstate());
-			cellPane = new FlowPane();
+		gameloop.getKeyFrames().add(new KeyFrame(Duration.seconds(1), e -> {
+			cellPane.getChildren().removeAll(cellPane.getChildren());
 			a.updateGrid();
 			a.renderGrid(cellPane);
 			root.setCenter(cellPane);
+			System.out.println(a.getGrid()[0][0].getCurrentstate());
+
 		}));
 
 		// add the buttons
@@ -90,9 +94,12 @@ public class MainView extends Application implements ButtonHandler {
 
 		SimulationButton resetBtn = new SimulationButton(RESET);
 		setStopEventHandler(resetBtn);
+		
+		SimulationButton stepBtn = new SimulationButton(STEP);
+		setStepEventHandler(stepBtn);
 
 		VBox basicBtnBox = new VBox(PADDING);
-		basicBtnBox.getChildren().addAll(playBtn, pauseBtn, resumeBtn, resetBtn);
+		basicBtnBox.getChildren().addAll(playBtn, pauseBtn, resumeBtn, resetBtn, stepBtn);
 		VBox additionalSliders = new VBox(PADDING);
 
 		// loop through the rest of the things needed from config.getShit,
@@ -109,8 +116,20 @@ public class MainView extends Application implements ButtonHandler {
 
 	public void setStartEventHandler(SimulationButton btn) {
 		btn.setOnAction(e -> {
+			gameloop.setCycleCount(Timeline.INDEFINITE);
 			gameloop.playFromStart();
 //			config.setRunning(true);
+		});
+	}
+	
+	public void setStepEventHandler(SimulationButton btn) {
+		btn.setOnAction(e -> {
+			gameloop.pause();
+			gameloop.setCycleCount(1);
+			gameloop.playFromStart();
+			gameloop.setOnFinished(event-> {
+				gameloop.pause();
+			});
 		});
 	}
 
