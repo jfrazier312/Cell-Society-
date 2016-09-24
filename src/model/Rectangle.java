@@ -37,9 +37,9 @@ public class Rectangle extends Cell implements view.GameWorld {
 		
 		// Needs to be a hex value ( ##0000FF, or 0x0000FF)
 		if(state.equals("ALIVE")){
-			a.setFill(Color.BLACK);
-		}else {
 			a.setFill(Color.RED);
+		}else {
+			a.setFill(Color.BLACK);
 		}
 		return a;
 	}

@@ -26,6 +26,7 @@ public class MainView extends Application implements GameWorld {
 	private CellGrid simulation;
 	
 	private static final double GRID_PADDING = SCENE_WIDTH / 20;
+	private static final double BUTTON_WIDTH = 200;
 
 	private Timeline gameloop;
 	
@@ -138,12 +139,15 @@ public class MainView extends Application implements GameWorld {
 		buttonContainer.getChildren().addAll(basicBtnBox, additionalSliders);
 		// Right inset will be the same padding used on the left side of grid
 		buttonContainer.setPadding(buttonPadding);
+		buttonContainer.setMaxWidth(140);
 		root.setRight(buttonContainer);
 
 	}
 
 	private void setSimulationEventHandler() {
 		SIMULATIONS.setValue("Simulations");
+		SIMULATIONS.setMinWidth(BUTTON_WIDTH + PADDING);
+		SIMULATIONS.setMaxWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.valueProperty().addListener(e -> {
 			gameloop.pause();
 			// TODO: Simulation box changes
@@ -162,6 +166,8 @@ public class MainView extends Application implements GameWorld {
 	}
 
 	private void setStartEventHandler(SimulationButton btn) {
+		btn.setMaxWidth(BUTTON_WIDTH / 2);
+		btn.setMinWidth(BUTTON_WIDTH / 2);
 		btn.setOnAction(e -> {
 			gameloop.setCycleCount(Timeline.INDEFINITE);
 			gameloop.playFromStart();
@@ -170,6 +176,9 @@ public class MainView extends Application implements GameWorld {
 	}
 
 	private void setStepEventHandler(SimulationButton btn) {
+		btn.setMinWidth(BUTTON_WIDTH / 2);
+		btn.setMaxWidth(BUTTON_WIDTH / 2);
+
 		btn.setOnAction(e -> {
 			gameloop.pause();
 			gameloop.setCycleCount(1);
@@ -181,6 +190,9 @@ public class MainView extends Application implements GameWorld {
 	}
 
 	private void setStopEventHandler(SimulationButton btn) {
+		btn.setMinWidth(BUTTON_WIDTH / 2);
+		btn.setMaxWidth(BUTTON_WIDTH / 2);
+
 		btn.setOnAction(e -> {
 			// If button is reset, then reset parameters back to what's on XML
 			if (btn.getDisplayName().equals(RESET)) {
