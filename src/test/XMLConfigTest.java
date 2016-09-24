@@ -32,8 +32,8 @@ public class XMLConfigTest {
 	public void basicProptertiesLoadedProperly() {
 		assertEquals("The Game of Life", config.getSimulationName());
 		assertEquals("team19", config.getAuthor());
-		assertEquals(30, config.getGirdHeight());
-		assertEquals(20, config.getGirdWidth());
+		assertEquals(30, config.getNumRows());
+		assertEquals(20, config.getNumCols());
 		assertEquals(1, config.getFramesPerSec());
 	}
 	

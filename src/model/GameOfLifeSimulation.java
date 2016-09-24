@@ -7,8 +7,8 @@ public class GameOfLifeSimulation extends CellGrid {
 	public static final String DEAD = "DEAD";
 	public static final String ALIVE = "ALIVE";
 	
-	public GameOfLifeSimulation(int rows, int cols) {
-		super(rows, cols);
+	public GameOfLifeSimulation() {
+		super();
 		createGrid();
 	}
 	

@@ -11,8 +11,8 @@ public class PredatorPreySimulation extends CellGrid {
 	public static final String SHARK = "SHARK";
 	private Random generator;
 
-	public PredatorPreySimulation(int rows, int cols) {
-		super(rows, cols);
+	public PredatorPreySimulation() {
+		super();
 		createGrid();
 	}
 

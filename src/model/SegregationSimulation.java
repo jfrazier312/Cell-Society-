@@ -12,9 +12,9 @@ public class SegregationSimulation extends CellGrid {
 	ArrayList<Cell> myMovingCells;
 	Random generator;
 
-	public SegregationSimulation(int rows, int cols, double probability) {
-		super(rows, cols);
-		myProbability  = probability;
+	public SegregationSimulation() {
+		super();
+		//myProbability  = probability;
 		myMovingCells = new ArrayList<Cell>();
 		createGrid((1.0/3.0), .5);
 		

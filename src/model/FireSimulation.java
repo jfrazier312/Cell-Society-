@@ -16,10 +16,11 @@ public class FireSimulation extends CellGrid {
 	private double probOfBurning;
 	Random generator;
 
-	public FireSimulation(int rows, int cols, double aprofOfBurning) {
-		super(rows, cols);
+	public FireSimulation() {
+		super();
 		createGrid();
-		this.probOfBurning = aprofOfBurning;
+		//double probBurning = ConfigurationLoader.getConfig().getP
+		//this.probOfBurning = probBurning;
 	}
 	
 	public void createGrid() {
