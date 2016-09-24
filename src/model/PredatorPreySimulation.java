@@ -20,10 +20,10 @@ public class PredatorPreySimulation extends CellGrid {
 		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				int deadChance = generator.nextInt(3);
-				if (deadChance == 0) {
+				int deadChance = generator.nextInt(10);
+				if (deadChance < 6) {
 					intializeState(i, j, FISH);
-				} else if (deadChance == 1) {
+				} else if (deadChance < 8) {
 					intializeState(i, j, SHARK);
 				} else {
 					intializeState(i, j, EMPTY);
@@ -34,7 +34,7 @@ public class PredatorPreySimulation extends CellGrid {
 
 	public void intializeState(int row, int col, String state) {
 		Cell[][] myGrid = getGrid();
-		myGrid[row][col] = new Fish(row, col, 2, 10);
+		myGrid[row][col] = new Fish(row, col, 20, 10);
 		myGrid[row][col].setCurrentstate(state);
 		myGrid[row][col].setFuturestate("");
 	}

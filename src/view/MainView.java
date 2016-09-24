@@ -14,7 +14,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CellGrid;
 import model.ConfigurationLoader;
-import model.GameOfLifeSimulation;
+import model.FireSimulation;
+import model.PredatorPreySimulation;
+import model.SegregationSimulation;
 
 public class MainView extends Application implements GameWorld {
 
@@ -36,6 +38,7 @@ public class MainView extends Application implements GameWorld {
 		launch(args);
 	}
 
+	// TODO: Jordan: This will return a scene, and be called in Main. 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -77,8 +80,7 @@ public class MainView extends Application implements GameWorld {
 		// determine which one to use?
 		// how to convert from String to actual simulation?
 
-		simulation = new GameOfLifeSimulation(10, 5);
-		simulation.updateGrid();
+		simulation = new SegregationSimulation(6, 5, 0.3);
 		simulation.renderGrid(cellPane);
 		cellPane.setPadding(cellPanePadding);
 		root.setLeft(cellPane);
@@ -149,7 +151,7 @@ public class MainView extends Application implements GameWorld {
 		SIMULATIONS.setMaxWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.valueProperty().addListener(e -> {
 			gameloop.pause();
-			// TODO: Simulation box changes
+			// TODO: Jordan: Simulation box changes
 			// Needs to stop simulation, change XML to whatever simulation we
 			// want,
 			// create the new grid and buttons, then wait for 'play' action
@@ -208,7 +210,7 @@ public class MainView extends Application implements GameWorld {
 	}
 
 	private void createCellPane() {
-		// TODO: Set cellpane parameters based on XML
+		// TODO: Jordan Set cellpane parameters based on XML
 		cellPane = new FlowPane();
 
 		// cellPane.setPrefWidth(config.getGridWidth());

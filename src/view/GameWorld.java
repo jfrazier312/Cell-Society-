@@ -19,18 +19,18 @@ public interface GameWorld {
 	
 	public static final double GRID_PADDING = SCENE_WIDTH / 20;
 
-
 	
 	/*
 	 * Add simulations to this combobox when implemented
 	 */
 	ObservableList<String> options = FXCollections.observableArrayList(
-			"Game Of Life",
-			"Wa Tor World",
-			"Other Shit");
+			"Game of Life",
+			"Wa-Tor World",
+			"Predator Prey",
+			"Segregation Simulator");
 	public static final ComboBox<String> SIMULATIONS = new ComboBox<>(options);
 	
-	// TODO: padding should really go into MainView, since it'll have to change.
+	// TODO: Jordan padding should really go into MainView, since it'll have to change.
 	public static final int PADDING = 10;
 
 }
