@@ -6,9 +6,9 @@
 		</edge>
 	</neighborhood>
 	<states>
-		<state value="typeA" color="grey"></state>
-		<state value="typeB" color="#333333"></state>
-		<state value="empty" color="#d9d9d9"></state>
+		<state color="#666666">typeA</state>
+		<state color="#333333">typeB</state>
+		<state color="#d9d9d9">empty</state>
 	</states>
 	<init default="empty">
 	</init>

@@ -6,9 +6,9 @@
 		</edge>
 	</neighborhood>
 	<states>
-		<state value="tree" color="#33cc33"></state>
-		<state value="burning" color="#ffcc00"></state>
-		<state value="empty" color="#993300"></state>
+		<state color="#33cc33">tree</state>
+		<state color="#ffcc00">burning</state>
+		<state color="#993300">empty</state>
 	</states>
 	<init default="tree">
 		<cell state="burning" row="10" col="10"></cell>
