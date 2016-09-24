@@ -123,7 +123,6 @@ public class GameOfLifeSimulation extends CellGrid {
 	//for testing
 //	public static void main(String[] args){
 //		GameOfLifeSimulation test = new GameOfLifeSimulation(3,3);
-//		test.createGrid();
 //		int num = 0;
 //		while(num<10){
 //			test.printGrid();

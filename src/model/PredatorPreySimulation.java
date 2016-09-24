@@ -9,11 +9,11 @@ public class PredatorPreySimulation extends CellGrid {
 	public static final String EMPTY = "EMPTY";
 	public static final String FISH = "FISH";
 	public static final String SHARK = "SHARK";
-	//private static final int energyIncrease = 10;
 	private Random generator;
 
 	public PredatorPreySimulation(int rows, int cols) {
 		super(rows, cols);
+		createGrid();
 	}
 
 	public void createGrid() {
@@ -211,7 +211,6 @@ public class PredatorPreySimulation extends CellGrid {
 //	
 //	public static void main(String[] args){
 //		PredatorPreySimulation test = new PredatorPreySimulation(2,2);
-//		test.createGrid();
 //		int num = 0;
 //		while(num<10){
 //			test.printGrid();

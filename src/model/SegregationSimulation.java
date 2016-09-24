@@ -1,7 +1,5 @@
 package model;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Random;
 
 //Should we do getting neighbors in each simulation since the definition can vary?
@@ -10,11 +8,11 @@ public class SegregationSimulation extends CellGrid {
 	public static final String EMPTY = "EMPTY";
 	public static final String TYPE1 = "TYPE1";
 	public static final String TYPE2 = "TYPE2";
-	private int myProbability;
+	private double myProbability;
 	ArrayList<Cell> myMovingCells;
 	Random generator;
 
-	public SegregationSimulation(int rows, int cols, int probability) {
+	public SegregationSimulation(int rows, int cols, double probability) {
 		super(rows, cols);
 		myProbability  = probability;
 		myMovingCells = new ArrayList<Cell>();
@@ -41,10 +39,15 @@ public class SegregationSimulation extends CellGrid {
 		Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				int cellChoice = generator.nextInt(initialization.size());
 				myGrid[i][j] = new RectangleWithDiagonals(i, j);
-				myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
-				initialization.remove(cellChoice);
+				if(initialization.size() == 0){
+					myGrid[i][j].setCurrentstate(EMPTY);
+				}
+				else{
+					int cellChoice = generator.nextInt(initialization.size());
+					myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
+					initialization.remove(cellChoice);
+				}
 			}
 		}
 	}
@@ -93,9 +96,9 @@ public class SegregationSimulation extends CellGrid {
 			for(Cell c: myMovingCells){
 				c.setFuturestate(c.getCurrentstate());
 			}
-			for(Cell c: cellsToMakeEmpty){
-				c.setFuturestate(EMPTY);
-			}
+		}
+		for(Cell c: cellsToMakeEmpty){
+			c.setFuturestate(EMPTY);
 		}
 		myMovingCells = new ArrayList<Cell>();
 	}
@@ -104,7 +107,7 @@ public class SegregationSimulation extends CellGrid {
 	public void updateCell(Cell myCell){
 		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
 		double matchingCellCount = 0.0;
-		int nonEmptyCellCount = 0;
+		double nonEmptyCellCount = 0.0;
 		for(int i = 0; i<currentNeighbors.size(); i++){
 			String neighborState = currentNeighbors.get(i).getCurrentstate();
 			if(!neighborState.equals(EMPTY)){
@@ -114,7 +117,6 @@ public class SegregationSimulation extends CellGrid {
 				}
 			}		
 		}
-		//System.out.printf("(%d, %d): %f\n", myCell.getRowPos(), myCell.getColPos(), matchingCellCount);
 		if(nonEmptyCellCount == 0){
 			myCell.setFuturestate(myCell.getCurrentstate());
 		}
@@ -126,34 +128,34 @@ public class SegregationSimulation extends CellGrid {
 		}
 	}
 	
-	public void printGrid(){
-		Cell[][] myGrid = getGrid();
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				if(myGrid[i][j].getCurrentstate().equals(EMPTY)){
-					System.out.print("E");
-				}
-				else if(myGrid[i][j].getCurrentstate().equals(TYPE1)){
-					System.out.print(1);
-				}
-				else{
-					System.out.print(2);
-				}
-			}
-			System.out.println();
-		}
-		System.out.println();
-	}
-
-	public static void main(String[] args){
-		SegregationSimulation test = new SegregationSimulation(3, 3, 1);
-		//test.createGrid((1.0/3.0), .5);
-		int num = 0;
-		while(num<10){
-			test.printGrid();
-			test.updateGrid();
-			num++;
-		}
-	}
+//	public void printGrid(){
+//		Cell[][] myGrid = getGrid();
+//		for (int i = 0; i < getNumRows(); i++) {
+//			for (int j = 0; j < getNumCols(); j++) {
+//				if(myGrid[i][j].getCurrentstate().equals(EMPTY)){
+//					System.out.print("E");
+//				}
+//				else if(myGrid[i][j].getCurrentstate().equals(TYPE1)){
+//					System.out.print(1);
+//				}
+//				else{
+//					System.out.print(2);
+//				}
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
+//	}
+//
+//	public static void main(String[] args){
+//		SegregationSimulation test = new SegregationSimulation(3, 3, .4);
+//		//test.createGrid((1.0/3.0), .5);
+//		int num = 0;
+//		while(num<10){
+//			test.printGrid();
+//			test.updateGrid();
+//			num++;
+//		}
+//	}
 
 }

@@ -110,7 +110,6 @@ public class FireSimulation extends CellGrid {
 //	
 //	public static void main(String[] args){
 //		FireSimulation test = new FireSimulation(5,5);
-//		test.createGrid();
 //		int num = 0;
 //		while(num<10){
 //			test.printGrid();
