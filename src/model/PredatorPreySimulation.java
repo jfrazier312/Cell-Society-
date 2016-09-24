@@ -4,42 +4,63 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
+import config.ConfigurationLoader;
+
 public class PredatorPreySimulation extends CellGrid {
 
+	private static final String EMPTY = "empty";
+	private static final String FISH = "fish";
 	// TODO: Jordan - should implement Gameworld and get constant for name
 	public static final String SIMULATION_NAME = "Predator Prey";
-	public static final String EMPTY = "EMPTY";
-	public static final String FISH = "FISH";
-	public static final String SHARK = "SHARK";
+	private static final String SHARK = "shark";
 	private Random generator;
 
 	public PredatorPreySimulation() {
 		super();
-		createGrid();
+		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
+		double percentShark = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("sharkToFishRatio"));
+		//double percentEmptyCells = .2;
+		//double percentShark = .2;
+		createGrid(percentEmptyCells, percentShark);
 	}
 
-	public void createGrid() {
+	public void createGrid(double percentEmptyCells, double percentShark) {
+		int reproductionTime = Integer.parseInt(ConfigurationLoader.getConfig().getAllStates()
+				.getStateByName(SHARK).getAttributes().get("reproductionTime"));
+		int timeToDeath = Integer.parseInt(ConfigurationLoader.getConfig().getAllStates()
+				.getStateByName(SHARK).getAttributes().get("lifetime"));
+		Cell[][] myGrid = getGrid();
 		generator = new Random();
+		int size = getNumRows()*getNumCols();
+		double numEmpty = percentEmptyCells*size;
+		double numShark = percentShark*(size-numEmpty);
+		double numFish = size-numEmpty-numShark;
+		ArrayList<String> initialization = new ArrayList<String>();
+		for(int i = 0; i<numEmpty; i++){
+			initialization.add(EMPTY);
+		}
+		for(int i = 0; i<numShark; i++){
+			initialization.add(SHARK);
+		}
+		for(int i = 0; i<numFish; i++){
+			initialization.add(FISH);
+		}
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				int deadChance = generator.nextInt(10);
-				if (deadChance < 6) {
-					intializeState(i, j, FISH);
-				} else if (deadChance < 8) {
-					intializeState(i, j, SHARK);
-				} else {
-					intializeState(i, j, EMPTY);
+				myGrid[i][j] = new Fish(i, j, reproductionTime, timeToDeath);
+				if(initialization.size() == 0){
+					myGrid[i][j].setCurrentstate(EMPTY);
 				}
+				else{
+					int cellChoice = generator.nextInt(initialization.size());
+					myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
+					initialization.remove(cellChoice);
+				}
+				myGrid[i][j].setFuturestate("");
 			}
 		}
 	}
 
-	public void intializeState(int row, int col, String state) {
-		Cell[][] myGrid = getGrid();
-		myGrid[row][col] = new Fish(row, col, 20, 10);
-		myGrid[row][col].setCurrentstate(state);
-		myGrid[row][col].setFuturestate("");
-	}
 	@Override
 	public void updateGrid(){
 		Cell[][] myGrid = getGrid();
@@ -130,7 +151,7 @@ public class PredatorPreySimulation extends CellGrid {
 		}
 	}
 	
-	public void giveBirth(Fish myCell, String state){
+	private void giveBirth(Fish myCell, String state){
 		 myCell.setFuturestate(state); 
 		 myCell.resetReproductionTime();
 		 myCell.resetTimeToDeath(); 
@@ -162,7 +183,7 @@ public class PredatorPreySimulation extends CellGrid {
 		return availableCells;
 	}
 
-	public void transferInformation(Fish prevCell, Fish newCell, boolean didEat) {
+	private void transferInformation(Fish prevCell, Fish newCell, boolean didEat) {
 		newCell.setReproductionTime(prevCell.getReproductionTime()-1);
 		newCell.setMaxReproductionTime(prevCell.getMaxReproductionTime());
 		if(prevCell.getCurrentstate().equals(SHARK)){
@@ -217,7 +238,7 @@ public class PredatorPreySimulation extends CellGrid {
 //	}
 //	
 //	public static void main(String[] args){
-//		PredatorPreySimulation test = new PredatorPreySimulation(2,2);
+//		PredatorPreySimulation test = new PredatorPreySimulation();
 //		int num = 0;
 //		while(num<10){
 //			test.printGrid();

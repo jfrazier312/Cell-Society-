@@ -6,8 +6,8 @@
 		</edge>
 	</neighborhood>
 	<states>
-		<state value="alive" color="#FFFFFF"></state>
-		<state value="dead" color="#000000"></state>
+		<state color="#d9d9d9">alive</state>
+		<state color="#333333">dead</state>
 	</states>
 	<init mode="param">
 	</init>
