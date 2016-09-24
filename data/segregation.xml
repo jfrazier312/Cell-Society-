@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<simulation name="Segregation" author="team19">
+	<grid width="20" height="20"/>
+	<neighborhood size="5">
+		<edge type="constant" value="alive">
+		</edge>
+	</neighborhood>
+	<states>
+		<state value="typeA" color="grey"></state>
+		<state value="typeB" color="black"></state>
+		<state value="empty" color="white"></state>
+	</states>
+	<init default="dead">
+	</init>
+	<animation framesPerSec="1"></animation>
+	<param name="percentDead" value="0.5"></param>
+</simulation>

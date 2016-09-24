@@ -1,19 +1,22 @@
 package config;
 
-import org.w3c.dom.Document;
+import javax.xml.xpath.XPathExpressionException;
 
-import utils.Utils;
+import exceptions.UnrecognizedQueryMethodException;
+import model.XMLParser;
 
 public class Neighborhood {
 
 	private int size;
 	private String edgeType;
-	private String edgeValue;
+	private String edgeValue; //only make sense if constant edge state
 	
-	public Neighborhood init(Document doc) {
-		size = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
-		edgeType = Utils.getAttrFromFirstMatch(doc, "edge", "type");
-		edgeValue = Utils.getAttrFromFirstMatch(doc, "edge", "value");
+	public Neighborhood init(XMLParser parser)
+			throws NumberFormatException, XPathExpressionException,
+			UnrecognizedQueryMethodException {
+		size = parser.getItemAsInteger("NeighborhoodSize");
+		edgeType = parser.getItem("NeighborhoodEdgeType");
+		edgeValue = parser.getItem("NeighborhoodEdgeValue");
 		return this;
 	}
 	

@@ -6,7 +6,7 @@ import config.Configuration;
 
 public class ConfigurationLoader {
 	
-	public static final String PATH_PREFIX = "data/";
+	public static final String DATA_PATH_PREFIX = "data/";
 	
 	private String sourcePath;
 	private Configuration config;
@@ -19,40 +19,37 @@ public class ConfigurationLoader {
 	 * Set once, update everywhere.
 	 */
 	private ConfigurationLoader() {
-		
+
 	}
 	
-	public static ConfigurationLoader loader() {
-		synchronized (ConfigurationLoader.class) { //mutex
-            if(loader == null)
-            	loader = new ConfigurationLoader();
-        }
+	public synchronized static ConfigurationLoader loader() {
+        if(loader == null)
+        	loader = new ConfigurationLoader();
 		return loader;
 	}
 	
 	public synchronized ConfigurationLoader setSource(String src) {
-		sourcePath = PATH_PREFIX + src;
+		sourcePath = DATA_PATH_PREFIX + src;
 		return this;
 	}
 	
 	public synchronized ConfigurationLoader load() throws Exception {
-		if (sourcePath == null)
-			throw new Exception("sourcePath not initialized");
 		Document doc = XMLParser.parse(sourcePath);
-		if (doc == null)
-			throw new Exception("sourcePath provided unfound");
-		config = new Configuration(doc);
+//		if (!XMLParser.validate(doc)){
+//			throw new Exception("sourcePath not initialized");
+//		}
+		config = new Configuration(doc, "Xpath");
 		return this;
 	}
 	
-	public synchronized Configuration getConfig() {
-		if(config == null) {
+	public synchronized static Configuration getConfig() {
+		if(loader().config == null) {
         	try {
-				load();
+        		loader().load();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
         }
-		return config;
+		return loader().config;
 	}
 }

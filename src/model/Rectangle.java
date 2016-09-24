@@ -25,10 +25,4 @@ public class Rectangle extends Cell {
 	public int[] getColDeltas() {
 		return colDeltas;
 	}
-
-	@Override
-	public Shapes getShape() {
-		return Shapes.RECTANGLE;
-	}	
-
 }
