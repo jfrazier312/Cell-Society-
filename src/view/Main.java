@@ -1,3 +1,4 @@
+package view;
 import config.Configuration;
 import model.ConfigurationLoader;
 
