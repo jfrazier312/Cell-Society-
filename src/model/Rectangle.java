@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.Node;
+
 public class Rectangle extends Cell {
 	
 	//included diagonals
@@ -12,7 +14,8 @@ public class Rectangle extends Cell {
 	}
 
 	@Override
-	public void render() {
+	public Node render() {
+		return null;
 		// yeah
 	}
 	

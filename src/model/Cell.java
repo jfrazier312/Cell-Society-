@@ -1,6 +1,8 @@
 package model;
 import java.util.ArrayList;
 
+import javafx.scene.Node;
+
 public class Cell {
 
 	private int rowPos;
@@ -55,7 +57,7 @@ public class Cell {
 		this.neighbors = neighbors;
 	}
 	
-	public void render() {}
+	public Node render() { return null; }
 	
 	public int[] getRowDeltas() { return null; }
 	
