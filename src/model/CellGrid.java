@@ -43,8 +43,8 @@ public abstract class CellGrid extends GridPane {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
-//				Node updatedCell = currentCell.render();
-				Node updatedCell = currentCell.render(currentCell.getCurrentstate());
+				Node updatedCell = currentCell.render();
+//				Node updatedCell = currentCell.render(currentCell.getCurrentstate());
 				cellPane.getChildren().add(updatedCell);
 			}
 		}	

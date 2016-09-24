@@ -3,6 +3,7 @@ package model;
 import config.Configuration;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class Rectangle extends Cell implements view.GameWorld {
 
@@ -16,7 +17,7 @@ public class Rectangle extends Cell implements view.GameWorld {
 	}
 
 	@Override
-	public Node render(String state) {
+	public Node render() {
 		// TODO: Jordan - update render for XML, update row/cols
 
 		/*
@@ -26,25 +27,18 @@ public class Rectangle extends Cell implements view.GameWorld {
 		 * javafx.scene.shape.Rectangle a = new
 		 * javafx.scene.shape.Rectangle(width, height);
 		 */
-		double height = calculateSize(GRID_WIDTH, 6);
-		double width = calculateSize(GRID_HEIGHT, 5);
+		
+		double rows = ConfigurationLoader.getConfig().getNumRows();
+		double cols = ConfigurationLoader.getConfig().getNumCols();
+		
+		double height = calculateSize(GRID_WIDTH, rows);
+		double width = calculateSize(GRID_HEIGHT, cols);
 
-		javafx.scene.shape.Rectangle a = new javafx.scene.shape.Rectangle(width, height);
-		// based on size of grid
-		// based on pixels on windows
-		// Configuration config = ConfigurationLoader.loader().getConfig();
-		// String color =
-		// config.getAllStates().getColors().get(this.getCurrentstate());
-		System.out.println(state);
-		// Needs to be a hex value ( ##0000FF, or 0x0000FF)
-		if (state.equals("TYPE1")) {
-			a.setFill(Color.RED);
-		} else if (state.equals("TYPE2")) {
-			a.setFill(Color.BLUE);
-		} else {
-			a.setFill(Color.WHITE);
-		}
-		return a;
+		javafx.scene.shape.Rectangle rect = new javafx.scene.shape.Rectangle(width, height);
+		
+		String color = ConfigurationLoader.getConfig().getAllStates().getStateByName(getCurrentstate()).getAttributes().get("color");
+		rect.setFill(Color.web(color));
+		return rect;
 	}
 
 	private double calculateSize(double edgeSize, double numSpots) {

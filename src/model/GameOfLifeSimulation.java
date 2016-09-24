@@ -5,22 +5,13 @@ import java.util.Random;
 public class GameOfLifeSimulation extends CellGrid {
 	
 	public static final String SIMULATION_NAME = "Game of Life";
-	public static final String DEAD = "DEAD";
-	public static final String ALIVE = "ALIVE";
+	public static final String DEAD = "alive";
+	public static final String ALIVE = "alive";
 	
 	public GameOfLifeSimulation() {
 		super();
 		createGrid();
 	}
-	
-//	private void renderGrid() {
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				RectangleWithDiagonals currentCell = myGrid[i][j];
-//				Node updatedCell = currentCell.render();
-//			}
-//		}
-//	}
 	
 	public void createGrid(){
 		Random generator = new Random();

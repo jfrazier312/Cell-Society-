@@ -80,6 +80,7 @@ public class MainView extends Application implements GameWorld {
 		for (int i = 0; i < SIMULATION_LIST.length; i++) {
 			if (sim.equals(SIMULATION_LIST[i].getSimulationName())) {
 				simulation = SIMULATION_LIST[i];
+				break;
 			}
 		}
 	}

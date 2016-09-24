@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<simulation name="The Game of Life" author="team19">
+<simulation name="Game of Life" author="team19">
 	<grid width="20" height="20"/>
 	<neighborhood size="5">
 		<edge type="constant" value="alive">
 		</edge>
 	</neighborhood>
 	<states>
-		<state value="alive" color="white"></state>
-		<state value="dead" color="black"></state>
+		<state value="alive" color="#FFFFFF"></state>
+		<state value="dead" color="#000000"></state>
 	</states>
 	<init mode="param">
 	</init>
