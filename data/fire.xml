@@ -8,7 +8,7 @@
 	<states>
 		<state value="tree" color="#33cc33"></state>
 		<state value="burning" color="#ffcc00"></state>
-		<state value="empty" color="brown"></state>
+		<state value="empty" color="#993300"></state>
 	</states>
 	<init default="tree">
 		<cell state="burning" row="10" col="10"></cell>
