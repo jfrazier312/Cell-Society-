@@ -2,68 +2,47 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import config.ConfigurationLoader;
+
 public class GameOfLifeSimulation extends CellGrid {
 	
-	public static final String DEAD = "DEAD";
-	public static final String ALIVE = "ALIVE";
+	private static final String DEAD = "dead";
+	private static final String ALIVE = "alive";
 	
 	public GameOfLifeSimulation() {
 		super();
-		createGrid();
+		double percentDead = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentDead"));
+		//double percentDead = .5;
+		createGrid(percentDead);
 	}
 	
-//	private void renderGrid() {
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				RectangleWithDiagonals currentCell = myGrid[i][j];
-//				Node updatedCell = currentCell.render();
-//			}
-//		}
-//	}
-	
-	public void createGrid(){
+	public void createGrid(double percentDead){
 		Random generator = new Random();
 		Cell[][] myGrid = getGrid();
+		int size = getNumRows()*getNumCols();
+		double numDead = percentDead*size;
+		double numAlive = size-numDead;
+		ArrayList<String> initialization = new ArrayList<String>();
+		for(int i = 0; i<numDead; i++){
+			initialization.add(DEAD);
+		}
+		for(int i = 0; i<numAlive; i++){
+			initialization.add(ALIVE);
+		}
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				int deadChance = generator.nextInt(2);
-				if(deadChance == 0){
-					myGrid[i][j] = new RectangleWithDiagonals(i, j);
+				myGrid[i][j] = new RectangleWithDiagonals(i, j);
+				if(initialization.size() == 0){
 					myGrid[i][j].setCurrentstate(DEAD);
 				}
 				else{
-					myGrid[i][j] = new RectangleWithDiagonals(i, j);
-					myGrid[i][j].setCurrentstate(ALIVE);
-				}		
-//				if(deadChance == 0){
-//					myGrid[i][j] = new Hexagon(i, j, true);
-//					myGrid[i][j].setCurrentstate(DEAD);
-//				}
-//				else{
-//					myGrid[i][j] = new Hexagon(i, j, true);
-//					myGrid[i][j].setCurrentstate(ALIVE);
-//				}	
+					int cellChoice = generator.nextInt(initialization.size());
+					myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
+					initialization.remove(cellChoice);
+				}	
 			}
 		}
 	}
-	//for testing
-//	public void printGrid(){
-//		Random generator = new Random();
-//		Cell[][] myGrid = getGrid();
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				if(myGrid[i][j].getCurrentstate().equals(DEAD)){
-//					System.out.print(0);
-//				}
-//				else{
-//					System.out.print(1);
-//				}
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//		System.out.println();
-//	}
 	
 	public void updateFutureStates(){
 		Cell[][] myGrid = getGrid();
@@ -127,15 +106,32 @@ public class GameOfLifeSimulation extends CellGrid {
 		}
 		return stateCount;
 	}
-	
 	//for testing
-//	public static void main(String[] args){
-//		GameOfLifeSimulation test = new GameOfLifeSimulation(3,3);
-//		int num = 0;
-//		while(num<10){
-//			test.printGrid();
-//			test.updateGrid();
-//			num++;
-//		}
-//	}
+	public void printGrid(){
+		Random generator = new Random();
+		Cell[][] myGrid = getGrid();
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				if(myGrid[i][j].getCurrentstate().equals(DEAD)){
+					System.out.print(0);
+				}
+				else{
+					System.out.print(1);
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println();
+	}
+	
+	public static void main(String[] args){
+		GameOfLifeSimulation test = new GameOfLifeSimulation();
+		int num = 0;
+		while(num<10){
+			test.printGrid();
+			test.updateGrid();
+			num++;
+		}
+	}
 }
