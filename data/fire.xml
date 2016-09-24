@@ -6,8 +6,8 @@
 		</edge>
 	</neighborhood>
 	<states>
-		<state value="tree" color="green"></state>
-		<state value="burning" color="yellow"></state>
+		<state value="tree" color="#33cc33"></state>
+		<state value="burning" color="#ffcc00"></state>
 		<state value="empty" color="brown"></state>
 	</states>
 	<init default="tree">
