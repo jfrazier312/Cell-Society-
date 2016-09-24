@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import javafx.scene.Node;
 
 public class Cell {
-
+	
 	private int rowPos;
 	private int colPos;
 	private ArrayList<Cell> neighbors;
@@ -55,6 +55,10 @@ public class Cell {
 
 	public void setNeighbors(ArrayList<Cell> neighbors) {
 		this.neighbors = neighbors;
+	}
+	
+	public Node render(String a) {
+		return null;
 	}
 	
 	public Node render() { return null; }

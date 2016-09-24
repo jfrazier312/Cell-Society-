@@ -32,10 +32,18 @@ public class Configuration {
 		// TODO (cx15): have tags and attrs defined as const for validation and reference
 		simulationName = Utils.getAttrFromFirstMatch(doc, "simulation", "name");
 		author = Utils.getAttrFromFirstMatch(doc, "simulation", "author");
+<<<<<<< HEAD
 		gridWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "width"));
 		gridHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
 		sceneWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "width"));
 		sceneHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "height"));
+||||||| merged common ancestors
+		girdWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "width"));
+		girdHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
+=======
+		gridWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "width"));
+		gridHeight = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "grid", "height"));
+>>>>>>> c5967ff9cc6e8926d45c0d8618f319da358ad1fc
 		framesPerSec = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "animation", "framesPerSec"));
 		defaultState = Utils.getAttrFromFirstMatch(doc, "init", "default");
 		sceneWidth = Integer.parseInt(Utils.getAttrFromFirstMatch(doc, "scene", "width"));
