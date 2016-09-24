@@ -31,8 +31,6 @@ public class Configuration {
 	private boolean isRunning;
 	private int framesPerSec;
 	
-	// TODO: param 
-	
 	// TODO: deserialize to new XML
 
 	public Configuration(Document doc, String queryMethod) {
