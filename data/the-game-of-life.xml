@@ -9,7 +9,7 @@
 		<state value="alive" color="white"></state>
 		<state value="dead" color="black"></state>
 	</states>
-	<init default="dead">
+	<init mode="param">
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="percentDead" value="0.5"></param>
