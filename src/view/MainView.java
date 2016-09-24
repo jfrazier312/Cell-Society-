@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CellGrid;
-import model.ConfigurationLoader;
 
 public class MainView extends Application implements GameWorld {
 
@@ -41,7 +40,7 @@ public class MainView extends Application implements GameWorld {
 	public void start(Stage primaryStage) throws Exception {
 
 		// Do configuration loader to get the information for scene / etc.
-		ConfigurationLoader.loader().setSource("the-game-of-life.xml").load();
+		ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
 
 		root = new BorderPane();
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
@@ -70,6 +69,7 @@ public class MainView extends Application implements GameWorld {
 		String simulationName = ConfigurationLoader.getConfig().getSimulationName();
 		// sets simulation to correct simulation
 		findSimulation(simulationName);
+		simulation.initSimulation();
 		simulation.renderGrid(cellPane);
 		cellPane.setPadding(cellPanePadding);
 		root.setLeft(cellPane);
@@ -151,8 +151,7 @@ public class MainView extends Application implements GameWorld {
 			// create the new grid and buttons, then wait for 'play' action
 			gameloop.pause();
 			try {
-				// TODO: Charles: Change XML files names to reflect combobox
-				// from GameWorld
+				// TODO: Jordan: Simulation changer: Definitely need to do more here
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load().getConfig();
 				stepOnce();
 			} catch (Exception e1) {

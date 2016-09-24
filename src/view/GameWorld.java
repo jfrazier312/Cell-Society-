@@ -22,7 +22,7 @@ public interface GameWorld {
 	public static double GRID_WIDTH = 400;
 	public static double GRID_HEIGHT = 400;
 	
-	public static final String GAME_OF_LIFE = "Game of Life";
+	public static final String GAME_OF_LIFE = "Game Of Life";
 	public static final String WATOR_WORLD = "Wa-Tor World";
 	public static final String FIRE_SIMULATION = "Fire Simulation";
 	public static final String SEGREGATION_SIMULATION = "Segregation Simulation";
@@ -34,10 +34,10 @@ public interface GameWorld {
 	 * Add simulations to this combobox when implemented
 	 */
 	ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList(
-			"Game of Life",
-			"Wa-Tor World",
-			"Fire Simulation",
-			"Segregation Simulation");
+			"Game_Of_Life",
+			"Wa-Tor_World",
+			"Fire_Simulation",
+			"Segregation_Simulation");
 	
 	CellGrid[] SIMULATION_LIST = { new GameOfLifeSimulation(), 
 			new PredatorPreySimulation(),

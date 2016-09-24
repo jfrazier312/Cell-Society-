@@ -123,6 +123,8 @@ public abstract class CellGrid extends GridPane {
 	
 	public abstract String getSimulationName();
 	
+	public abstract void initSimulation();
+	
 	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
 			throws XPathExpressionException, UnrecognizedQueryMethodException {
 		List<Cell> initialCells = new ArrayList<Cell>();

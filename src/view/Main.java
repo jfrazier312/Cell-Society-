@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.ConfigurationLoader;
+import config.ConfigurationLoader;
 
 public class Main extends Application {
 	

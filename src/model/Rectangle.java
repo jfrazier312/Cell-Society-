@@ -1,9 +1,8 @@
 package model;
 
-import config.Configuration;
+import config.ConfigurationLoader;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 public class Rectangle extends Cell implements view.GameWorld {
 
@@ -31,8 +30,8 @@ public class Rectangle extends Cell implements view.GameWorld {
 		double rows = ConfigurationLoader.getConfig().getNumRows();
 		double cols = ConfigurationLoader.getConfig().getNumCols();
 		
-		double height = calculateSize(GRID_WIDTH, rows);
-		double width = calculateSize(GRID_HEIGHT, cols);
+		double width = calculateSize(GRID_WIDTH, cols);
+		double height = calculateSize(GRID_HEIGHT, rows);
 
 		javafx.scene.shape.Rectangle rect = new javafx.scene.shape.Rectangle(width, height);
 		

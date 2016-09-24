@@ -7,13 +7,14 @@ import config.ConfigurationLoader;
 public class GameOfLifeSimulation extends CellGrid {
 	
 	public static final String SIMULATION_NAME = "Game of Life";
-	public static final String DEAD = "alive";
 	private static final String DEAD = "dead";
 	private static final String ALIVE = "alive";
-	public static final String ALIVE = "alive";
 	
 	public GameOfLifeSimulation() {
 		super();
+	}
+	
+	public void initSimulation() {
 		double percentDead = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentDead"));
 		//double percentDead = .5;
 		createGrid(percentDead);

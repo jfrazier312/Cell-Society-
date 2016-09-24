@@ -17,15 +17,17 @@ public class SegregationSimulation extends CellGrid {
 	
 	public SegregationSimulation() {
 		super();
+	}
+	
+	public void initSimulation() {
 		myProbability  = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		myMovingCells = new ArrayList<Cell>();
 		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
 		double percenttypeA = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentTypeA"));
 		createGrid(percentEmptyCells, percenttypeA);
-		
 	}
 	
-	public void createGrid(double percentEmpty, double percenttypeA) {
+	private void createGrid(double percentEmpty, double percenttypeA) {
 		generator = new Random();
 		int size = getNumRows()*getNumCols();
 		double numEmpty = percentEmpty*size;

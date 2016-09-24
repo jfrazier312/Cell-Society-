@@ -21,6 +21,10 @@ public class FireSimulation extends CellGrid {
 
 	public FireSimulation() {
 		super();
+
+	}
+	
+	public void initSimulation() {
 		createGrid();
 		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		//probOfBurning = .5;
