@@ -1,20 +1,15 @@
 package config;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 import exceptions.UnrecognizedQueryMethodException;
-import utils.Utils;
 import model.Cell;
+import model.CellGrid;
 import model.XMLParser;
 
 public class Configuration {
@@ -45,11 +40,11 @@ public class Configuration {
 			defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
 			neighborhood = new Neighborhood().init(parser);
 			customizedParams = new Params(parser);
+			initialCells = CellGrid.buildNonDefaultInitialCells(parser);
+			isRunning = false;
 		} catch (XPathExpressionException | UnrecognizedQueryMethodException | NumberFormatException e) {
 			e.printStackTrace();
 		}
-		buildNonDefaultInitialCells(doc);
-		isRunning = false;
 	}
 	
 	public boolean isRunning() {
@@ -108,17 +103,11 @@ public class Configuration {
 		return neighborhood;
 	}
 	
-	// TODO: refactor, test, and move to CellGrid
-	private void buildNonDefaultInitialCells(Document doc) {
-		initialCells = new ArrayList<Cell>();
-		NodeList nl = doc.getElementsByTagName("cell");
-		for (int i = 0; i < nl.getLength(); i++) {
-			String state = Utils.getAttrFromNode(nl.item(i), "state");
-			int row = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "row"));
-			int col = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "col"));
-			Cell c = new Cell(row, col);
-			c.setCurrentstate(state);
-			initialCells.add(c);
-	    }
+	public List<Cell> getInitialCells() {
+		return initialCells;
+	}
+
+	public void setInitialCells(List<Cell> initialCells) {
+		this.initialCells = initialCells;
 	}
 }
