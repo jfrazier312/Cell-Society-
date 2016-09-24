@@ -1,6 +1,7 @@
 package view;
 
 import config.Configuration;
+import config.ConfigurationLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;

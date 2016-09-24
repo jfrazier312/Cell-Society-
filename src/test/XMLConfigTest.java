@@ -9,10 +9,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import config.Configuration;
+import config.ConfigurationLoader;
 import config.State;
 import config.States;
 import model.Cell;
-import model.ConfigurationLoader;
 
 public class XMLConfigTest {
 	

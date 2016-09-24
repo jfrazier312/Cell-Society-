@@ -14,4 +14,5 @@
 		<cell state="burning" row="10" col="10"></cell>
 	</init>
 	<animation framesPerSec="1"></animation>
+	<param name="probability" value="0.5"></param>
 </simulation>

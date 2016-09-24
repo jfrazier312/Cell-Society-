@@ -3,7 +3,6 @@ package config;
 import javax.xml.xpath.XPathExpressionException;
 
 import exceptions.UnrecognizedQueryMethodException;
-import model.XMLParser;
 
 public class Neighborhood {
 
