@@ -15,4 +15,5 @@
 	<animation framesPerSec="1"></animation>
 	<param name="percentEmpty" value="0.1"></param>
 	<param name="percentTypeA" value="0.1"></param>
+	<param name="probability" value="0.1"></param>
 </simulation>
