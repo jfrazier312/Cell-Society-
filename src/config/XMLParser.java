@@ -1,4 +1,4 @@
-package model;
+package config;
 
 import java.io.File;
 import java.util.ResourceBundle;
@@ -71,7 +71,7 @@ public class XMLParser {
 		return doc;
 	}
 
-	// TODO
+	// TODO (cx15) validate an XML, exception to front end if xml invalid
 	public static boolean validate(Document doc) throws Exception {
 		return true;
 	}

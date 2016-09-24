@@ -1,6 +1,7 @@
 package model;
 
 import config.Configuration;
+import config.ConfigurationLoader;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 

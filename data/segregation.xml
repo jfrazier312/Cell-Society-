@@ -10,8 +10,9 @@
 		<state value="typeB" color="black"></state>
 		<state value="empty" color="white"></state>
 	</states>
-	<init default="dead">
+	<init mode="param">
 	</init>
 	<animation framesPerSec="1"></animation>
-	<param name="percentDead" value="0.5"></param>
+	<param name="percentEmpty" value="0.1"></param>
+	<param name="percentTypeA" value="0.1"></param>
 </simulation>

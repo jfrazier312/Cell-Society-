@@ -10,7 +10,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import exceptions.UnrecognizedQueryMethodException;
-import model.XMLParser;
 
 public class States implements Iterable<State>{
 	

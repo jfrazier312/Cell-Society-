@@ -1,6 +1,7 @@
 package view;
 
 import config.Configuration;
+import config.ConfigurationLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -13,7 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CellGrid;
-import model.ConfigurationLoader;
 import model.GameOfLifeSimulation;
 
 public class MainView extends Application implements GameWorld {
