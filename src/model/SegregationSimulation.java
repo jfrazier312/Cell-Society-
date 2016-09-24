@@ -2,39 +2,43 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import config.ConfigurationLoader;
+
 //Should we do getting neighbors in each simulation since the definition can vary?
 public class SegregationSimulation extends CellGrid {
 	
-	public static final String EMPTY = "EMPTY";
-	public static final String TYPE1 = "TYPE1";
-	public static final String TYPE2 = "TYPE2";
+	private static final String EMPTY = "empty";
+	private static final String typeA = "typeA";
+	private static final String typeB = "typeB";
 	private double myProbability;
 	ArrayList<Cell> myMovingCells;
 	Random generator;
 
 	public SegregationSimulation() {
 		super();
-		//myProbability  = probability;
+		myProbability  = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		myMovingCells = new ArrayList<Cell>();
-		createGrid((1.0/3.0), .5);
+		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
+		double percenttypeA = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentTypeA"));
+		createGrid(percentEmptyCells, percenttypeA);
 		
 	}
 	
-	public void createGrid(double percentEmpty, double percentType1) {
+	public void createGrid(double percentEmpty, double percenttypeA) {
 		generator = new Random();
 		int size = getNumRows()*getNumCols();
 		double numEmpty = percentEmpty*size;
-		double numType1 = percentType1*(size-numEmpty);
-		double numType2 = size-numEmpty-numType1;
+		double numtypeA = percenttypeA*(size-numEmpty);
+		double numtypeB = size-numEmpty-numtypeA;
 		ArrayList<String> initialization = new ArrayList<String>();
 		for(int i = 0; i<numEmpty; i++){
 			initialization.add(EMPTY);
 		}
-		for(int i = 0; i<numType1; i++){
-			initialization.add(TYPE1);
+		for(int i = 0; i<numtypeA; i++){
+			initialization.add(typeA);
 		}
-		for(int i = 0; i<numType2; i++){
-			initialization.add(TYPE2);
+		for(int i = 0; i<numtypeB; i++){
+			initialization.add(typeB);
 		}
 		Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
@@ -65,7 +69,7 @@ public class SegregationSimulation extends CellGrid {
 		}
 	}
 	
-	public void updateFutureStates(){
+	private void updateFutureStates(){
 		Cell[][] myGrid = this.getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -135,7 +139,7 @@ public class SegregationSimulation extends CellGrid {
 //				if(myGrid[i][j].getCurrentstate().equals(EMPTY)){
 //					System.out.print("E");
 //				}
-//				else if(myGrid[i][j].getCurrentstate().equals(TYPE1)){
+//				else if(myGrid[i][j].getCurrentstate().equals(typeA)){
 //					System.out.print(1);
 //				}
 //				else{
@@ -148,8 +152,7 @@ public class SegregationSimulation extends CellGrid {
 //	}
 //
 //	public static void main(String[] args){
-//		SegregationSimulation test = new SegregationSimulation(3, 3, .4);
-//		//test.createGrid((1.0/3.0), .5);
+//		SegregationSimulation test = new SegregationSimulation();
 //		int num = 0;
 //		while(num<10){
 //			test.printGrid();

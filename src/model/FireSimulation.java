@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
+import config.ConfigurationLoader;
+
 /*
  * Should I be setting the future state to be the same as the current state, 
  * or will the front end do that by default?
@@ -10,17 +12,17 @@ import java.util.Random;
  */ 
 
 public class FireSimulation extends CellGrid {
-	public static final String EMPTY = "EMPTY";
-	public static final String TREE = "TREE";
-	public static final String BURNING = "BURNING";
+	private static final String EMPTY = "empty";
+	private static final String TREE = "tree";
+	private static final String BURNING = "burning";
 	private double probOfBurning;
 	Random generator;
 
 	public FireSimulation() {
 		super();
 		createGrid();
-		//double probBurning = ConfigurationLoader.getConfig().getP
-		//this.probOfBurning = probBurning;
+		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
+		//probOfBurning = .5;
 	}
 	
 	public void createGrid() {
@@ -28,17 +30,14 @@ public class FireSimulation extends CellGrid {
 		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				if(i==0 || j==0 || i==getNumRows()-1 || j == getNumRows()-1){
-					myGrid[i][j] = new RectangleNoDiagonals(i, j);
+				myGrid[i][j] = new RectangleNoDiagonals(i, j);
+				if(i==0 || j==0 || i==getNumRows()-1 || j == getNumCols()-1){
 					myGrid[i][j].setCurrentstate(EMPTY);
 				}
-				else if(i == 2 && j == 2){
-					System.out.println("print");
-					myGrid[i][j] = new RectangleNoDiagonals(i, j);
+				else if(i == getNumRows()/2 && j == getNumCols()/2){
 					myGrid[i][j].setCurrentstate(BURNING);
 				}
 				else{
-					myGrid[i][j] = new RectangleNoDiagonals(i, j);
 					myGrid[i][j].setCurrentstate(TREE);
 				}
 			}
@@ -57,7 +56,7 @@ public class FireSimulation extends CellGrid {
 		}
 	}
 	
-	public void updateFutureStates(){
+	private void updateFutureStates(){
 		Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -66,6 +65,7 @@ public class FireSimulation extends CellGrid {
 		}
 	}
 	
+	@Override
 	public void updateCell(Cell myCell){
 		String myState = myCell.getCurrentstate();
 		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
@@ -111,7 +111,7 @@ public class FireSimulation extends CellGrid {
 //	}
 //	
 //	public static void main(String[] args){
-//		FireSimulation test = new FireSimulation(5,5);
+//		FireSimulation test = new FireSimulation();
 //		int num = 0;
 //		while(num<10){
 //			test.printGrid();
