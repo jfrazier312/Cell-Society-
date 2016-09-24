@@ -9,6 +9,7 @@ public class SliderCreator extends HBox {
 
 	public SliderCreator(String text) {
 
+		// TODO: Jordan: Fix dimensions on this piece of shit
 		hbox = new HBox(20);
 		Label lbl = new Label(text);
 		lbl.setPrefWidth(50);

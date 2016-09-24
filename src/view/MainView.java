@@ -1,6 +1,5 @@
 package view;
 
-import config.Configuration;
 import config.ConfigurationLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -15,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CellGrid;
 import model.ConfigurationLoader;
-import model.SegregationSimulation;
 
 public class MainView extends Application implements GameWorld {
 
@@ -44,7 +42,7 @@ public class MainView extends Application implements GameWorld {
 
 		// Do configuration loader to get the information for scene / etc.
 		ConfigurationLoader.loader().setSource("the-game-of-life.xml").load();
-		
+
 		root = new BorderPane();
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		// scene = new Scene(root, config.getSceneWidth(),
@@ -69,45 +67,32 @@ public class MainView extends Application implements GameWorld {
 	}
 
 	private CellGrid createSimulation() {
-		// TODO: Jordan - simulation type, rows, and columns should come from
-		// XML
-		 double rows = ConfigurationLoader.getConfig().getNumRows();
-		 double cols = ConfigurationLoader.getConfig().getNumCols();
-		 String simulationName = ConfigurationLoader.getConfig().getSimulationName();
-
-		 findSimulation(simulationName);
-		// Going to have to loop through list of CellGrid simulations to
-		// determine which one to use?
-		// how to convert from String to actual simulation?
-
-//		simulation = new SegregationSimulation(6, 5, 0.3);
+		String simulationName = ConfigurationLoader.getConfig().getSimulationName();
+		// sets simulation to correct simulation
+		findSimulation(simulationName);
 		simulation.renderGrid(cellPane);
 		cellPane.setPadding(cellPanePadding);
 		root.setLeft(cellPane);
 		return simulation;
 	}
-	
-	public CellGrid findSimulation(String sim) {
-		if (sim.equals(GAME_OF_LIFE)){ 
-			createGameOfLifeSimulation();
-		} else if (sim.equals(PREDATOR_PREY)){ 
-			
-		} else if (sim.equals(WATOR_WORLD)){ 
-			
-		} else if (sim.equals(SEGREGATION_SIMULATION)){
-			
+
+	public void findSimulation(String sim) {
+		for (int i = 0; i < SIMULATION_LIST.length; i++) {
+			if (sim.equals(SIMULATION_LIST[i].getSimulationName())) {
+				simulation = SIMULATION_LIST[i];
+			}
 		}
 	}
 
-	private void createGameLoop(CellGrid a) {
+	private void createGameLoop(CellGrid grid) {
 		// TODO: Duration should come from XML frames/sec
 		gameloop = new Timeline();
 		gameloop.getKeyFrames().add(new KeyFrame(Duration.seconds(1), e -> {
 			cellPane.getChildren().removeAll(cellPane.getChildren());
-			a.updateGrid();
-			a.renderGrid(cellPane);
+			grid.updateGrid();
+			grid.renderGrid(cellPane);
 			root.setLeft(cellPane);
-			System.out.println(a.getGrid()[0][0].getCurrentstate());
+			System.out.println(grid.getGrid()[0][0].getCurrentstate());
 		}));
 	}
 
@@ -123,9 +108,6 @@ public class MainView extends Application implements GameWorld {
 
 		SimulationButton playBtn = new SimulationButton(PLAY);
 		setStartEventHandler(playBtn);
-
-		// SimulationButton resumeBtn = new SimulationButton(RESUME);
-		// setStartEventHandler(resumeBtn);
 
 		SimulationButton pauseBtn = new SimulationButton(PAUSE);
 		setStopEventHandler(pauseBtn);
@@ -144,7 +126,7 @@ public class MainView extends Application implements GameWorld {
 
 		// loop through the rest of the things needed from config.getShit,
 		// create necessary sliders
-		for (String str : config.getAllCustomParamNames()) {
+		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
 			SimulationSlider slider = new SimulationSlider(str);
 			additionalSliders.getChildren().add(slider);
 		}
@@ -162,14 +144,16 @@ public class MainView extends Application implements GameWorld {
 		SIMULATIONS.setMinWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.setMaxWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.valueProperty().addListener(e -> {
-			gameloop.pause();
 			// TODO: Jordan: Simulation box changes
 			// Needs to stop simulation, change XML to whatever simulation we
 			// want,
 			// create the new grid and buttons, then wait for 'play' action
-
+			gameloop.pause();
 			try {
-				config = ConfigurationLoader.loader().setSource("testxml.xml").load().getConfig();
+				// TODO: Charles: Change XML files names to reflect combobox
+				// from GameWorld
+				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load().getConfig();
+				stepOnce();
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -191,11 +175,7 @@ public class MainView extends Application implements GameWorld {
 		setDimensions(btn);
 		btn.setOnAction(e -> {
 			gameloop.pause();
-			gameloop.setCycleCount(1);
-			gameloop.playFromStart();
-			gameloop.setOnFinished(event -> {
-				gameloop.pause();
-			});
+			stepOnce();
 		});
 	}
 
@@ -205,7 +185,8 @@ public class MainView extends Application implements GameWorld {
 			// If button is reset, then reset parameters back to what's on XML
 			if (btn.getDisplayName().equals(RESET)) {
 				try {
-					config = ConfigurationLoader.loader().setSource("testxml.xml").load().getConfig();
+					ConfigurationLoader.loader().getConfig();
+					stepOnce();
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					throw new IllegalArgumentException("Failed loading XML file");
@@ -213,6 +194,14 @@ public class MainView extends Application implements GameWorld {
 			}
 			gameloop.pause();
 			// config.setRunning(false);
+		});
+	}
+
+	private void stepOnce() {
+		gameloop.setCycleCount(1);
+		gameloop.playFromStart();
+		gameloop.setOnFinished(event -> {
+			gameloop.pause();
 		});
 	}
 

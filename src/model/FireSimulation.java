@@ -10,6 +10,7 @@ import java.util.Random;
  */ 
 
 public class FireSimulation extends CellGrid {
+	public static final String SIMULATION_NAME = "Fire Simulation";
 	public static final String EMPTY = "EMPTY";
 	public static final String TREE = "TREE";
 	public static final String BURNING = "BURNING";
@@ -88,6 +89,11 @@ public class FireSimulation extends CellGrid {
 			myCell.setFuturestate(EMPTY);
 		}
 		
+	}
+
+	@Override
+	public String getSimulationName() {
+		return SIMULATION_NAME;
 	}
 	
 //	public void printGrid(){

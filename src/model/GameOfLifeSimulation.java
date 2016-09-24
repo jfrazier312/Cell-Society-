@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class GameOfLifeSimulation extends CellGrid {
 	
+	public static final String SIMULATION_NAME = "Game of Life";
 	public static final String DEAD = "DEAD";
 	public static final String ALIVE = "ALIVE";
 	
@@ -126,6 +127,11 @@ public class GameOfLifeSimulation extends CellGrid {
 			}
 		}
 		return stateCount;
+	}
+
+	@Override
+	public String getSimulationName() {
+		return SIMULATION_NAME;
 	}
 	
 	//for testing

@@ -6,6 +6,8 @@ import java.util.Random;
 
 public class PredatorPreySimulation extends CellGrid {
 
+	// TODO: Jordan - should implement Gameworld and get constant for name
+	public static final String SIMULATION_NAME = "Predator Prey";
 	public static final String EMPTY = "EMPTY";
 	public static final String FISH = "FISH";
 	public static final String SHARK = "SHARK";
@@ -187,6 +189,11 @@ public class PredatorPreySimulation extends CellGrid {
 			}
 		}
 		return myFishFriends;
+	}
+	
+	@Override
+	public String getSimulationName() {
+		return SIMULATION_NAME;
 	}
 
 //	public void printGrid(){

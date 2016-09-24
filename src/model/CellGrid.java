@@ -17,6 +17,8 @@ public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid;
 	
+	private String simulationName;
+	
 	// TODO: Jordan: change parameters 
 	//       number of initially empty (resets grid)
 	// 		 percentage of states to each other (resets)
@@ -116,6 +118,8 @@ public abstract class CellGrid extends GridPane {
 	public abstract void updateGrid();
 
 	public abstract void updateCell(Cell myCell);
+	
+	public abstract String getSimulationName();
 	
 	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
 			throws XPathExpressionException, UnrecognizedQueryMethodException {

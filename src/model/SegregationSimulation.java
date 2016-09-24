@@ -5,13 +5,14 @@ import java.util.Random;
 //Should we do getting neighbors in each simulation since the definition can vary?
 public class SegregationSimulation extends CellGrid {
 	
+	public static final String SIMULATION_NAME = "Segregation Simulation";
 	public static final String EMPTY = "EMPTY";
 	public static final String TYPE1 = "TYPE1";
 	public static final String TYPE2 = "TYPE2";
 	private double myProbability;
 	ArrayList<Cell> myMovingCells;
 	Random generator;
-
+	
 	public SegregationSimulation() {
 		super();
 		//myProbability  = probability;
@@ -126,6 +127,10 @@ public class SegregationSimulation extends CellGrid {
 		else{
 			myCell.setFuturestate(myCell.getCurrentstate());
 		}
+	}
+	
+	public String getSimulationName() {
+		return SIMULATION_NAME;
 	}
 	
 //	public void printGrid(){
