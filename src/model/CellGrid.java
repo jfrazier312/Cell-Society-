@@ -1,9 +1,16 @@
 package model;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.NodeList;
+
+import exceptions.UnrecognizedQueryMethodException;
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import utils.Utils;
 
 public abstract class CellGrid extends GridPane {
 
@@ -106,5 +113,19 @@ public abstract class CellGrid extends GridPane {
 	public abstract void updateGrid();
 
 	public abstract void updateCell(Cell myCell);
-
+	
+	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
+			throws XPathExpressionException, UnrecognizedQueryMethodException {
+		List<Cell> initialCells = new ArrayList<Cell>();
+		NodeList nl = parser.getNodeList("Cells");
+		for (int i = 0; i < nl.getLength(); i++) {
+			String state = Utils.getAttrFromNode(nl.item(i), "state");
+			int row = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "row"));
+			int col = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "col"));
+			Cell c = new Cell(row, col);
+			c.setCurrentstate(state);
+			initialCells.add(c);
+	    }
+		return initialCells;
+	}
 }

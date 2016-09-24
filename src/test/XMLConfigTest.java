@@ -11,6 +11,7 @@ import org.junit.Test;
 import config.Configuration;
 import config.State;
 import config.States;
+import model.Cell;
 import model.ConfigurationLoader;
 
 public class XMLConfigTest {
@@ -63,5 +64,16 @@ public class XMLConfigTest {
 	@Test
 	public void customParamsLoadedProperly() {
 		assertEquals("0.8", config.getCustomParam("probability"));
+	}
+	
+	@Test
+	public void initialCellsLoadedProperly() {
+		Cell c1 = config.getInitialCells().get(0);
+		assertEquals("state2", c1.getCurrentstate());
+		assertEquals(20, c1.getColPos());
+		assertEquals(10, c1.getRowPos());
+		Cell c2 = config.getInitialCells().get(1);
+		assertEquals("state2", c2.getCurrentstate());
+		assertEquals(11, c2.getRowPos());
 	}
 }
