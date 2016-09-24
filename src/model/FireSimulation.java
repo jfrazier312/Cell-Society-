@@ -16,10 +16,11 @@ public class FireSimulation extends CellGrid {
 	private double probOfBurning;
 	Random generator;
 
-	public FireSimulation(int rows, int cols) {
-		super(rows, cols);
+	public FireSimulation() {
+		super();
 		createGrid();
-		probOfBurning = .5;
+		//double probBurning = ConfigurationLoader.getConfig().getP
+		//this.probOfBurning = probBurning;
 	}
 	
 	public void createGrid() {
@@ -32,6 +33,7 @@ public class FireSimulation extends CellGrid {
 					myGrid[i][j].setCurrentstate(EMPTY);
 				}
 				else if(i == 2 && j == 2){
+					System.out.println("print");
 					myGrid[i][j] = new RectangleNoDiagonals(i, j);
 					myGrid[i][j].setCurrentstate(BURNING);
 				}

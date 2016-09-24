@@ -15,8 +15,8 @@ public class Configuration {
 	
 	private String simulationName;
 	private String author;
-	private int girdWidth;
-	private int girdHeight;
+	private int numCols;
+	private int numRows;
 	private States allStates;
 	private Neighborhood neighborhood;
 	private Params customizedParams;
@@ -32,8 +32,8 @@ public class Configuration {
 		try {
 			simulationName = parser.getItem("SimulationName");
 			author = parser.getItem("SimulationAuthor");
-			girdWidth = parser.getItemAsInteger("GirdWidth");
-			girdHeight = parser.getItemAsInteger("GirdHeight");
+			numCols = parser.getItemAsInteger("GirdWidth");
+			numRows = parser.getItemAsInteger("GirdHeight");
 			framesPerSec = parser.getItemAsInteger("FramesPerSec");
 			allStates = new States().init(parser);
 			defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
@@ -86,12 +86,12 @@ public class Configuration {
 		return author;
 	}
 
-	public int getGirdWidth() {
-		return girdWidth;
+	public int getNumRows() {
+		return numRows;
 	}
 
-	public int getGirdHeight() {
-		return girdHeight;
+	public int getNumCols() {
+		return numCols;
 	}
 
 	public States getAllStates() {

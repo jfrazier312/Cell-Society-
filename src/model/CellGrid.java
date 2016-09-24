@@ -24,7 +24,9 @@ public abstract class CellGrid extends GridPane {
 	// 		 size of cells
 	// 		 have a percentage of satisfied cells (dynamically)	 
 
-	public CellGrid(int rows, int cols) {
+	public CellGrid() {
+		int rows = ConfigurationLoader.getConfig().getNumRows();
+		int cols = ConfigurationLoader.getConfig().getNumCols();
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}

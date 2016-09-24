@@ -14,7 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CellGrid;
-import model.GameOfLifeSimulation;
+import model.ConfigurationLoader;
+import model.SegregationSimulation;
 
 public class MainView extends Application implements GameWorld {
 
@@ -22,26 +23,28 @@ public class MainView extends Application implements GameWorld {
 	private Scene scene;
 	private BorderPane root;
 	private FlowPane cellPane;
-	private Configuration config;
 	private CellGrid simulation;
-	
+
 	private static final double BUTTON_WIDTH = 200;
 
 	private Timeline gameloop;
-	
-	Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, SCENE_WIDTH / 40, (SCENE_HEIGHT - GRID_HEIGHT) / 2, 0);
-	Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2, GRID_PADDING);
+
+	Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, SCENE_WIDTH / 40,
+			(SCENE_HEIGHT - GRID_HEIGHT) / 2, 0);
+	Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2,
+			GRID_PADDING);
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
+	// TODO: Jordan: This will return a scene, and be called in Main.
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
 		// Do configuration loader to get the information for scene / etc.
-		// config =
-		// ConfigurationLoader.loader().setSource("testxml.xml").load().getConfig();
+		ConfigurationLoader.loader().setSource("the-game-of-life.xml").load();
+		
 		root = new BorderPane();
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		// scene = new Scene(root, config.getSceneWidth(),
@@ -68,21 +71,32 @@ public class MainView extends Application implements GameWorld {
 	private CellGrid createSimulation() {
 		// TODO: Jordan - simulation type, rows, and columns should come from
 		// XML
-		// config = ConfigurationLoader.loader().getConfig();
-		// double rows = config.getNumRows();
-		// double cols = config.getNumCols();
-		// String simulation = config.getSimulationName();
+		 double rows = ConfigurationLoader.getConfig().getNumRows();
+		 double cols = ConfigurationLoader.getConfig().getNumCols();
+		 String simulationName = ConfigurationLoader.getConfig().getSimulationName();
 
+		 findSimulation(simulationName);
 		// Going to have to loop through list of CellGrid simulations to
 		// determine which one to use?
 		// how to convert from String to actual simulation?
 
-		simulation = new GameOfLifeSimulation(10, 5);
-		simulation.updateGrid();
+//		simulation = new SegregationSimulation(6, 5, 0.3);
 		simulation.renderGrid(cellPane);
 		cellPane.setPadding(cellPanePadding);
 		root.setLeft(cellPane);
 		return simulation;
+	}
+	
+	public CellGrid findSimulation(String sim) {
+		if (sim.equals(GAME_OF_LIFE)){ 
+			createGameOfLifeSimulation();
+		} else if (sim.equals(PREDATOR_PREY)){ 
+			
+		} else if (sim.equals(WATOR_WORLD)){ 
+			
+		} else if (sim.equals(SEGREGATION_SIMULATION)){
+			
+		}
 	}
 
 	private void createGameLoop(CellGrid a) {
@@ -130,10 +144,10 @@ public class MainView extends Application implements GameWorld {
 
 		// loop through the rest of the things needed from config.getShit,
 		// create necessary sliders
-		// for (String str : config.getAllCustomParamNames()) {
-		// SimulationSlider slider = new SimulationSlider(str);
-		// additionalSliders.getChildren().add(slider);
-		// }
+		for (String str : config.getAllCustomParamNames()) {
+			SimulationSlider slider = new SimulationSlider(str);
+			additionalSliders.getChildren().add(slider);
+		}
 
 		buttonContainer.getChildren().addAll(basicBtnBox, additionalSliders);
 		// Right inset will be the same padding used on the left side of grid
@@ -149,7 +163,7 @@ public class MainView extends Application implements GameWorld {
 		SIMULATIONS.setMaxWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.valueProperty().addListener(e -> {
 			gameloop.pause();
-			// TODO: Simulation box changes
+			// TODO: Jordan: Simulation box changes
 			// Needs to stop simulation, change XML to whatever simulation we
 			// want,
 			// create the new grid and buttons, then wait for 'play' action
@@ -201,20 +215,21 @@ public class MainView extends Application implements GameWorld {
 			// config.setRunning(false);
 		});
 	}
-	
+
 	private void setDimensions(SimulationButton btn) {
 		btn.setMinWidth(BUTTON_WIDTH / 2);
 		btn.setMaxWidth(BUTTON_WIDTH / 2);
 	}
 
 	private void createCellPane() {
-		// TODO: Set cellpane parameters based on XML
+		// TODO: Jordan Set cellpane parameters based on XML
 		cellPane = new FlowPane();
 
 		// cellPane.setPrefWidth(config.getGridWidth());
 		// cellPane.setPrefHeight(config.getGridHeight());
-		
-		//Have to add whatever padding you add on to the left side of the grid for some
+
+		// Have to add whatever padding you add on to the left side of the grid
+		// for some
 		// strange fucking reason
 		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
 		cellPane.setMaxHeight(GRID_HEIGHT);
