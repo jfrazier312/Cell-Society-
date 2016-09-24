@@ -46,6 +46,7 @@ public class Configuration {
 			allStates = new States().init(parser);
 			defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
 			neighborhood = new Neighborhood().init(parser);
+			customizedParams = new Params(parser);
 		} catch (XPathExpressionException | UnrecognizedQueryMethodException | NumberFormatException e) {
 			e.printStackTrace();
 		}

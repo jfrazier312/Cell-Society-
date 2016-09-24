@@ -59,4 +59,9 @@ public class XMLConfigTest {
 		assertEquals("constant", config.getNeighborhood().getEdgeType());
 		assertEquals("state1", config.getNeighborhood().getEdgeValue());
 	}
+	
+	@Test
+	public void customParamsLoadedProperly() {
+		assertEquals("0.8", config.getCustomParam("probability"));
+	}
 }
