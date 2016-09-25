@@ -16,7 +16,7 @@ public interface GameWorld {
 	public static final String RESET = "Reset";
 	public static final String STEP = "Step";
 	
-	public static double SCENE_WIDTH = 700;
+	public static double SCENE_WIDTH = 800;
 	public static double SCENE_HEIGHT = 500;
 	
 	public static double GRID_WIDTH = 400;

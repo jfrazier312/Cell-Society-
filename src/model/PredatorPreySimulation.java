@@ -21,9 +21,8 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 	
 	public void initSimulation() {
 		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
-		double percentShark = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("sharkToFishRatio"));
-		//double percentEmptyCells = .2;
-		//double percentShark = .2;
+		double percentShark = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentShark"));
+
 		createGrid(percentEmptyCells, percentShark);
 	}
 
