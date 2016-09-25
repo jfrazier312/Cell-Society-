@@ -19,6 +19,8 @@ public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid;
 	
+	private String simulationName;
+	
 	// TODO: Jordan: change parameters 
 	//       number of initially empty (resets grid)
 	// 		 percentage of states to each other (resets)
@@ -38,13 +40,10 @@ public abstract class CellGrid extends GridPane {
 
 	// Need to change spacing in flowpane if shape is different than rectangle
 	public void renderGrid(FlowPane cellPane) {
-		// loop through 2d grid, render each cell. should have already set up state correctly, 
-		// this just needs to display it.
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
-//				Node updatedCell = currentCell.render();
-				Node updatedCell = currentCell.render(currentCell.getCurrentstate());
+				Node updatedCell = currentCell.render();
 				cellPane.getChildren().add(updatedCell);
 			}
 		}	
@@ -118,6 +117,10 @@ public abstract class CellGrid extends GridPane {
 	public abstract void updateGrid();
 
 	public abstract void updateCell(Cell myCell);
+	
+	public abstract String getSimulationName();
+	
+	public abstract void initSimulation();
 	
 	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
 			throws XPathExpressionException, UnrecognizedQueryMethodException {

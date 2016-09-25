@@ -11,7 +11,8 @@ import config.ConfigurationLoader;
  * 
  */ 
 
-public class FireSimulation extends CellGrid {
+public class FireSimulation extends CellGrid implements view.GameWorld {
+	public static final String SIMULATION_NAME = FIRE_SIMULATION ;
 	private static final String EMPTY = "empty";
 	private static final String TREE = "tree";
 	private static final String BURNING = "burning";
@@ -20,6 +21,10 @@ public class FireSimulation extends CellGrid {
 
 	public FireSimulation() {
 		super();
+
+	}
+	
+	public void initSimulation() {
 		createGrid();
 		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		//probOfBurning = .5;
@@ -88,6 +93,11 @@ public class FireSimulation extends CellGrid {
 			myCell.setFuturestate(EMPTY);
 		}
 		
+	}
+
+	@Override
+	public String getSimulationName() {
+		return SIMULATION_NAME;
 	}
 	
 //	public void printGrid(){

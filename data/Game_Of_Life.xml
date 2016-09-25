@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
-<simulation name="Segregation" author="team19">
-	<grid width="20" height="20"/>
+<simulation name="Game_Of_Life" author="team19">
+	<grid width="15" height="15"/>
 	<neighborhood size="5">
 		<edge type="constant" value="alive">
 		</edge>
 	</neighborhood>
 	<states>
-		<state color="#666666">typeA</state>
-		<state color="#333333">typeB</state>
-		<state color="#d9d9d9">empty</state>
+		<state color="#d9d9d9">alive</state>
+		<state color="#333333">dead</state>
 	</states>
-	<init default="empty">
+	<init mode="param">
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="percentDead" value="0.5"></param>

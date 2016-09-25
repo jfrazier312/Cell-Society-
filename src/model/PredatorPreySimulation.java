@@ -6,15 +6,20 @@ import java.util.Random;
 
 import config.ConfigurationLoader;
 
-public class PredatorPreySimulation extends CellGrid {
+public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 
 	private static final String EMPTY = "empty";
 	private static final String FISH = "fish";
+	// TODO: Jordan - should implement Gameworld and get constant for name
+	public static final String SIMULATION_NAME = WATOR_WORLD;
 	private static final String SHARK = "shark";
 	private Random generator;
 
 	public PredatorPreySimulation() {
 		super();
+	}
+	
+	public void initSimulation() {
 		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
 		double percentShark = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("sharkToFishRatio"));
 		//double percentEmptyCells = .2;
@@ -208,6 +213,11 @@ public class PredatorPreySimulation extends CellGrid {
 			}
 		}
 		return myFishFriends;
+	}
+	
+	@Override
+	public String getSimulationName() {
+		return SIMULATION_NAME;
 	}
 
 //	public void printGrid(){

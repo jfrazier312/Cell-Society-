@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<simulation name="Fire" author="team19">
+<simulation name="Fire_Simulation" author="team19">
 	<grid width="20" height="20"/>
 	<neighborhood size="5">
 		<edge type="constant" value="empty">

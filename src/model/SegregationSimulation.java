@@ -5,26 +5,29 @@ import java.util.Random;
 import config.ConfigurationLoader;
 
 //Should we do getting neighbors in each simulation since the definition can vary?
-public class SegregationSimulation extends CellGrid {
+public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	
 	private static final String EMPTY = "empty";
+	public static final String SIMULATION_NAME = SEGREGATION_SIMULATION;
 	private static final String typeA = "typeA";
 	private static final String typeB = "typeB";
 	private double myProbability;
 	ArrayList<Cell> myMovingCells;
 	Random generator;
-
+	
 	public SegregationSimulation() {
 		super();
+	}
+	
+	public void initSimulation() {
 		myProbability  = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		myMovingCells = new ArrayList<Cell>();
 		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
 		double percenttypeA = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentTypeA"));
 		createGrid(percentEmptyCells, percenttypeA);
-		
 	}
 	
-	public void createGrid(double percentEmpty, double percenttypeA) {
+	private void createGrid(double percentEmpty, double percenttypeA) {
 		generator = new Random();
 		int size = getNumRows()*getNumCols();
 		double numEmpty = percentEmpty*size;
@@ -130,6 +133,10 @@ public class SegregationSimulation extends CellGrid {
 		else{
 			myCell.setFuturestate(myCell.getCurrentstate());
 		}
+	}
+	
+	public String getSimulationName() {
+		return SIMULATION_NAME;
 	}
 	
 //	public void printGrid(){
