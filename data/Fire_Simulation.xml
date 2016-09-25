@@ -6,13 +6,13 @@
 		</edge>
 	</neighborhood>
 	<states>
-		<state color="#33cc33">tree</state>
-		<state color="#ffcc00">burning</state>
-		<state color="#993300">empty</state>
+		<state color="#00ff00">tree</state>
+		<state color="#ff0000">burning</state>
+		<state color="#000011">empty</state>
 	</states>
 	<init default="tree">
 		<cell state="burning" row="10" col="10"></cell>
 	</init>
 	<animation framesPerSec="1"></animation>
-	<param name="probability" value="0.5"></param>
+	<param name="probability" value="1"></param>
 </simulation>

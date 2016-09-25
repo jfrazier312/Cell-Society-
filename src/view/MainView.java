@@ -3,7 +3,6 @@ package view;
 import config.ConfigurationLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -16,6 +15,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CellGrid;
+import model.FireSimulation;
+import model.GameOfLifeSimulation;
+import model.PredatorPreySimulation;
+import model.SegregationSimulation;
 
 public class MainView implements GameWorld {
 
@@ -72,11 +75,20 @@ public class MainView implements GameWorld {
 	}
 
 	private void findSimulation(String sim) {
-		for (int i = 0; i < SIMULATION_LIST.length; i++) {
-			if (sim.equals(SIMULATION_LIST[i].getSimulationName())) {
-				simulation = SIMULATION_LIST[i];
-				break;
-			}
+//		for (int i = 0; i < SIMULATION_LIST.length; i++) {
+//			if (sim.equals(SIMULATION_LIST[i].getSimulationName())) {
+//				simulation = SIMULATION_LIST[i];
+//				break;
+//			}
+//		}
+		if(sim.equals(FIRE_SIMULATION)){
+			simulation = new FireSimulation();
+		} else if (sim.equals(GAME_OF_LIFE)) {
+			simulation = new GameOfLifeSimulation();
+		} else if (sim.equals(SEGREGATION_SIMULATION)){
+			simulation = new SegregationSimulation();
+		} else if (sim.equals(WATOR_WORLD)){
+			simulation = new PredatorPreySimulation();
 		}
 	}
 
