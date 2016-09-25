@@ -57,12 +57,35 @@ public class MainView implements GameWorld {
 		// add the buttons
 		createAllButtons();
 		setSimulationEventHandler();
-		
+
 		// create game loop
 		createGameLoop();
 
+		// Checks if slider needs to reset grid
+		createResetTimelineChecker();
+
 		return scene;
 
+	}
+
+	private void createResetTimelineChecker() {
+		Timeline timeline = new Timeline();
+		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), e-> {
+			if (SliderCreator.reset) {
+				try {
+					root.getChildren().removeAll(root.getChildren());
+					createCellPane();
+					createSimulation();
+					createAllButtons();
+					SliderCreator.reset = false;
+					gameloop.pause();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}));
+		timeline.play();
 	}
 
 	private void createSimulation() {
@@ -76,19 +99,13 @@ public class MainView implements GameWorld {
 	}
 
 	private void findSimulation(String sim) {
-//		for (int i = 0; i < SIMULATION_LIST.length; i++) {
-//			if (sim.equals(SIMULATION_LIST[i].getSimulationName())) {
-//				simulation = SIMULATION_LIST[i];
-//				break;
-//			}
-//		}
-		if(sim.equals(FIRE_SIMULATION)){
+		if (sim.equals(FIRE_SIMULATION)) {
 			simulation = new FireSimulation();
 		} else if (sim.equals(GAME_OF_LIFE)) {
 			simulation = new GameOfLifeSimulation();
-		} else if (sim.equals(SEGREGATION_SIMULATION)){
+		} else if (sim.equals(SEGREGATION_SIMULATION)) {
 			simulation = new SegregationSimulation();
-		} else if (sim.equals(WATOR_WORLD)){
+		} else if (sim.equals(WATOR_WORLD)) {
 			simulation = new PredatorPreySimulation();
 		}
 	}
@@ -110,7 +127,7 @@ public class MainView implements GameWorld {
 		HBox hbox2 = new HBox(PADDING);
 
 		// Sets simulation combo box action
-//		setSimulationEventHandler();
+		// setSimulationEventHandler();
 
 		SimulationButton playBtn = new SimulationButton(PLAY);
 		setStartEventHandler(playBtn);
@@ -146,9 +163,10 @@ public class MainView implements GameWorld {
 	private VBox createCustomButtons() {
 		VBox custom = new VBox(PADDING);
 		// loop through the rest of the custom parameters
+		// TODO: Jordan: Right now this aint doing ass shit
 		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
 			SimulationSlider slider = new SimulationSlider(str);
-			custom.getChildren().add(slider);
+			custom.getChildren().add(slider.getVBox());
 		}
 
 		return custom;
@@ -171,7 +189,7 @@ public class MainView implements GameWorld {
 			}
 		});
 	}
-	
+
 	private void createKeyFrameEvents() {
 		cellPane.getChildren().removeAll(cellPane.getChildren());
 		simulation.updateGrid();
@@ -187,7 +205,8 @@ public class MainView implements GameWorld {
 		SIMULATIONS.valueProperty().addListener(e -> {
 			gameloop.stop();
 			try {
-				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load().getConfig();
+				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load();
+				ConfigurationLoader.getConfig();
 				root.getChildren().removeAll(root.getChildren());
 				createCellPane();
 				createSimulation();
@@ -226,9 +245,14 @@ public class MainView implements GameWorld {
 			// If button is reset, then reset parameters back to what's on XML
 			if (btn.getDisplayName().equals(RESET)) {
 				try {
+					// ConfigurationLoader.loader().setSource(SIMULATIONS.getValue()
+					// + ".xml").load();
 					ConfigurationLoader.getConfig();
+					root.getChildren().removeAll(root.getChildren());
 					createCellPane();
+					createAllButtons();
 					createSimulation();
+					// createGameLoop();
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
