@@ -31,7 +31,7 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 		int reproductionTime = Integer.parseInt(ConfigurationLoader.getConfig().getAllStates()
 				.getStateByName(SHARK).getAttributes().get("reproductionTime"));
 		int timeToDeath = Integer.parseInt(ConfigurationLoader.getConfig().getAllStates()
-				.getStateByName(SHARK).getAttributes().get("lifetime"));
+				.getStateByName(SHARK).getAttributes().get("lifeTime"));
 		Cell[][] myGrid = getGrid();
 		generator = new Random();
 		int size = getNumRows()*getNumCols();
