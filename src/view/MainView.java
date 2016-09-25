@@ -23,6 +23,7 @@ public class MainView implements GameWorld {
 	private BorderPane root;
 	private FlowPane cellPane;
 	private CellGrid simulation;
+	private boolean simIsRunning;
 
 	private static final double BUTTON_WIDTH = 200;
 
@@ -93,6 +94,7 @@ public class MainView implements GameWorld {
 
 	private void createAllButtons() throws Exception {
 		VBox buttonContainer = new VBox(PADDING);
+		simIsRunning = false;
 
 		// TODO: Jordan - set padding on buttons and button size from XML
 		HBox hbox1 = new HBox(PADDING);
@@ -114,7 +116,7 @@ public class MainView implements GameWorld {
 		SimulationButton stepBtn = new SimulationButton(STEP);
 		setStepEventHandler(stepBtn);
 
-		Slider fpsSlider = new Slider(1.0, 10.0, 1.0);
+		Slider fpsSlider = new Slider(1.0, 60.0, 1.0);
 		setFPSEventHandler(fpsSlider);
 
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
@@ -158,7 +160,9 @@ public class MainView implements GameWorld {
 					root.setLeft(cellPane);
 					System.out.println(simulation.getGrid()[0][0].getCurrentstate());
 				}));
-				gameloop.playFromStart();
+				if (simIsRunning) {
+					gameloop.playFromStart();
+				}
 			}
 		});
 
@@ -190,6 +194,7 @@ public class MainView implements GameWorld {
 	private void setStartEventHandler(SimulationButton btn) {
 		setDimensions(btn);
 		btn.setOnAction(e -> {
+			simIsRunning = true;
 			gameloop.setCycleCount(Timeline.INDEFINITE);
 			gameloop.playFromStart();
 		});
@@ -199,6 +204,7 @@ public class MainView implements GameWorld {
 		setDimensions(btn);
 		btn.setOnAction(e -> {
 			gameloop.pause();
+			simIsRunning = false;
 			stepOnce();
 		});
 	}
@@ -219,6 +225,7 @@ public class MainView implements GameWorld {
 				}
 			}
 			gameloop.pause();
+			simIsRunning = false;
 		});
 	}
 
