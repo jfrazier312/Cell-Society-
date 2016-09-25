@@ -189,7 +189,6 @@ public class MainView implements GameWorld {
 			try {
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load().getConfig();
 				root.getChildren().removeAll(root.getChildren());
-				
 				createCellPane();
 				createSimulation();
 				createAllButtons();
