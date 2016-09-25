@@ -50,6 +50,7 @@ public class XMLConfigTest {
 				assertEquals("state2", s.getValue());
 			}
 		}
+		
 		assertNotNull(config.getAllStates().getStateByName("state2"));
 		assertEquals("state1", config.getDefaultInitState().getValue());
 	}

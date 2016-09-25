@@ -41,6 +41,6 @@ public class Params {
 	public String setCustomParam(String paramName, String value) {
 		if (customizedParams == null)
 			return null;
-		return customizedParams.get(paramName);
+		return customizedParams.put(paramName, value);
 	}
 }
