@@ -93,6 +93,14 @@ public class Configuration {
 	public int getNumCols() {
 		return numCols;
 	}
+	
+	public void setNumRows(int numRows) {
+		this.numRows = numRows;
+	}
+	
+	public void setNumCols(int numCols) {
+		this.numCols = numCols;
+	}
 
 	public States getAllStates() {
 		return allStates;

@@ -27,6 +27,7 @@ public class MainView implements GameWorld {
 	private FlowPane cellPane;
 	private CellGrid simulation;
 	private boolean simIsRunning;
+	private VBox buttonContainer;
 
 	private static final double BUTTON_WIDTH = 200;
 
@@ -39,10 +40,8 @@ public class MainView implements GameWorld {
 
 	// TODO: Jordan: This will return a scene, and be called in Main.
 	public Scene initSimulation(Stage primaryStage) throws Exception {
-
 		// Do configuration loader to get the information for scene / etc.
 		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
-
 		root = new BorderPane();
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		// scene = new Scene(root, config.getSceneWidth(),
@@ -74,10 +73,10 @@ public class MainView implements GameWorld {
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), e-> {
 			if (SliderCreator.reset) {
 				try {
-					root.getChildren().removeAll(root.getChildren());
+//					root.getChildren().removeAll(root.getChildren());
 					createCellPane();
 					createSimulation();
-					createAllButtons();
+					createCustomButtons();
 					SliderCreator.reset = false;
 					gameloop.pause();
 				} catch (Exception e1) {
@@ -119,12 +118,13 @@ public class MainView implements GameWorld {
 	}
 
 	private void createAllButtons() throws Exception {
-		VBox buttonContainer = new VBox(PADDING);
+		buttonContainer = new VBox(PADDING);
 		simIsRunning = false;
 
 		// TODO: Jordan - set padding on buttons and button size from XML
 		HBox hbox1 = new HBox(PADDING);
 		HBox hbox2 = new HBox(PADDING);
+		VBox vbox3 = new VBox(PADDING);
 
 		// Sets simulation combo box action
 		// setSimulationEventHandler();
@@ -141,35 +141,75 @@ public class MainView implements GameWorld {
 
 		SimulationButton stepBtn = new SimulationButton(STEP);
 		setStepEventHandler(stepBtn);
+		
+		hbox2.getChildren().addAll(stepBtn, resetBtn);
+		
+		SimulationSlider rowsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumRows(), "Rows");
+		setRowsEventHandler(rowsSlider.getSlider());
+
+		SimulationSlider colsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumCols(), "Cols");
+		setColumnsEventHandler(colsSlider.getSlider());
+		
+		vbox3.getChildren().addAll(rowsSlider.getHbox(), colsSlider.getHbox());
 
 		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, 1.0, "FPS");
 		setFPSEventHandler(fpsSlider.getSlider());
-
-		hbox2.getChildren().addAll(stepBtn, resetBtn);
-
+	
 		VBox basicBtnBox = new VBox(PADDING);
-		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, fpsSlider.getHbox());
+		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getHbox());
+		
+		buttonContainer.getChildren().add(basicBtnBox);
 
-		VBox additionalSliders = createCustomButtons();
+		createCustomButtons();
 
-		buttonContainer.getChildren().addAll(basicBtnBox, additionalSliders);
 		// Right inset will be the same padding used on the left side of grid
 		buttonContainer.setPadding(buttonPadding);
 		buttonContainer.setMaxWidth(140);
 		root.setRight(buttonContainer);
-
 	}
 
-	private VBox createCustomButtons() {
+	private void createCustomButtons() {
 		VBox custom = new VBox(PADDING);
 		// loop through the rest of the custom parameters
-		// TODO: Jordan: Right now this aint doing ass shit
 		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
 			SimulationSlider slider = new SimulationSlider(str);
 			custom.getChildren().add(slider.getVBox());
 		}
+		// this is so poorly designed
+		if (buttonContainer.getChildren().size() > 1) {
+			buttonContainer.getChildren().remove(1);
+		}
+		buttonContainer.getChildren().add(custom);
+	}
+	
+	private void setRowsEventHandler(Slider sizeSlider) {
+		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
-		return custom;
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				gameloop.pause();
+				double newval = (double) newValue;
+				ConfigurationLoader.getConfig().setNumRows((int) newval);
+				createCellPane();
+				createCustomButtons();
+				createSimulation();
+			}
+		});
+	}
+	
+	private void setColumnsEventHandler(Slider sizeSlider) {
+		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				gameloop.pause();
+				double newval = (double) newValue;
+				ConfigurationLoader.getConfig().setNumCols((int) newval);
+				createCellPane();
+				createCustomButtons();
+				createSimulation();
+			}
+		});
 	}
 
 	private void setFPSEventHandler(Slider fpsSlider) {
@@ -206,12 +246,12 @@ public class MainView implements GameWorld {
 			gameloop.stop();
 			try {
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load();
-				ConfigurationLoader.getConfig();
 				root.getChildren().removeAll(root.getChildren());
 				createCellPane();
+				createCustomButtons();
 				createSimulation();
-				createAllButtons();
 				createGameLoop();
+				createResetTimelineChecker();
 
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
@@ -248,12 +288,11 @@ public class MainView implements GameWorld {
 					// ConfigurationLoader.loader().setSource(SIMULATIONS.getValue()
 					// + ".xml").load();
 					ConfigurationLoader.getConfig();
-					root.getChildren().removeAll(root.getChildren());
 					createCellPane();
-					createAllButtons();
+					createCustomButtons();
 					createSimulation();
-					// createGameLoop();
-
+//					createGameLoop();
+//					createResetTimelineChecker();
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					throw new IllegalArgumentException("Failed loading XML file");
