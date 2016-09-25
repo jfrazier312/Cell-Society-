@@ -56,7 +56,8 @@ public class MainView implements GameWorld {
 
 		// add the buttons
 		createAllButtons();
-
+		setSimulationEventHandler();
+		
 		// create game loop
 		createGameLoop();
 
@@ -96,11 +97,7 @@ public class MainView implements GameWorld {
 		// TODO: Duration should come from XML frames/sec
 		gameloop = new Timeline();
 		gameloop.getKeyFrames().add(new KeyFrame(Duration.seconds(1), e -> {
-			cellPane.getChildren().removeAll(cellPane.getChildren());
-			simulation.updateGrid();
-			simulation.renderGrid(cellPane);
-			root.setLeft(cellPane);
-			System.out.println(simulation.getGrid()[0][0].getCurrentstate());
+			createKeyFrameEvents();
 		}));
 	}
 
@@ -113,7 +110,7 @@ public class MainView implements GameWorld {
 		HBox hbox2 = new HBox(PADDING);
 
 		// Sets simulation combo box action
-		setSimulationEventHandler();
+//		setSimulationEventHandler();
 
 		SimulationButton playBtn = new SimulationButton(PLAY);
 		setStartEventHandler(playBtn);
@@ -166,22 +163,22 @@ public class MainView implements GameWorld {
 				gameloop.pause();
 				gameloop.getKeyFrames().remove(0);
 				gameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
-					cellPane.getChildren().removeAll(cellPane.getChildren());
-					simulation.updateGrid();
-					simulation.renderGrid(cellPane);
-					root.setLeft(cellPane);
-					System.out.println(simulation.getGrid()[0][0].getCurrentstate());
+					createKeyFrameEvents();
 				}));
 				if (simIsRunning) {
 					gameloop.playFromStart();
 				}
 			}
 		});
-
 	}
-	// gameloop.pause();
-	// gameloop.getKeyFrames().remove(0);
-	// gameloop.getKeyFrames().add(new KeyFrame(Duration.millis()))
+	
+	private void createKeyFrameEvents() {
+		cellPane.getChildren().removeAll(cellPane.getChildren());
+		simulation.updateGrid();
+		simulation.renderGrid(cellPane);
+		root.setLeft(cellPane);
+		System.out.println(simulation.getGrid()[0][0].getCurrentstate());
+	}
 
 	private void setSimulationEventHandler() {
 		SIMULATIONS.setValue(ConfigurationLoader.getConfig().getSimulationName());
@@ -191,8 +188,11 @@ public class MainView implements GameWorld {
 			gameloop.stop();
 			try {
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load().getConfig();
+				root.getChildren().removeAll(root.getChildren());
+				
 				createCellPane();
 				createSimulation();
+				createAllButtons();
 				createGameLoop();
 
 			} catch (Exception e1) {
@@ -263,11 +263,11 @@ public class MainView implements GameWorld {
 		// Have to add whatever padding you add on to the left side of the grid
 		// for some
 		// strange fucking reason
-		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
-		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
+		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING + (ConfigurationLoader.getConfig().getNumCols() - 1));
+		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING + (ConfigurationLoader.getConfig().getNumCols() - 1));
 
-		cellPane.setMaxHeight(GRID_HEIGHT);
-		cellPane.setMinHeight(GRID_HEIGHT);
+		cellPane.setMaxHeight(GRID_HEIGHT + (ConfigurationLoader.getConfig().getNumRows() - 1));
+		cellPane.setMinHeight(GRID_HEIGHT + (ConfigurationLoader.getConfig().getNumRows() - 1));
 
 		// cellPane.setPrefWidth(20);
 		// cellPane.setPrefHeight(300);
