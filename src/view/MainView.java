@@ -4,8 +4,11 @@ import config.ConfigurationLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -30,12 +33,11 @@ public class MainView implements GameWorld {
 	private Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2,
 			GRID_PADDING);
 
-
 	// TODO: Jordan: This will return a scene, and be called in Main.
 	public Scene initSimulation(Stage primaryStage) throws Exception {
 
 		// Do configuration loader to get the information for scene / etc.
-//		ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
+		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
 
 		root = new BorderPane();
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
@@ -53,7 +55,7 @@ public class MainView implements GameWorld {
 
 		// create game loop
 		createGameLoop();
-		
+
 		return scene;
 
 	}
@@ -98,7 +100,7 @@ public class MainView implements GameWorld {
 
 		// Sets simulation combo box action
 		setSimulationEventHandler();
-		
+
 		SimulationButton playBtn = new SimulationButton(PLAY);
 		setStartEventHandler(playBtn);
 
@@ -111,11 +113,15 @@ public class MainView implements GameWorld {
 
 		SimulationButton stepBtn = new SimulationButton(STEP);
 		setStepEventHandler(stepBtn);
+
+		Slider fpsSlider = new Slider(1.0, 10.0, 1.0);
+		setFPSEventHandler(fpsSlider);
+
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
 
 		VBox basicBtnBox = new VBox(PADDING);
-		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2);
-		
+		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, fpsSlider);
+
 		VBox additionalSliders = createCustomButtons();
 
 		buttonContainer.getChildren().addAll(basicBtnBox, additionalSliders);
@@ -125,30 +131,54 @@ public class MainView implements GameWorld {
 		root.setRight(buttonContainer);
 
 	}
-	
+
 	private VBox createCustomButtons() {
 		VBox custom = new VBox(PADDING);
-		// loop through the rest of the things needed from config.getShit,
-		// create necessary sliders
+		// loop through the rest of the custom parameters
 		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
 			SimulationSlider slider = new SimulationSlider(str);
 			custom.getChildren().add(slider);
 		}
-		
+
 		return custom;
 	}
+
+	private void setFPSEventHandler(Slider fps) {
+		fps.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				// TODO Auto-generated method stub
+				double fpsdouble = (double) 1000 / (double) newValue;
+				gameloop.pause();
+				gameloop.getKeyFrames().remove(0);
+				gameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
+					cellPane.getChildren().removeAll(cellPane.getChildren());
+					simulation.updateGrid();
+					simulation.renderGrid(cellPane);
+					root.setLeft(cellPane);
+					System.out.println(simulation.getGrid()[0][0].getCurrentstate());
+				}));
+				gameloop.playFromStart();
+			}
+		});
+
+	}
+	// gameloop.pause();
+	// gameloop.getKeyFrames().remove(0);
+	// gameloop.getKeyFrames().add(new KeyFrame(Duration.millis()))
 
 	private void setSimulationEventHandler() {
 		SIMULATIONS.setValue(ConfigurationLoader.getConfig().getSimulationName());
 		SIMULATIONS.setMinWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.setMaxWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.valueProperty().addListener(e -> {
-			gameloop.pause();
+			gameloop.stop();
 			try {
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load().getConfig();
 				createCellPane();
 				createSimulation();
-				
+				createGameLoop();
+
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -182,7 +212,7 @@ public class MainView implements GameWorld {
 					ConfigurationLoader.getConfig();
 					createCellPane();
 					createSimulation();
-					
+
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					throw new IllegalArgumentException("Failed loading XML file");
@@ -219,7 +249,6 @@ public class MainView implements GameWorld {
 
 		cellPane.setMaxHeight(GRID_HEIGHT);
 		cellPane.setMinHeight(GRID_HEIGHT);
-
 
 		// cellPane.setPrefWidth(20);
 		// cellPane.setPrefHeight(300);
