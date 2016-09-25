@@ -248,11 +248,10 @@ public class MainView implements GameWorld {
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load();
 				root.getChildren().removeAll(root.getChildren());
 				createCellPane();
-				createCustomButtons();
+				createAllButtons();
 				createSimulation();
 				createGameLoop();
 				createResetTimelineChecker();
-
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
