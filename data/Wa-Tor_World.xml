@@ -14,5 +14,5 @@
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="percentEmpty" value="0.1"></param>
-	<param name="sharkToFishRatio" value="0.2"></param>
+	<param name="percentShark" value="0.2"></param>
 </simulation>
