@@ -17,7 +17,6 @@ public class Rectangle extends Cell implements view.GameWorld {
 
 	@Override
 	public Node render() {
-		// TODO: Jordan - update render for XML, update row/cols
 		
 		double rows = ConfigurationLoader.getConfig().getNumRows();
 		double cols = ConfigurationLoader.getConfig().getNumCols();
@@ -33,7 +32,7 @@ public class Rectangle extends Cell implements view.GameWorld {
 	}
 
 	private double calculateSize(double edgeSize, double numSpots) {
-		return (edgeSize / numSpots * .01) + (edgeSize / numSpots);
+		return (edgeSize / numSpots);
 	}
 
 	@Override

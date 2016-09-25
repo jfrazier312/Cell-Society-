@@ -1,10 +1,5 @@
 package model;
 
-import config.Configuration;
-import config.ConfigurationLoader;
-import javafx.scene.Node;
-import javafx.scene.paint.Color;
-
 public class Fish extends RectangleNoDiagonals {
 
 	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };
@@ -47,21 +42,6 @@ public class Fish extends RectangleNoDiagonals {
 
 	public void resetReproductionTime() {
 		myReproductionTime = myMaxReproductionTime;
-	}
-
-	@Override
-	public Node render() {
-		javafx.scene.shape.Rectangle a = new javafx.scene.shape.Rectangle(10, 10);
-		// based on size of grid
-		// based on pixels on windows
-		Configuration config = ConfigurationLoader.loader().getConfig();
-		String color = config.getAllStates().getColors().get(this.getCurrentstate());
-
-		// Needs to be a hex value ( ##0000FF, or 0x0000FF)
-		a.setFill(Color.web(color));
-
-		return a;
-
 	}
 
 	@Override

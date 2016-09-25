@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-
 public class RectangleNoDiagonals extends Rectangle {
 
 	private int[] noDiagonalRowDeltas = {-1, 0, 1, 0,};
