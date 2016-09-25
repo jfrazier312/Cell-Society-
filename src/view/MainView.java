@@ -92,13 +92,13 @@ public class MainView implements GameWorld {
 	private void createAllButtons() throws Exception {
 		VBox buttonContainer = new VBox(PADDING);
 
-		// Sets simulation combo box action
-		setSimulationEventHandler();
-
 		// TODO: Jordan - set padding on buttons and button size from XML
 		HBox hbox1 = new HBox(PADDING);
 		HBox hbox2 = new HBox(PADDING);
 
+		// Sets simulation combo box action
+		setSimulationEventHandler();
+		
 		SimulationButton playBtn = new SimulationButton(PLAY);
 		setStartEventHandler(playBtn);
 
@@ -115,14 +115,8 @@ public class MainView implements GameWorld {
 
 		VBox basicBtnBox = new VBox(PADDING);
 		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2);
-		VBox additionalSliders = new VBox(PADDING);
-
-		// loop through the rest of the things needed from config.getShit,
-		// create necessary sliders
-		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
-			SimulationSlider slider = new SimulationSlider(str);
-			additionalSliders.getChildren().add(slider);
-		}
+		
+		VBox additionalSliders = createCustomButtons();
 
 		buttonContainer.getChildren().addAll(basicBtnBox, additionalSliders);
 		// Right inset will be the same padding used on the left side of grid
@@ -131,23 +125,28 @@ public class MainView implements GameWorld {
 		root.setRight(buttonContainer);
 
 	}
+	
+	private VBox createCustomButtons() {
+		VBox custom = new VBox(PADDING);
+		// loop through the rest of the things needed from config.getShit,
+		// create necessary sliders
+		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
+			SimulationSlider slider = new SimulationSlider(str);
+			custom.getChildren().add(slider);
+		}
+		
+		return custom;
+	}
 
 	private void setSimulationEventHandler() {
 		SIMULATIONS.setValue(ConfigurationLoader.getConfig().getSimulationName());
 		SIMULATIONS.setMinWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.setMaxWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.valueProperty().addListener(e -> {
-			// TODO: Jordan: Simulation box changes
-			// Needs to stop simulation, change XML to whatever simulation we
-			// want,
-			// create the new grid and buttons, then wait for 'play' action
 			gameloop.pause();
 			try {
-				// TODO: Jordan: Simulation changer: Definitely need to do more here
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load().getConfig();
-				//stepOnce();
 				createCellPane();
-				// Creates new grid and shit
 				createSimulation();
 				
 			} catch (Exception e1) {
@@ -163,7 +162,6 @@ public class MainView implements GameWorld {
 		btn.setOnAction(e -> {
 			gameloop.setCycleCount(Timeline.INDEFINITE);
 			gameloop.playFromStart();
-			// config.setRunning(true);
 		});
 	}
 
@@ -184,13 +182,13 @@ public class MainView implements GameWorld {
 					ConfigurationLoader.getConfig();
 					createCellPane();
 					createSimulation();
+					
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					throw new IllegalArgumentException("Failed loading XML file");
 				}
 			}
 			gameloop.pause();
-			// config.setRunning(false);
 		});
 	}
 

@@ -1,5 +1,4 @@
 package view;
-import config.Configuration;
 import config.ConfigurationLoader;
 import javafx.application.Application;
 import javafx.scene.Scene;

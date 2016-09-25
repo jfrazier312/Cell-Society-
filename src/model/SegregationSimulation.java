@@ -5,10 +5,10 @@ import java.util.Random;
 import config.ConfigurationLoader;
 
 //Should we do getting neighbors in each simulation since the definition can vary?
-public class SegregationSimulation extends CellGrid {
+public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	
 	private static final String EMPTY = "empty";
-	public static final String SIMULATION_NAME = "Segregation Simulation";
+	public static final String SIMULATION_NAME = SEGREGATION_SIMULATION;
 	private static final String typeA = "typeA";
 	private static final String typeB = "typeB";
 	private double myProbability;

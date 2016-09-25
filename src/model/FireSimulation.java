@@ -11,8 +11,8 @@ import config.ConfigurationLoader;
  * 
  */ 
 
-public class FireSimulation extends CellGrid {
-	public static final String SIMULATION_NAME = "Fire Simulation";
+public class FireSimulation extends CellGrid implements view.GameWorld {
+	public static final String SIMULATION_NAME = FIRE_SIMULATION ;
 	private static final String EMPTY = "empty";
 	private static final String TREE = "tree";
 	private static final String BURNING = "burning";

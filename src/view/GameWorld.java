@@ -22,10 +22,10 @@ public interface GameWorld {
 	public static double GRID_WIDTH = 400;
 	public static double GRID_HEIGHT = 400;
 	
-	public static final String GAME_OF_LIFE = "Game Of Life";
-	public static final String WATOR_WORLD = "Wa-Tor World";
-	public static final String FIRE_SIMULATION = "Fire Simulation";
-	public static final String SEGREGATION_SIMULATION = "Segregation Simulation";
+	public static final String GAME_OF_LIFE = "Game_Of_Life";
+	public static final String WATOR_WORLD = "Wa-Tor_World";
+	public static final String FIRE_SIMULATION = "Fire_Simulation";
+	public static final String SEGREGATION_SIMULATION = "Segregation_Simulation";
 	
 	public static final double GRID_PADDING = SCENE_WIDTH / 20;
 

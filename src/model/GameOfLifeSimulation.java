@@ -4,9 +4,9 @@ import java.util.Random;
 
 import config.ConfigurationLoader;
 
-public class GameOfLifeSimulation extends CellGrid {
+public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	
-	public static final String SIMULATION_NAME = "Game of Life";
+	public static final String SIMULATION_NAME = GAME_OF_LIFE;
 	private static final String DEAD = "dead";
 	private static final String ALIVE = "alive";
 	

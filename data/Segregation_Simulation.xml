@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<simulation name="Segregation" author="team19">
+<simulation name="Segregation_Simulation" author="team19">
 	<grid width="20" height="20"/>
 	<neighborhood size="5">
 		<edge type="constant" value="alive">

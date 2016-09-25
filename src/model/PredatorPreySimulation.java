@@ -6,12 +6,12 @@ import java.util.Random;
 
 import config.ConfigurationLoader;
 
-public class PredatorPreySimulation extends CellGrid {
+public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 
 	private static final String EMPTY = "empty";
 	private static final String FISH = "fish";
 	// TODO: Jordan - should implement Gameworld and get constant for name
-	public static final String SIMULATION_NAME = "Predator Prey";
+	public static final String SIMULATION_NAME = WATOR_WORLD;
 	private static final String SHARK = "shark";
 	private Random generator;
 
