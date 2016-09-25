@@ -18,14 +18,6 @@ public class Rectangle extends Cell implements view.GameWorld {
 	@Override
 	public Node render() {
 		// TODO: Jordan - update render for XML, update row/cols
-
-		/*
-		 * Need to add config.getNumberColumns() in there double height =
-		 * calculateSize(config.getGridHeight(), config.getNumberRows()); double
-		 * width = calculateSize(config.getGridWidth(), config.getNumberCols());
-		 * javafx.scene.shape.Rectangle a = new
-		 * javafx.scene.shape.Rectangle(width, height);
-		 */
 		
 		double rows = ConfigurationLoader.getConfig().getNumRows();
 		double cols = ConfigurationLoader.getConfig().getNumCols();
@@ -41,7 +33,7 @@ public class Rectangle extends Cell implements view.GameWorld {
 	}
 
 	private double calculateSize(double edgeSize, double numSpots) {
-		return edgeSize / numSpots;
+		return (edgeSize / numSpots * .01) + (edgeSize / numSpots);
 	}
 
 	@Override
