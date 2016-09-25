@@ -125,13 +125,13 @@ public class MainView implements GameWorld {
 		SimulationButton stepBtn = new SimulationButton(STEP);
 		setStepEventHandler(stepBtn);
 
-		Slider fpsSlider = new Slider(1.0, 60.0, 1.0);
-		setFPSEventHandler(fpsSlider);
+		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, 1.0, "FPS");
+		setFPSEventHandler(fpsSlider.getSlider());
 
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
 
 		VBox basicBtnBox = new VBox(PADDING);
-		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, fpsSlider);
+		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, fpsSlider.getHbox());
 
 		VBox additionalSliders = createCustomButtons();
 
@@ -154,8 +154,8 @@ public class MainView implements GameWorld {
 		return custom;
 	}
 
-	private void setFPSEventHandler(Slider fps) {
-		fps.valueProperty().addListener(new ChangeListener<Number>() {
+	private void setFPSEventHandler(Slider fpsSlider) {
+		fpsSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub

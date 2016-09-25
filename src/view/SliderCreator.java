@@ -4,10 +4,27 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import config.ConfigurationLoader;
 
-public class SliderCreator extends HBox {
+public class SliderCreator extends Slider {
 
 	private HBox hbox;
 	private Slider slider;
+	
+	public SliderCreator(double min, double max, double defaultVal, String displayName) {
+		
+		hbox = new HBox(10);
+		Label lbl = new Label(String.valueOf(defaultVal));
+		Label display = new Label(displayName);
+		slider = new Slider(min, max, defaultVal);
+	
+		
+		hbox.getChildren().addAll(display, slider, lbl);
+
+		slider.valueProperty().addListener(e -> {
+			Double newValue = (double) Math.round(slider.getValue() * 10.0) / 10.0;
+			lbl.textProperty().setValue(String.valueOf(newValue));
+		});
+		
+	}
 
 	public SliderCreator(String text) {
 		
@@ -31,8 +48,12 @@ public class SliderCreator extends HBox {
 		});
 	}
 
-	public HBox getSlider() {
+	public HBox getHbox(){
 		return hbox;
+	}
+	
+	public Slider getSlider() {
+		return slider;
 	}
 
 }
