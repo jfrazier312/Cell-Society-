@@ -33,8 +33,8 @@ public class MainView implements GameWorld {
 
 	private Timeline gameloop;
 
-	private Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, SCENE_WIDTH / 40,
-			(SCENE_HEIGHT - GRID_HEIGHT) / 2, 0);
+	private Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, GRID_PADDING,
+			(SCENE_HEIGHT - GRID_HEIGHT) / 2, -40);
 	private Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2,
 			GRID_PADDING);
 
@@ -157,6 +157,7 @@ public class MainView implements GameWorld {
 	
 		VBox basicBtnBox = new VBox(PADDING);
 		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getHbox());
+		basicBtnBox.setMinWidth(300);
 		
 		buttonContainer.getChildren().add(basicBtnBox);
 
@@ -164,7 +165,8 @@ public class MainView implements GameWorld {
 
 		// Right inset will be the same padding used on the left side of grid
 		buttonContainer.setPadding(buttonPadding);
-		buttonContainer.setMaxWidth(140);
+		buttonContainer.setMaxWidth(250);
+		buttonContainer.setMinWidth(250);
 		root.setRight(buttonContainer);
 	}
 
