@@ -115,7 +115,10 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	public String getSimulationName() {
 		return SIMULATION_NAME;
 	}
-	//for testing
+	
+	/**
+	 * This method is used for testing purposes to print grid locally
+	 */
 	public void printGrid(){
 		Random generator = new Random();
 		Cell[][] myGrid = getGrid();
@@ -134,6 +137,11 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 		System.out.println();
 	}
 	
+	/**
+	 * Uncomment this method to test simulation locally
+	 * @param args
+	 */
+	/*
 	public static void main(String[] args){
 		GameOfLifeSimulation test = new GameOfLifeSimulation();
 		int num = 0;
@@ -143,4 +151,5 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 			num++;
 		}
 	}
+	*/
 }
