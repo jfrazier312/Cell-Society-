@@ -144,15 +144,15 @@ public class MainView implements GameWorld {
 		
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
 		
-		SimulationSlider rowsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumRows(), "Rows");
+		SimulationSlider rowsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumRows(), "Rows", false);
 		setRowsEventHandler(rowsSlider.getSlider());
 
-		SimulationSlider colsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumCols(), "Cols");
+		SimulationSlider colsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumCols(), "Cols", false);
 		setColumnsEventHandler(colsSlider.getSlider());
 		
 		vbox3.getChildren().addAll(rowsSlider.getHbox(), colsSlider.getHbox());
 
-		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, 1.0, "FPS");
+		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, ConfigurationLoader.getConfig().getFramesPerSec(), "FPS", false);
 		setFPSEventHandler(fpsSlider.getSlider());
 	
 		VBox basicBtnBox = new VBox(PADDING);
@@ -220,6 +220,7 @@ public class MainView implements GameWorld {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
 				double fpsdouble = (double) 1000 / (double) newValue;
+				ConfigurationLoader.getConfig().setFramesPerSec((int)fpsdouble); 
 				gameloop.pause();
 				gameloop.getKeyFrames().remove(0);
 				gameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
@@ -326,11 +327,11 @@ public class MainView implements GameWorld {
 		// Have to add whatever padding you add on to the left side of the grid
 		// for some
 		// strange fucking reason
-		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING + (ConfigurationLoader.getConfig().getNumCols() - 1));
-		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING + (ConfigurationLoader.getConfig().getNumCols() - 1));
+		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
+		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
 
-		cellPane.setMaxHeight(GRID_HEIGHT + (ConfigurationLoader.getConfig().getNumRows() - 1));
-		cellPane.setMinHeight(GRID_HEIGHT + (ConfigurationLoader.getConfig().getNumRows() - 1));
+		cellPane.setMaxHeight(GRID_HEIGHT);
+		cellPane.setMinHeight(GRID_HEIGHT);
 
 		// cellPane.setPrefWidth(20);
 		// cellPane.setPrefHeight(300);
