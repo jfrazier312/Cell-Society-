@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <simulation name="Game_Of_Life" author="team19">
-	<grid width="5" height="15"/>
+	<grid width="20" height="15"/>
 	<neighborhood size="5">
 		<edge type="constant" value="alive">
 		</edge>

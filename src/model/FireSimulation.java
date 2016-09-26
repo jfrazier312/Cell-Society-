@@ -26,7 +26,7 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 	
 	public void initSimulation() {
 		createGrid();
-		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
+//		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		//probOfBurning = .5;
 	}
 	
@@ -51,6 +51,7 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 	
 	@Override
 	public void updateGrid() {
+		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		Cell[][] myGrid = getGrid();
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
