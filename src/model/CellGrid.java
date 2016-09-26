@@ -11,8 +11,9 @@ import config.ConfigurationLoader;
 import config.XMLParser;
 import exceptions.UnrecognizedQueryMethodException;
 import javafx.scene.Node;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import utils.Utils;
 
 public abstract class CellGrid extends GridPane {
@@ -39,12 +40,19 @@ public abstract class CellGrid extends GridPane {
 	}
 
 	// Need to change spacing in flowpane if shape is different than rectangle
-	public void renderGrid(FlowPane cellPane) {
+	public void renderGrid(GridPane cellPane) {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
+//				ColumnConstraints colC = new ColumnConstraints();
+//				colC.setPercentWidth(100);
+//				cellPane.getColumnConstraints().add(colC);
+//				RowConstraints rowC = new RowConstraints();
+//				rowC.setPercentHeight(100);
+//				cellPane.getRowConstraints().add(rowC);
+//				
 				Cell currentCell = grid[i][j];
 				Node updatedCell = currentCell.render();
-				cellPane.getChildren().add(updatedCell);
+				cellPane.add(updatedCell, j, i);
 			}
 		}	
 		

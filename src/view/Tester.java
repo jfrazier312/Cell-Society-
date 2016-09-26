@@ -1,13 +1,15 @@
 package view;
+
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Tester extends Application {
@@ -34,71 +36,84 @@ public class Tester extends Application {
 
 		// test rendering shapes here
 
-		SimulationSlider slider = new SimulationSlider("fea");
-		root.getChildren().add(slider.getSlider());
+//		SimulationSlider slider = new SimulationSlider("fea");
+//		root.getChildren().add(slider.getSlider());
 
 		GridPane gridpane = new GridPane();
-		gridpane.setPrefSize(300, 400);
-		
-		FlowPane flowpane = new FlowPane(0.0, -1.0);
-		flowpane.setPrefSize(PREF_SIZE, 400);
-		flowpane.setPrefWrapLength(PREF_SIZE);
+		// gridpane.setPrefSize(300, 400);
 
-		numPolygons = (int) ((PREF_SIZE) / (WIDTH));
-		
-		for(int i = 0; i < 100; i++) {
-			if (i % (numPolygons*2) == 0) {
-				System.out.println("i: " + i);
-				Node b = renderOffset();
-				flowpane.getChildren().add(b);
-			} else {
-				Node a = renderHex();
-				flowpane.getChildren().add(a);
+		gridpane.setMaxWidth(400);
+		gridpane.setMaxHeight(400);
+		// gridpane.getColumnConstraints().add(new ColumnConstraints(100));
+
+		double width = gridpane.getMaxWidth();
+		double height = gridpane.getMaxHeight();
+		double widthRect = width / 15;
+		double heightRect = height / 15;
+		System.out.println(widthRect);
+		for (int i = 0; i < 15; i++) {
+			for (int j = 0; j < 15; j++) {
+				ColumnConstraints one = new ColumnConstraints();
+				one.setPercentWidth(50);
+				gridpane.getColumnConstraints().add(one);
+				Rectangle a = new Rectangle(widthRect, heightRect);
+				a.setStroke(Color.RED);
+				gridpane.add(a, i, j);
 			}
-			
 		}
-		
-		boolean asdf = true;
 
-//		for (int i = 0; i < 10; i++) {
-//			for (int j = 0; j < 50; j++) {
-//				// Node a = renderTriangle();
-//				// if( i % rowSize == 0) {
-//				// add offset;
-//
-//				if (i % 2 == 0 && asdf) {
-//					System.out.println("i: " + i + "j: " + j);
-//					Node b = renderOffset();
-//					gridpane.add(b, i, j);
-//					asdf = false;
-//				} else {
-//
-//					Node a = renderHex();
-//					gridpane.add(a, i, j);
-//				}
-//			}
-//			asdf = true;
-//			
-//		}
+		// FlowPane flowpane = new FlowPane(0.0, -1.0);
+		// flowpane.setPrefSize(PREF_SIZE, 400);
+		// flowpane.setPrefWrapLength(PREF_SIZE);
 
-		// for (int i = 0; i < 1000; i++) {
-		// Rectangle a = new Rectangle(10, 10);
-		// //set fill specified by state
-		// a.setFill(Color.web("0x0000FF"));
+		// numPolygons = (int) ((PREF_SIZE) / (WIDTH));
+		//
+		// for(int i = 0; i < 100; i++) {
+		// if (i % (numPolygons*2) == 0) {
+		// System.out.println("i: " + i);
+		// Node b = renderOffset();
+		// flowpane.getChildren().add(b);
+		// } else {
+		// Node a = renderHex();
 		// flowpane.getChildren().add(a);
 		// }
-		
-		//root.getChildre().add9lgjieawg
-		root.getChildren().add(flowpane);
+		//
+		// }
+
+		// boolean asdf = true;
+
+		// for (int i = 0; i < 10; i++) {
+		// for (int j = 0; j < 50; j++) {
+		// // Node a = renderTriangle();
+		// // if( i % rowSize == 0) {
+		// // add offset;
+		//
+		// if (i % 2 == 0 && asdf) {
+		// System.out.println("i: " + i + "j: " + j);
+		// Node b = renderOffset();
+		// gridpane.add(b, i, j);
+		// asdf = false;
+		// } else {
+		//
+		// Node a = renderHex();
+		// gridpane.add(a, i, j);
+		// }
+		// }
+		// asdf = true;
+		//
+		// }
+
+		// root.getChildre().add9lgjieawg
+		root.getChildren().add(gridpane);
 
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
 
 	public Node renderOffset() {
-		Line offset = new Line(0.0, WIDTH/4, WIDTH/2, WIDTH/4);
+		Line offset = new Line(0.0, WIDTH / 4, WIDTH / 2, WIDTH / 4);
 		offset.setFill(Color.WHITE);
-//		offset.setStrokeWidth(0);
+		// offset.setStrokeWidth(0);
 
 		/*
 		 * Polygon offset = new Polygon(); offset.setFill(Color.WHITE);

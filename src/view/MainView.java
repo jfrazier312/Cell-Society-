@@ -6,10 +6,10 @@ import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -23,8 +23,8 @@ import model.SegregationSimulation;
 public class MainView implements GameWorld {
 
 	private Scene scene;
-	private BorderPane root;
-	private FlowPane cellPane;
+	private Group root;
+	private GridPane cellPane;
 	private CellGrid simulation;
 	private boolean simIsRunning;
 	private VBox buttonContainer;
@@ -42,7 +42,7 @@ public class MainView implements GameWorld {
 	public Scene initSimulation(Stage primaryStage) throws Exception {
 		// Do configuration loader to get the information for scene / etc.
 		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
-		root = new BorderPane();
+		root = new Group();
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		// scene = new Scene(root, config.getSceneWidth(),
 		// config.getSceneHeight());
@@ -73,10 +73,16 @@ public class MainView implements GameWorld {
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), e-> {
 			if (SliderCreator.reset) {
 				try {
-//					root.getChildren().removeAll(root.getChildren());
+//					root.getChildren().removeAll(cellPane);
+					cellPane.getChildren().removeAll(cellPane.getChildren());
 					createCellPane();
 					createSimulation();
-					createCustomButtons();
+//					simulation.initSimulation();
+//					simulation.renderGrid(cellPane);
+//					createCustomButtons();
+
+//					simulation.updateGrid();
+					
 					SliderCreator.reset = false;
 					gameloop.pause();
 				} catch (Exception e1) {
@@ -93,8 +99,6 @@ public class MainView implements GameWorld {
 		findSimulation(simulationName);
 		simulation.initSimulation();
 		simulation.renderGrid(cellPane);
-		cellPane.setPadding(cellPanePadding);
-		root.setLeft(cellPane);
 	}
 
 	private void findSimulation(String sim) {
@@ -167,7 +171,8 @@ public class MainView implements GameWorld {
 		buttonContainer.setPadding(buttonPadding);
 		buttonContainer.setMaxWidth(250);
 		buttonContainer.setMinWidth(250);
-		root.setRight(buttonContainer);
+		buttonContainer.setLayoutX(SCENE_WIDTH - buttonContainer.getMaxWidth() - 40);
+		root.getChildren().add(buttonContainer);
 	}
 
 	private void createCustomButtons() {
@@ -192,9 +197,9 @@ public class MainView implements GameWorld {
 				gameloop.pause();
 				double newval = (double) newValue;
 				ConfigurationLoader.getConfig().setNumRows((int) newval);
-				createCellPane();
-				createCustomButtons();
-				createSimulation();
+//				createCellPane();
+//				createCustomButtons();
+//				createSimulation();
 			}
 		});
 	}
@@ -207,9 +212,9 @@ public class MainView implements GameWorld {
 				gameloop.pause();
 				double newval = (double) newValue;
 				ConfigurationLoader.getConfig().setNumCols((int) newval);
-				createCellPane();
-				createCustomButtons();
-				createSimulation();
+//				createCellPane();
+//				createCustomButtons();
+//				createSimulation();
 			}
 		});
 	}
@@ -234,10 +239,11 @@ public class MainView implements GameWorld {
 	}
 
 	private void createKeyFrameEvents() {
+//		root.getChildren().remove(cellPane);
 		cellPane.getChildren().removeAll(cellPane.getChildren());
 		simulation.updateGrid();
 		simulation.renderGrid(cellPane);
-		root.setLeft(cellPane);
+//		root.getChildren().add(cellPane);
 	}
 
 	private void setSimulationEventHandler() {
@@ -305,10 +311,11 @@ public class MainView implements GameWorld {
 	}
 
 	private void stepOnce() {
+//		root.getChildren().remove(cellPane);
 		cellPane.getChildren().removeAll(cellPane.getChildren());
 		simulation.updateGrid();
 		simulation.renderGrid(cellPane);
-		root.setLeft(cellPane);
+//		root.getChildren().add(cellPane);
 	}
 
 	private void setDimensions(SimulationButton btn) {
@@ -318,13 +325,17 @@ public class MainView implements GameWorld {
 
 	private void createCellPane() {
 		// TODO: Jordan Set cellpane parameters based on XML
-		cellPane = new FlowPane(0.0, 0.0);
-
+		cellPane = new GridPane();
+		
 		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
-		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
-
+//		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
 		cellPane.setMaxHeight(GRID_HEIGHT);
-		cellPane.setMinHeight(GRID_HEIGHT);
+//		cellPane.setMinHeight(GRID_HEIGHT);
+		
+		cellPane.setPadding(cellPanePadding);
+		
+		root.getChildren().add(cellPane);
+
 
 		// cellPane.setPrefWrapLength(50);
 		// cellPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
