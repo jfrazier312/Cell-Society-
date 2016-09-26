@@ -26,6 +26,7 @@ public class Configuration {
 	private int framesPerSec;
 	
 	// TODO: deserialize to new XML
+	// TODO: synchronize to make thread safe
 
 	public Configuration(Document doc, String queryMethod) {
 		XMLParser parser = new XMLParser(queryMethod, doc);
