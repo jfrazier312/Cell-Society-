@@ -33,12 +33,18 @@ public class SliderCreator extends Slider {
 
 		slider.setOnMouseReleased(e -> {
 			Double newValue = (double) Math.round(slider.getValue() * 10.0) / 10.0;
-			lbl.textProperty().setValue(String.valueOf(newValue));
+
+			if(displayName.toLowerCase().contains("row") || displayName.toLowerCase().contains("col")){
+				int i = newValue.intValue();
+				lbl.textProperty().setValue(String.valueOf(i));
+			}  else {
+				lbl.textProperty().setValue(String.valueOf(newValue));
+			}
 			if (set) {
 				ConfigurationLoader.getConfig().setCustomParam(displayName, String.valueOf(newValue));
 				System.out.println(ConfigurationLoader.getConfig().getCustomParam(displayName));
 			}
-			if (displayName.contains("percent")) {
+			if (displayName.contains("percent") || displayName.toLowerCase().contains("row") || displayName.toLowerCase().contains("col")) {
 				reset = true;
 			}
 		});
