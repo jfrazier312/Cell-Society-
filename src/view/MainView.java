@@ -238,7 +238,6 @@ public class MainView implements GameWorld {
 		simulation.updateGrid();
 		simulation.renderGrid(cellPane);
 		root.setLeft(cellPane);
-		System.out.println(simulation.getGrid()[0][0].getCurrentstate());
 	}
 
 	private void setSimulationEventHandler() {
@@ -321,20 +320,12 @@ public class MainView implements GameWorld {
 		// TODO: Jordan Set cellpane parameters based on XML
 		cellPane = new FlowPane(0.0, 0.0);
 
-		// cellPane.setPrefWidth(config.getGridWidth());
-		// cellPane.setPrefHeight(config.getGridHeight());
-
-		// Have to add whatever padding you add on to the left side of the grid
-		// for some
-		// strange fucking reason
 		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
 		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
 
 		cellPane.setMaxHeight(GRID_HEIGHT);
 		cellPane.setMinHeight(GRID_HEIGHT);
 
-		// cellPane.setPrefWidth(20);
-		// cellPane.setPrefHeight(300);
 		// cellPane.setPrefWrapLength(50);
 		// cellPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
 	}
