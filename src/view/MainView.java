@@ -73,15 +73,11 @@ public class MainView implements GameWorld {
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), e-> {
 			if (SliderCreator.reset) {
 				try {
-//					root.getChildren().removeAll(cellPane);
+					root.getChildren().remove(cellPane);
 					cellPane.getChildren().removeAll(cellPane.getChildren());
 					createCellPane();
 					createSimulation();
-//					simulation.initSimulation();
-//					simulation.renderGrid(cellPane);
 //					createCustomButtons();
-
-//					simulation.updateGrid();
 					
 					SliderCreator.reset = false;
 					gameloop.pause();
