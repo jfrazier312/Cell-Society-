@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.w3c.dom.Document;
 
+import exceptions.MalformedXMLSourceException;
 import exceptions.SourcePathFoundNoFileException;
 import exceptions.SourcePathNotInitialized;
 
@@ -33,7 +34,8 @@ public class ConfigurationLoader {
 		return loader;
 	}
 	
-	public synchronized ConfigurationLoader load(String src) {
+	public synchronized ConfigurationLoader load(String src)
+			throws MalformedXMLSourceException {
 		String sourcePath = buildSourcePath(src);
 		Document doc;
 		try {

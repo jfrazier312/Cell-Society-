@@ -7,6 +7,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.NodeList;
 
 import config.XMLParser;
+import exceptions.MalformedXMLSourceException;
 import exceptions.UnrecognizedQueryMethodException;
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
@@ -116,7 +117,8 @@ public abstract class CellGrid extends GridPane {
 	public abstract void updateCell(Cell myCell);
 	
 	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
-			throws XPathExpressionException, UnrecognizedQueryMethodException {
+			throws XPathExpressionException, UnrecognizedQueryMethodException,
+				   NumberFormatException, MalformedXMLSourceException {
 		List<Cell> initialCells = new ArrayList<Cell>();
 		if (parser.getItem("CellsMode").equals("enum")) {
 			NodeList nl = parser.getNodeList("Cells");

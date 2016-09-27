@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import exceptions.MalformedXMLSourceException;
 import exceptions.SourcePathFoundNoFileException;
 import exceptions.SourcePathNotInitialized;
 import exceptions.UnrecognizedQueryMethodException;
@@ -36,26 +38,42 @@ public class XMLParser {
 		this.doc = doc;
 	}
 	
+	private Object xpathEval(String itemName, QName type)
+			throws XPathExpressionException {
+		return XPATH_ENGINE
+				.compile(queries.getString(itemName))
+				.evaluate(this.doc, type);
+	}
+	
 	public String getItem(String itemName)
-			throws UnrecognizedQueryMethodException, XPathExpressionException {
+			throws UnrecognizedQueryMethodException,
+					XPathExpressionException,
+					MalformedXMLSourceException {
 		if (queryMethod.equals("Xpath")) {
-			return XPATH_ENGINE.compile(queries.getString(itemName)).evaluate(doc);
+			String result = (String) xpathEval(itemName, XPathConstants.STRING);
+			if (result == null || result.isEmpty()) {
+				throw new MalformedXMLSourceException();
+			}
+			return result;
 		}
 		throw new UnrecognizedQueryMethodException();
 	}
 	
 	public int getItemAsInteger(String itemName)
 			throws NumberFormatException, XPathExpressionException,
-				   UnrecognizedQueryMethodException {
+				   UnrecognizedQueryMethodException, MalformedXMLSourceException {
 		return Integer.parseInt(getItem(itemName));
 	}
 	
 	public NodeList getNodeList(String itemName)
-			throws UnrecognizedQueryMethodException, XPathExpressionException {
+			throws UnrecognizedQueryMethodException, XPathExpressionException,
+				   MalformedXMLSourceException {
 		if (queryMethod.equals("Xpath")) {
-			return (NodeList) XPATH_ENGINE
-					.compile(queries.getString(itemName))
-					.evaluate(doc, XPathConstants.NODESET);
+			NodeList result = (NodeList) xpathEval(itemName, XPathConstants.NODESET);
+			if (result == null || result.getLength() == 0) {
+				throw new MalformedXMLSourceException();
+			}
+			return result;
 		}
 		throw new UnrecognizedQueryMethodException();
 	}
@@ -76,10 +94,5 @@ public class XMLParser {
 			throw new SourcePathFoundNoFileException();
 		doc.getDocumentElement().normalize();
 		return doc;
-	}
-
-	// TODO (cx15) validate an XML, exception to front end if xml invalid
-	public static boolean validate(Document doc) throws Exception {
-		return true;
 	}
 }

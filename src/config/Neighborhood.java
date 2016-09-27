@@ -2,6 +2,7 @@ package config;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import exceptions.MalformedXMLSourceException;
 import exceptions.UnrecognizedQueryMethodException;
 
 public class Neighborhood {
@@ -12,13 +13,13 @@ public class Neighborhood {
 	
 	public Neighborhood init(XMLParser parser)
 			throws NumberFormatException, XPathExpressionException,
-			UnrecognizedQueryMethodException {
+			UnrecognizedQueryMethodException, MalformedXMLSourceException {
 		size = parser.getItemAsInteger("NeighborhoodSize");
 		edgeType = parser.getItem("NeighborhoodEdgeType");
 		edgeValue = parser.getItem("NeighborhoodEdgeValue");
 		return this;
 	}
-	
+
 	public int getSize() {
 		return size;
 	}

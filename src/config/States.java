@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import exceptions.MalformedXMLSourceException;
 import exceptions.UnrecognizedQueryMethodException;
 
 public class States implements Iterable<State>{
@@ -16,7 +17,8 @@ public class States implements Iterable<State>{
 	private List<State> states;
 	
 	public States init(XMLParser parser)
-			throws XPathExpressionException, UnrecognizedQueryMethodException {
+			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			MalformedXMLSourceException {
 		this.states = new ArrayList<State>();
 		NodeList nl = parser.getNodeList("States");
 		for (int i = 0; i < nl.getLength(); i++) {

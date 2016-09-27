@@ -6,9 +6,9 @@ import java.util.Set;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import exceptions.MalformedXMLSourceException;
 import exceptions.UnrecognizedQueryMethodException;
 import utils.Utils;
 
@@ -17,7 +17,8 @@ public class Params {
 	private Map<String, String> customizedParams;
 	
 	public Params(XMLParser parser)
-			throws XPathExpressionException, UnrecognizedQueryMethodException {
+			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			MalformedXMLSourceException {
 		customizedParams = new HashMap<String, String>();
 		NodeList nl = parser.getNodeList("Params");
 		if (nl == null) return;

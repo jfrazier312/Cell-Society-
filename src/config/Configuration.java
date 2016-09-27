@@ -7,6 +7,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 
+import exceptions.MalformedXMLSourceException;
 import exceptions.UnrecognizedQueryMethodException;
 import model.Cell;
 import model.CellGrid;
@@ -28,7 +29,8 @@ public class Configuration {
 	// TODO: deserialize to new XML
 	// TODO: synchronize to make thread safe
 
-	public Configuration(Document doc, String queryMethod) {
+	public Configuration(Document doc, String queryMethod)
+			throws MalformedXMLSourceException {
 		XMLParser parser = new XMLParser(queryMethod, doc);
 		try {
 			simulationName = parser.getItem("SimulationName");

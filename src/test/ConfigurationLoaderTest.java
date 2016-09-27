@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import config.Configuration;
 import config.ConfigurationLoader;
+import exceptions.MalformedXMLSourceException;
 
 public class ConfigurationLoaderTest {
 	
@@ -15,9 +16,11 @@ public class ConfigurationLoaderTest {
 	
 	@Before
 	public void onceExecutedBeforeEachTestCase() {
-		ConfigurationLoader.loader()
-			.load(SOURCE)
-			.load(SOURCE2);
+		try {
+			ConfigurationLoader.loader().load(SOURCE).load(SOURCE2);
+		} catch (MalformedXMLSourceException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
@@ -45,5 +48,4 @@ public class ConfigurationLoaderTest {
 		assertEquals(ConfigurationLoader.getConfig(SOURCE),
 					 ConfigurationLoader.getConfig(SOURCE2));
 	}
-
 }
