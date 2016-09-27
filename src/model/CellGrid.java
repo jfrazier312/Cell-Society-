@@ -22,13 +22,6 @@ public abstract class CellGrid extends GridPane {
 	
 	private String simulationName;
 	
-	// TODO: Jordan: change parameters 
-	//       number of initially empty (resets grid)
-	// 		 percentage of states to each other (resets)
-	// 		 step delay
-	// 		 size of cells
-	// 		 have a percentage of satisfied cells (dynamically)	 
-
 	public CellGrid() {
 		int rows = ConfigurationLoader.getConfig().getNumRows();
 		int cols = ConfigurationLoader.getConfig().getNumCols();
@@ -36,10 +29,9 @@ public abstract class CellGrid extends GridPane {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
 		grid = new Cell[rows][cols];
-		// TODO: Jordan set row/column constraints. maybe
 	}
 
-	// Need to change spacing in flowpane if shape is different than rectangle
+	// Need to change spacing in gridpane? if shape is different than rectangle?
 	public void renderGrid(GridPane cellPane) {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {

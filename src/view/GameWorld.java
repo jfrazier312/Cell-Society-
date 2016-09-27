@@ -47,7 +47,6 @@ public interface GameWorld {
 	
 	public static final ComboBox<String> SIMULATIONS = new ComboBox<>(SIMULATION_OPTIONS);
 	
-	// TODO: Jordan padding should really go into MainView, since it'll have to change.
 	public static final int PADDING = 10;
 
 }

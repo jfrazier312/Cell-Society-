@@ -38,7 +38,6 @@ public class MainView implements GameWorld {
 	private Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2,
 			GRID_PADDING);
 
-	// TODO: Jordan: This will return a scene, and be called in Main.
 	public Scene initSimulation(Stage primaryStage) throws Exception {
 		// Do configuration loader to get the information for scene / etc.
 		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
@@ -77,10 +76,10 @@ public class MainView implements GameWorld {
 					cellPane.getChildren().removeAll(cellPane.getChildren());
 					createCellPane();
 					createSimulation();
-//					createCustomButtons();
-					
+		
 					SliderCreator.reset = false;
 					gameloop.pause();
+					simIsRunning = false;
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -117,11 +116,10 @@ public class MainView implements GameWorld {
 		}));
 	}
 
+	// TODO: Jordan: Somehow need to put button creation somewhere else
 	private void createAllButtons() throws Exception {
 		buttonContainer = new VBox(PADDING);
-		simIsRunning = false;
 
-		// TODO: Jordan - set padding on buttons and button size from XML
 		HBox hbox1 = new HBox(PADDING);
 		HBox hbox2 = new HBox(PADDING);
 		VBox vbox3 = new VBox(PADDING);
@@ -129,30 +127,30 @@ public class MainView implements GameWorld {
 		// Sets simulation combo box action
 		// setSimulationEventHandler();
 
-		SimulationButton playBtn = new SimulationButton(PLAY);
+		SimulationButton playBtn = new SimulationButton(GenericButton.PLAY);
 		setStartEventHandler(playBtn);
 
-		SimulationButton pauseBtn = new SimulationButton(PAUSE);
+		SimulationButton pauseBtn = new SimulationButton(GenericButton.PAUSE);
 		setStopEventHandler(pauseBtn);
 		hbox1.getChildren().addAll(playBtn, pauseBtn);
 
-		SimulationButton resetBtn = new SimulationButton(RESET);
+		SimulationButton resetBtn = new SimulationButton(GenericButton.RESET);
 		setStopEventHandler(resetBtn);
 
-		SimulationButton stepBtn = new SimulationButton(STEP);
+		SimulationButton stepBtn = new SimulationButton(GenericButton.STEP);
 		setStepEventHandler(stepBtn);
 		
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
 		
-		SimulationSlider rowsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumRows(), "Rows", false);
+		SimulationSlider rowsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumRows(), GenericButton.ROWS, false);
 		setRowsEventHandler(rowsSlider.getSlider());
 
-		SimulationSlider colsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumCols(), "Cols", false);
+		SimulationSlider colsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumCols(), GenericButton.COLS, false);
 		setColumnsEventHandler(colsSlider.getSlider());
 		
 		vbox3.getChildren().addAll(rowsSlider.getHbox(), colsSlider.getHbox());
 
-		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, ConfigurationLoader.getConfig().getFramesPerSec(), "FPS", false);
+		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, ConfigurationLoader.getConfig().getFramesPerSec(), GenericButton.FPS, false);
 		setFPSEventHandler(fpsSlider.getSlider());
 	
 		VBox basicBtnBox = new VBox(PADDING);
@@ -286,7 +284,7 @@ public class MainView implements GameWorld {
 	private void setStopEventHandler(SimulationButton btn) {
 		setDimensions(btn);
 		btn.setOnAction(e -> {
-			if (btn.getDisplayName().equals(RESET)) {
+			if (btn.getDisplayName().equals(GenericButton.RESET.toString())) {
 				try {
 //					ConfigurationLoader.getConfig();
 					createCellPane();

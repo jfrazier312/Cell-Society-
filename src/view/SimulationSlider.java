@@ -9,8 +9,8 @@ public class SimulationSlider extends SliderCreator {
 	private HBox hbox;
 	private VBox vbox;
 	
-	public SimulationSlider(double min, double max, double defaultVal, String displayName, boolean set) {
-		super(min, max, defaultVal, displayName, set);
+	public SimulationSlider(double min, double max, double defaultVal, GenericButton displayName, boolean set) {
+		super(min, max, defaultVal, displayName.toString(), set);
 		slider = super.getSlider();
 		hbox = super.getHbox();
 	}

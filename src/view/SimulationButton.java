@@ -5,9 +5,9 @@ public class SimulationButton extends Button {
 	
 	private String displayName;
 	
-	public SimulationButton(String displayName) throws Exception {
+	public SimulationButton(GenericButton displayName) throws Exception {
 		
-		this.displayName = displayName;
+		this.displayName = displayName.toString();
 		setDisplayName(this.displayName);	
 		
 	}
