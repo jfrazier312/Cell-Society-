@@ -148,10 +148,10 @@ public class MainView implements GameWorld {
 		
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
 		
-		SimulationSlider rowsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumRows(), "Rows", false);
+		SimulationSlider rowsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumRows(), "Rows", false);
 		setRowsEventHandler(rowsSlider.getSlider());
 
-		SimulationSlider colsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumCols(), "Cols", false);
+		SimulationSlider colsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumCols(), "Cols", false);
 		setColumnsEventHandler(colsSlider.getSlider());
 		
 		vbox3.getChildren().addAll(rowsSlider.getHbox(), colsSlider.getHbox());
@@ -171,7 +171,7 @@ public class MainView implements GameWorld {
 		buttonContainer.setPadding(buttonPadding);
 		buttonContainer.setMaxWidth(250);
 		buttonContainer.setMinWidth(250);
-		buttonContainer.setLayoutX(SCENE_WIDTH - buttonContainer.getMaxWidth() - 40);
+		buttonContainer.setLayoutX(SCENE_WIDTH - buttonContainer.getMaxWidth());
 		root.getChildren().add(buttonContainer);
 	}
 
@@ -197,6 +197,7 @@ public class MainView implements GameWorld {
 				gameloop.pause();
 				double newval = (double) newValue;
 				ConfigurationLoader.getConfig().setNumRows((int) newval);
+				// This next part is all done in resetChecker timeline, caused by simulation slider
 //				createCellPane();
 //				createCustomButtons();
 //				createSimulation();
@@ -289,12 +290,9 @@ public class MainView implements GameWorld {
 	private void setStopEventHandler(SimulationButton btn) {
 		setDimensions(btn);
 		btn.setOnAction(e -> {
-			// If button is reset, then reset parameters back to what's on XML
 			if (btn.getDisplayName().equals(RESET)) {
 				try {
-					// ConfigurationLoader.loader().setSource(SIMULATIONS.getValue()
-					// + ".xml").load();
-					ConfigurationLoader.getConfig();
+//					ConfigurationLoader.getConfig();
 					createCellPane();
 					createCustomButtons();
 					createSimulation();
