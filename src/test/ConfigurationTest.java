@@ -14,15 +14,16 @@ import config.State;
 import config.States;
 import model.Cell;
 
-public class XMLConfigTest {
+public class ConfigurationTest {
 	
 	private static Configuration config;
+	private static String SOURCE = "testxml.xml";
 
 	@BeforeClass
 	public static void onceExecutedBeforeAll() {
 		try {
-			ConfigurationLoader.loader().setSource("testxml.xml").load();
-			config = ConfigurationLoader.getConfig();
+			ConfigurationLoader.loader().load(SOURCE);
+			config = ConfigurationLoader.getConfig(SOURCE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -50,7 +51,6 @@ public class XMLConfigTest {
 				assertEquals("state2", s.getValue());
 			}
 		}
-		
 		assertNotNull(config.getAllStates().getStateByName("state2"));
 		assertEquals("state1", config.getDefaultInitState().getValue());
 	}

@@ -1,10 +1,12 @@
 package config;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ResourceBundle;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -12,7 +14,10 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import exceptions.SourcePathFoundNoFileException;
+import exceptions.SourcePathNotInitialized;
 import exceptions.UnrecognizedQueryMethodException;
 
 public class XMLParser {
@@ -40,7 +45,8 @@ public class XMLParser {
 	}
 	
 	public int getItemAsInteger(String itemName)
-			throws NumberFormatException, XPathExpressionException, UnrecognizedQueryMethodException {
+			throws NumberFormatException, XPathExpressionException,
+				   UnrecognizedQueryMethodException {
 		return Integer.parseInt(getItem(itemName));
 	}
 	
@@ -54,20 +60,21 @@ public class XMLParser {
 		throw new UnrecognizedQueryMethodException();
 	}
 	
-	public static Document parse(String sourcePath) throws Exception {
+	public static Document parse(String sourcePath)
+				throws SourcePathFoundNoFileException, SourcePathNotInitialized {
 		if (sourcePath == null)
-			throw new Exception("sourcePath not initialized");
+			throw new SourcePathNotInitialized();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		Document doc = null;
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			doc = builder.parse(new File(sourcePath));
-			doc.getDocumentElement().normalize();
-		} catch (Exception e) {
+		} catch (SAXException | IOException | ParserConfigurationException e) {
 			e.printStackTrace();
 		}
 		if (doc == null)
-			throw new Exception("sourcePath provided unfound");
+			throw new SourcePathFoundNoFileException();
+		doc.getDocumentElement().normalize();
 		return doc;
 	}
 

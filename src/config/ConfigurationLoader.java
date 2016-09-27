@@ -1,53 +1,67 @@
 package config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.w3c.dom.Document;
+
+import exceptions.SourcePathFoundNoFileException;
+import exceptions.SourcePathNotInitialized;
 
 public class ConfigurationLoader {
 	
 	public static final String DATA_PATH_PREFIX = "data/";
 	
-	private String sourcePath;
-	private Configuration config;
+	private Map<String, Configuration> storage;
 
 	private static ConfigurationLoader loader;
 
 	/**
 	 * Singleton Pattern.
-	 * Only one instance of XML configuration thru out the simulation.
 	 * Set once, update everywhere.
+	 * Prevent Stale Copy at all time thruout the process.
 	 */
 	private ConfigurationLoader() {
 
 	}
 	
 	public synchronized static ConfigurationLoader loader() {
-        if(loader == null)
+        if(loader == null) { 
         	loader = new ConfigurationLoader();
+        	loader.flush();
+        }
 		return loader;
 	}
 	
-	public synchronized ConfigurationLoader setSource(String src) {
-		sourcePath = DATA_PATH_PREFIX + src;
+	public synchronized ConfigurationLoader load(String src) {
+		String sourcePath = buildSourcePath(src);
+		Document doc;
+		try {
+			doc = XMLParser.parse(sourcePath);
+			// TODO (cx15):  validation
+			Configuration config = new Configuration(doc, "Xpath");
+			storage.put(sourcePath, config);
+		} catch (SourcePathFoundNoFileException | SourcePathNotInitialized e) {
+			e.printStackTrace();
+		}
 		return this;
 	}
 	
-	public synchronized ConfigurationLoader load() throws Exception {
-		Document doc = XMLParser.parse(sourcePath);
-//		if (!XMLParser.validate(doc)){
-//			throw new Exception("sourcePath not initialized");
-//		}
-		config = new Configuration(doc, "Xpath");
+	public synchronized ConfigurationLoader flush() {
+		storage = new HashMap<>();
 		return this;
 	}
 	
-	public synchronized static Configuration getConfig() {
-		if(loader().config == null) {
-        	try {
-        		loader().load();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-        }
-		return loader().config;
+	public synchronized static Configuration getConfig(String src) {
+		String sourcePath = buildSourcePath(src);
+		return loader().storage.get(sourcePath);
+	}
+	
+	public synchronized void store(String src, Configuration config) {
+		storage.put(buildSourcePath(src), config);
+	}
+	
+	private static String buildSourcePath(String src) {
+		return DATA_PATH_PREFIX + src;
 	}
 }
