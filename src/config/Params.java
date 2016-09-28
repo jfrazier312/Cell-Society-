@@ -39,9 +39,9 @@ public class Params {
 		return customizedParams.get(paramName);
 	}
 	
-	public String setCustomParam(String paramName, String value) {
+	public void setCustomParam(String paramName, String value) {
 		if (customizedParams == null)
-			return null;
-		return customizedParams.put(paramName, value);
+			return;
+		customizedParams.put(paramName, value);
 	}
 }

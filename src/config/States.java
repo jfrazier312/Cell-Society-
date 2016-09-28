@@ -22,6 +22,7 @@ public class States implements Iterable<State>{
 		this.states = new ArrayList<State>();
 		NodeList nl = parser.getNodeList("States");
 		for (int i = 0; i < nl.getLength(); i++) {
+//			Node n = parser.getDoc().createElement(tagName)
 			State s = new State().setValue(nl.item(i).getTextContent());
 			states.add(s);
 			for (int j = 0; j < nl.item(i).getAttributes().getLength(); j++) {

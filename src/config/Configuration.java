@@ -1,12 +1,20 @@
 package config;
 
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 
+import exceptions.InconsistentCrossReferenceInXMLException;
 import exceptions.MalformedXMLSourceException;
 import exceptions.UnrecognizedQueryMethodException;
 import model.Cell;
@@ -14,10 +22,14 @@ import model.CellGrid;
 
 public class Configuration {
 	
+	public static final String DATA_PATH_PREFIX = "data/";
+	
+	private XMLParser parser;
+	
 	private String simulationName;
 	private String author;
-	private int girdWidth;
-	private int girdHeight;
+	private int gridWidth;
+	private int gridHeight;
 	private States allStates;
 	private Neighborhood neighborhood;
 	private Params customizedParams;
@@ -27,89 +39,174 @@ public class Configuration {
 	private int framesPerSec;
 	
 	// TODO: deserialize to new XML
-	// TODO: synchronize to make thread safe
+	
+	/**
+	 * All getters and setters are thread safe / synchronized
+	 * since event handlers runs on multiple different threads to not block UI thread
+	 * and they all invoke setters here.
+	 * Must synchronize such access to ensure atomicity.
+	 */
 
 	public Configuration(Document doc, String queryMethod)
 			throws MalformedXMLSourceException {
-		XMLParser parser = new XMLParser(queryMethod, doc);
+		synchronized (this) {
+			parser = new XMLParser(queryMethod, doc);
+			try {
+				simulationName = parser.getItem("SimulationName");
+				author = parser.getItem("SimulationAuthor");
+				gridWidth = parser.getItemAsInteger("GridWidth");
+				gridHeight = parser.getItemAsInteger("GridHeight");
+				framesPerSec = parser.getItemAsInteger("FramesPerSec");
+				allStates = new States().init(parser);
+				defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
+				neighborhood = new Neighborhood().init(parser);
+				customizedParams = new Params(parser);
+				initialCells = CellGrid.buildNonDefaultInitialCells(parser);
+				isRunning = false;
+			} catch (XPathExpressionException | UnrecognizedQueryMethodException 
+					| NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public synchronized void serializeTo(String fileName) {
 		try {
-			simulationName = parser.getItem("SimulationName");
-			author = parser.getItem("SimulationAuthor");
-			girdWidth = parser.getItemAsInteger("GirdWidth");
-			girdHeight = parser.getItemAsInteger("GirdHeight");
-			framesPerSec = parser.getItemAsInteger("FramesPerSec");
-			allStates = new States().init(parser);
-			defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
-			neighborhood = new Neighborhood().init(parser);
-			customizedParams = new Params(parser);
-			initialCells = CellGrid.buildNonDefaultInitialCells(parser);
-			isRunning = false;
-		} catch (XPathExpressionException | UnrecognizedQueryMethodException | NumberFormatException e) {
+			parser.updateDoc("SimulationName", simulationName);
+			parser.updateDoc("SimulationAuthor", author);
+			parser.updateDoc("GridWidth", gridWidth);
+			parser.updateDoc("GridHeight", gridHeight);
+			parser.updateDoc("FramesPerSec", framesPerSec);
+			parser.updateDoc("DefaultInitState", defaultInitState.getValue());
+			// TODO (cx15): CONTINUE SERIALIZATION STARTING FROM ALLSTATES
+			Transformer xformer = TransformerFactory.newInstance().newTransformer();
+			xformer.transform(
+					new DOMSource(parser.getDoc()),
+					new StreamResult(new File(DATA_PATH_PREFIX + fileName))
+			);
+		} catch (TransformerFactoryConfigurationError | TransformerException 
+				| UnrecognizedQueryMethodException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public boolean isRunning() {
+	// -------- ACCESSORS ---------
+	public synchronized boolean isRunning() {
 		return isRunning;
 	}
-
-	public void setRunning(boolean isRunning) {
-		this.isRunning = isRunning;
-	}
 	
-	public State getDefaultInitState() {
+	public synchronized State getDefaultInitState() {
 		return defaultInitState;
 	}
 	
-	public int getFramesPerSec() {
+	public synchronized int getFramesPerSec() {
 		return framesPerSec;
 	}
 
-	public void setFramesPerSec(int framesPerSec) {
-		this.framesPerSec = framesPerSec;
-	}
-
-	public String getCustomParam(String paramName) {
+	public synchronized String getCustomParam(String paramName) {
 		return customizedParams.getCustomParam(paramName);
 	}
 	
-	public String setCustomParam(String paramName, String value) {
-		return customizedParams.setCustomParam(paramName, value);
-	}
-	
-	public Set<String> getAllCustomParamNames() {
+	public synchronized Set<String> getAllCustomParamNames() {
 		return customizedParams.getAllParams();
 	}
 	
-	public String getSimulationName() {
+	public synchronized String getSimulationName() {
 		return simulationName;
 	}
 
-	public String getAuthor() {
+	public synchronized String getAuthor() {
 		return author;
 	}
 
-	public int getGirdWidth() {
-		return girdWidth;
+	public synchronized int getGirdWidth() {
+		return gridWidth;
 	}
 
-	public int getGirdHeight() {
-		return girdHeight;
+	public synchronized int getGirdHeight() {
+		return gridHeight;
 	}
 
-	public States getAllStates() {
+	public synchronized States getAllStates() {
 		return allStates;
 	}
 
-	public Neighborhood getNeighborhood() {
+	public synchronized Neighborhood getNeighborhood() {
 		return neighborhood;
 	}
 	
-	public List<Cell> getInitialCells() {
+	public synchronized List<Cell> getInitialCells() {
 		return initialCells;
 	}
 
-	public void setInitialCells(List<Cell> initialCells) {
+	// -------- MUTATORS ---------
+	public synchronized Configuration setDefaultInitState(String defaultInitState)
+			throws InconsistentCrossReferenceInXMLException {
+		State s = allStates.getStateByName(defaultInitState);
+		if (s == null) {
+			throw new InconsistentCrossReferenceInXMLException();
+		}
+		this.defaultInitState = s;
+		return this;
+	}
+	
+	public synchronized Configuration setInitialCells(List<Cell> initialCells) {
 		this.initialCells = initialCells;
+		return this;
+	}
+	
+	public synchronized Configuration setCustomParam(String paramName, String value) {
+		customizedParams.setCustomParam(paramName, value);
+		return this;
+	}
+	
+	public synchronized Configuration setFramesPerSec(int framesPerSec) {
+		this.framesPerSec = framesPerSec;
+		return this;
+	}
+	
+	public synchronized Configuration setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+		return this;
+	}
+
+	public synchronized Configuration setParser(XMLParser parser) {
+		this.parser = parser;
+		return this;
+	}
+
+	public synchronized Configuration setSimulationName(String simulationName) {
+		this.simulationName = simulationName;
+		return this;
+	}
+
+	public synchronized Configuration setAuthor(String author) {
+		this.author = author;
+		return this;
+	}
+
+	public synchronized Configuration setGridWidth(int gridWidth) {
+		this.gridWidth = gridWidth;
+		return this;
+	}
+
+	public synchronized Configuration setGridHeight(int gridHeight) {
+		this.gridHeight = gridHeight;
+		return this;
+	}
+
+	public synchronized Configuration setAllStates(States allStates) {
+		this.allStates = allStates;
+		return this;
+	}
+
+	public synchronized Configuration setNeighborhood(Neighborhood neighborhood) {
+		this.neighborhood = neighborhood;
+		return this;
+	}
+
+	public synchronized Configuration setCustomizedParams(Params customizedParams) {
+		this.customizedParams = customizedParams;
+		return this;
 	}
 }

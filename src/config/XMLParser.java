@@ -14,6 +14,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -33,7 +34,7 @@ public class XMLParser {
 	
 	
 	public XMLParser(String queryMethod, Document doc) {
-		this. queryMethod = queryMethod;
+		this.queryMethod = queryMethod;
 		queries = ResourceBundle.getBundle(RESRC_PREFIX + queryMethod);
 		this.doc = doc;
 	}
@@ -43,6 +44,23 @@ public class XMLParser {
 		return XPATH_ENGINE
 				.compile(queries.getString(itemName))
 				.evaluate(this.doc, type);
+	}
+	
+	public void updateDoc(String itemName, String value)
+			throws UnrecognizedQueryMethodException {
+		if (queryMethod.equals("Xpath")) {
+			try {
+				Node result = (Node) xpathEval(itemName, XPathConstants.NODE);
+				result.setNodeValue(value);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		} else throw new UnrecognizedQueryMethodException();
+	}
+	
+	public void updateDoc(String itemName, int value)
+			throws UnrecognizedQueryMethodException {
+		updateDoc(itemName, value + "");
 	}
 	
 	public String getItem(String itemName)
@@ -93,6 +111,10 @@ public class XMLParser {
 		if (doc == null)
 			throw new SourcePathFoundNoFileException();
 		doc.getDocumentElement().normalize();
+		return doc;
+	}
+	
+	public Document getDoc() {
 		return doc;
 	}
 }

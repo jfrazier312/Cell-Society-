@@ -63,7 +63,7 @@ public class ConfigurationLoader {
 		storage.put(buildSourcePath(src), config);
 	}
 	
-	private static String buildSourcePath(String src) {
+	public static String buildSourcePath(String src) {
 		return DATA_PATH_PREFIX + src;
 	}
 }

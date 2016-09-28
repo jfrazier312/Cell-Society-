@@ -2,25 +2,29 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import config.Configuration;
 import config.ConfigurationLoader;
 import config.State;
 import config.States;
+import exceptions.InconsistentCrossReferenceInXMLException;
+import exceptions.MalformedXMLSourceException;
 import model.Cell;
 
 public class ConfigurationTest {
 	
 	private static Configuration config;
-	private static String SOURCE = "testxml.xml";
+	private static final String SOURCE = "testxml.xml";
+	private static final String OUTPUT_SOURCE = "newCreatedXML.xml";
 
-	@BeforeClass
-	public static void onceExecutedBeforeAll() {
+	@Before
+	public void executedOnceBeforeEach() {
 		try {
 			ConfigurationLoader.loader().load(SOURCE);
 			config = ConfigurationLoader.getConfig(SOURCE);
@@ -76,5 +80,51 @@ public class ConfigurationTest {
 		Cell c2 = config.getInitialCells().get(1);
 		assertEquals("state2", c2.getCurrentstate());
 		assertEquals(11, c2.getRowPos());
+	}
+	
+	private static final String NEW_AUTHOR = "different author",
+						  NEW_SIMULATION = "different simulation",
+						  NEW_DEFAULT_STATE_NAME = "state2";
+	private static final int NEW_GRID_WIDTH = 100,
+					   NEW_GRID_HEIGHT = 200,
+					   NEW_FPS = 10;
+	
+	@Test
+	public void loadAgainWillReset() {
+		try {
+			config.setAuthor(NEW_AUTHOR);
+			ConfigurationLoader.loader().load(SOURCE);
+			assertNotEquals(ConfigurationLoader.getConfig(SOURCE), NEW_AUTHOR);
+		} catch (MalformedXMLSourceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void serializationWritesUpdatedValues() {
+		File file = new File(Configuration.DATA_PATH_PREFIX + OUTPUT_SOURCE);
+		if (file.exists()) {
+			assertTrue(file.delete());
+		}
+		try {
+			config.setSimulationName(NEW_SIMULATION)
+				  .setAuthor(NEW_AUTHOR)
+				  .setGridHeight(NEW_GRID_HEIGHT)
+				  .setGridWidth(NEW_GRID_WIDTH)
+				  .setFramesPerSec(NEW_FPS)
+				  .setDefaultInitState(NEW_DEFAULT_STATE_NAME);
+			config.serializeTo(OUTPUT_SOURCE);
+			assertTrue(file.exists());
+			ConfigurationLoader.loader().load(OUTPUT_SOURCE);
+		} catch (MalformedXMLSourceException | InconsistentCrossReferenceInXMLException e) {
+			assertNull(e); // should not have exceptions
+		}
+		Configuration newConfig = ConfigurationLoader.getConfig(OUTPUT_SOURCE);
+		assertEquals(newConfig.getSimulationName(), NEW_SIMULATION);
+		assertEquals(newConfig.getAuthor(), NEW_AUTHOR);
+		assertEquals(newConfig.getGirdWidth(), NEW_GRID_WIDTH);
+		assertEquals(newConfig.getGirdHeight(), NEW_GRID_HEIGHT);
+		assertEquals(newConfig.getDefaultInitState().getValue(), NEW_DEFAULT_STATE_NAME);
+		assertEquals(newConfig.getFramesPerSec(), NEW_FPS);
 	}
 }
