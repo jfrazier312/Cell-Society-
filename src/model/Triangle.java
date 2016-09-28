@@ -14,10 +14,12 @@ public class Triangle extends Cell implements view.GameWorld {
 
 	private int[] evenColDeltas = { 0, 1, 0 };
 	private int[] oddColDeltas = { 0, -1, 0 };
+	
+	private static final double TRIANGLE_WIDTH = 20;
 
 	// Will need to scale this based on XML inputs?
-	private Double[] normalTrianglePoints = { 10.0, 0.0, 0.0, 20.0, 20.0, 20.0 };
-	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, 20.0, 0.0, 10.0, 20.0 };
+	private Double[] normalTrianglePoints = { TRIANGLE_WIDTH / 2, 0.0, 0.0, 20.0, TRIANGLE_WIDTH, 20.0 };
+	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_WIDTH, 0.0, TRIANGLE_WIDTH / 2, 20.0 };
 
 	public Triangle(int row, int col, int isEven) {
 		super(row, col);
@@ -30,26 +32,10 @@ public class Triangle extends Cell implements view.GameWorld {
 		double rows = ConfigurationLoader.getConfig().getNumRows();
 		double cols = ConfigurationLoader.getConfig().getNumCols();
 
-		if (cols % 2 != 0) {
-			// make size slightly larger to fill space?
-		}
-
-		// double width = calculateSize(GRID_WIDTH, cols);
-		// double height = calculateSize(GRID_HEIGHT, rows);
-
-		// in this case, if columns goes down to 10, double all to fit
-		Double[] adjustedNormalTrianglePoints = Arrays.copyOf(normalTrianglePoints, normalTrianglePoints.length);
-		adjustedNormalTrianglePoints[4] = normalTrianglePoints[4] / (20 / (GRID_WIDTH / cols));
-		adjustedNormalTrianglePoints[0] = normalTrianglePoints[0] / (20 / (GRID_WIDTH / cols));
-
-		Double[] adjustedUpsideDownTrianglePoints = Arrays.copyOf(upsideDownTrianglePoints, upsideDownTrianglePoints.length);
-		adjustedUpsideDownTrianglePoints[4] = upsideDownTrianglePoints[4] / (20 / (GRID_WIDTH / cols));
-		adjustedUpsideDownTrianglePoints[2] = upsideDownTrianglePoints[2] / (20 / (GRID_WIDTH / cols));
-
+		Double[] adjustedNormalTrianglePoints = getAdjustedPoints(true, (int) rows, (int) cols);
+		Double[] adjustedUpsideDownTrianglePoints = getAdjustedPoints(false, (int) rows, (int) cols);
 
 		Polygon triangle = new Polygon();
-		// rect.setStroke(Color.RED);
-		// rect.setStrokeWidth(0.1);
 		String color = ConfigurationLoader.getConfig().getAllStates().getStateByName(getCurrentstate()).getAttributes()
 				.get("color");
 		triangle.setFill(Color.web(color));
@@ -60,6 +46,20 @@ public class Triangle extends Cell implements view.GameWorld {
 			triangle.getPoints().addAll(adjustedUpsideDownTrianglePoints);
 		}
 		return triangle;
+	}
+
+	private Double[] getAdjustedPoints(boolean normal, int rows, int cols) {
+		Double[] adjusted = new Double[normalTrianglePoints.length];
+		if (normal) {
+			adjusted = Arrays.copyOf(normalTrianglePoints, normalTrianglePoints.length);
+			adjusted[4] = normalTrianglePoints[4] / (20 / ((GRID_WIDTH - cols) / cols));
+			adjusted[0] = normalTrianglePoints[0] / (20 / ((GRID_WIDTH - cols) / cols));
+		} else {
+			adjusted = Arrays.copyOf(upsideDownTrianglePoints, upsideDownTrianglePoints.length);
+			adjusted[4] = upsideDownTrianglePoints[4] / (20 / ((GRID_WIDTH - cols) / cols));
+			adjusted[2] = upsideDownTrianglePoints[2] / (20 / ((GRID_WIDTH - cols) / cols));
+		}
+		return adjusted;
 	}
 
 	@Override
