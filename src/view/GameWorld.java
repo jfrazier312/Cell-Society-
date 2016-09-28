@@ -9,13 +9,7 @@ import model.PredatorPreySimulation;
 import model.SegregationSimulation;
 
 public interface GameWorld {
-	
-	public static final String RESUME = "Resume";
-	public static final String PLAY = "Play";
-	public static final String PAUSE = "Pause";
-	public static final String RESET = "Reset";
-	public static final String STEP = "Step";
-	
+
 	public static double SCENE_WIDTH = 800;
 	public static double SCENE_HEIGHT = 500;
 	
@@ -30,7 +24,7 @@ public interface GameWorld {
 	public static final double GRID_PADDING = SCENE_WIDTH / 20;
 
 	
-	/*
+	/**
 	 * Add simulations to this combobox when implemented
 	 */
 	ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList(

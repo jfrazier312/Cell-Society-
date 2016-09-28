@@ -9,9 +9,11 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	public static final String SIMULATION_NAME = GAME_OF_LIFE;
 	private static final String DEAD = "dead";
 	private static final String ALIVE = "alive";
+	private int isEven;
 	
 	public GameOfLifeSimulation() {
 		super();
+		isEven = 0;
 	}
 	
 	public void initSimulation() {
@@ -35,7 +37,7 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 		}
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				myGrid[i][j] = new RectangleWithDiagonals(i, j);
+				myGrid[i][j] = new Triangle(i, j, isEven++);
 				if(initialization.size() == 0){
 					myGrid[i][j].setCurrentstate(DEAD);
 				}

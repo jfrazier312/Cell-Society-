@@ -29,6 +29,8 @@ public class MainView implements GameWorld {
 	private boolean simIsRunning;
 	private VBox buttonContainer;
 
+	private boolean gridLinesVisible;
+
 	private static final double BUTTON_WIDTH = 200;
 
 	private Timeline gameloop;
@@ -43,6 +45,7 @@ public class MainView implements GameWorld {
 		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
 		root = new Group();
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+		gridLinesVisible = false;
 		// scene = new Scene(root, config.getSceneWidth(),
 		// config.getSceneHeight());
 
@@ -69,14 +72,14 @@ public class MainView implements GameWorld {
 	private void createResetTimelineChecker() {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), e-> {
+		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
 			if (SliderCreator.reset) {
 				try {
 					root.getChildren().remove(cellPane);
 					cellPane.getChildren().removeAll(cellPane.getChildren());
 					createCellPane();
 					createSimulation();
-		
+
 					SliderCreator.reset = false;
 					gameloop.pause();
 					simIsRunning = false;
@@ -116,6 +119,21 @@ public class MainView implements GameWorld {
 		}));
 	}
 
+	private void createKeyFrameEvents() {
+		// root.getChildren().remove(cellPane);
+		cellPane.getChildren().removeAll(cellPane.getChildren());
+		simulation.updateGrid();
+		simulation.renderGrid(cellPane);
+		if(gridLinesVisible) {
+			cellPane.setGridLinesVisible(true);
+		} else {
+			cellPane.setGridLinesVisible(false);
+
+		}
+
+		// root.getChildren().add(cellPane);
+	}
+
 	// TODO: Jordan: Somehow need to put button creation somewhere else
 	private void createAllButtons() throws Exception {
 		buttonContainer = new VBox(PADDING);
@@ -139,24 +157,30 @@ public class MainView implements GameWorld {
 
 		SimulationButton stepBtn = new SimulationButton(GenericButton.STEP);
 		setStepEventHandler(stepBtn);
-		
+
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
-		
-		SimulationSlider rowsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumRows(), GenericButton.ROWS, false);
+
+		SimulationSlider rowsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumRows(),
+				GenericButton.ROWS, false);
 		setRowsEventHandler(rowsSlider.getSlider());
 
-		SimulationSlider colsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumCols(), GenericButton.COLS, false);
+		SimulationSlider colsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumCols(),
+				GenericButton.COLS, false);
 		setColumnsEventHandler(colsSlider.getSlider());
-		
+
 		vbox3.getChildren().addAll(rowsSlider.getHbox(), colsSlider.getHbox());
 
-		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, ConfigurationLoader.getConfig().getFramesPerSec(), GenericButton.FPS, false);
+		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, ConfigurationLoader.getConfig().getFramesPerSec(),
+				GenericButton.FPS, false);
 		setFPSEventHandler(fpsSlider.getSlider());
-	
+
+		SimulationButton gridVisible = new SimulationButton(GenericButton.GRID_LINES);
+//		setGridLinesVisible(gridVisible);
+
 		VBox basicBtnBox = new VBox(PADDING);
-		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getHbox());
+		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getHbox(), gridVisible);
 		basicBtnBox.setMinWidth(300);
-		
+
 		buttonContainer.getChildren().add(basicBtnBox);
 
 		createCustomButtons();
@@ -182,7 +206,7 @@ public class MainView implements GameWorld {
 		}
 		buttonContainer.getChildren().add(custom);
 	}
-	
+
 	private void setRowsEventHandler(Slider sizeSlider) {
 		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -191,14 +215,15 @@ public class MainView implements GameWorld {
 				gameloop.pause();
 				double newval = (double) newValue;
 				ConfigurationLoader.getConfig().setNumRows((int) newval);
-				// This next part is all done in resetChecker timeline, caused by simulation slider
-//				createCellPane();
-//				createCustomButtons();
-//				createSimulation();
+				// This next part is all done in resetChecker timeline, caused
+				// by simulation slider
+				// createCellPane();
+				// createCustomButtons();
+				// createSimulation();
 			}
 		});
 	}
-	
+
 	private void setColumnsEventHandler(Slider sizeSlider) {
 		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -207,9 +232,9 @@ public class MainView implements GameWorld {
 				gameloop.pause();
 				double newval = (double) newValue;
 				ConfigurationLoader.getConfig().setNumCols((int) newval);
-//				createCellPane();
-//				createCustomButtons();
-//				createSimulation();
+				// createCellPane();
+				// createCustomButtons();
+				// createSimulation();
 			}
 		});
 	}
@@ -219,26 +244,19 @@ public class MainView implements GameWorld {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
-				double fpsdouble = (double) 1000 / (double) newValue;
-				ConfigurationLoader.getConfig().setFramesPerSec((int)fpsdouble); 
+				double fpsdouble = 1000.0 / (double) newValue;
+				ConfigurationLoader.getConfig().setFramesPerSec((int) fpsdouble);
 				gameloop.pause();
 				gameloop.getKeyFrames().remove(0);
 				gameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
 					createKeyFrameEvents();
 				}));
+
 				if (simIsRunning) {
 					gameloop.playFromStart();
 				}
 			}
 		});
-	}
-
-	private void createKeyFrameEvents() {
-//		root.getChildren().remove(cellPane);
-		cellPane.getChildren().removeAll(cellPane.getChildren());
-		simulation.updateGrid();
-		simulation.renderGrid(cellPane);
-//		root.getChildren().add(cellPane);
 	}
 
 	private void setSimulationEventHandler() {
@@ -286,12 +304,12 @@ public class MainView implements GameWorld {
 		btn.setOnAction(e -> {
 			if (btn.getDisplayName().equals(GenericButton.RESET.toString())) {
 				try {
-//					ConfigurationLoader.getConfig();
+					// ConfigurationLoader.getConfig();
 					createCellPane();
 					createCustomButtons();
 					createSimulation();
-//					createGameLoop();
-//					createResetTimelineChecker();
+					// createGameLoop();
+					// createResetTimelineChecker();
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					throw new IllegalArgumentException("Failed loading XML file");
@@ -302,12 +320,33 @@ public class MainView implements GameWorld {
 		});
 	}
 
+//	private void setGridLinesVisible(SimulationButton btn) {
+//		setDimensions(btn);
+//		btn.setOnAction(e -> {
+//			if (!gridLinesVisible) {
+//				setGridLines(true);
+//			} else {
+//				setGridLines(false);
+//			}
+//		});
+//	}
+//
+//	private void setGridLines(boolean isVisible) {
+//		if (isVisible) {
+//			cellPane.setGridLinesVisible(true);
+//			gridLinesVisible = true;
+//		} else {
+//			cellPane.setGridLinesVisible(false);
+//			gridLinesVisible = false;
+//		}
+//	}
+
 	private void stepOnce() {
-//		root.getChildren().remove(cellPane);
+		// root.getChildren().remove(cellPane);
 		cellPane.getChildren().removeAll(cellPane.getChildren());
 		simulation.updateGrid();
 		simulation.renderGrid(cellPane);
-//		root.getChildren().add(cellPane);
+		// root.getChildren().add(cellPane);
 	}
 
 	private void setDimensions(SimulationButton btn) {
@@ -318,16 +357,15 @@ public class MainView implements GameWorld {
 	private void createCellPane() {
 		// TODO: Jordan Set cellpane parameters based on XML
 		cellPane = new GridPane();
-		
-		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
-//		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
-		cellPane.setMaxHeight(GRID_HEIGHT);
-//		cellPane.setMinHeight(GRID_HEIGHT);
-		
-		cellPane.setPadding(cellPanePadding);
-		
-		root.getChildren().add(cellPane);
 
+		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
+		// cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
+		cellPane.setMaxHeight(GRID_HEIGHT);
+		// cellPane.setMinHeight(GRID_HEIGHT);
+
+		cellPane.setPadding(cellPanePadding);
+
+		root.getChildren().add(cellPane);
 
 		// cellPane.setPrefWrapLength(50);
 		// cellPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
