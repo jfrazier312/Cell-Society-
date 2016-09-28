@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Arrays;
+
 import config.ConfigurationLoader;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -27,30 +29,35 @@ public class Triangle extends Cell implements view.GameWorld {
 	public Node render() {
 		double rows = ConfigurationLoader.getConfig().getNumRows();
 		double cols = ConfigurationLoader.getConfig().getNumCols();
-		
-		if(cols % 2 != 0) {
-			// make size slightly larger to fill space? 
-		}
-		
-//		double width = calculateSize(GRID_WIDTH, cols);
-//		double height = calculateSize(GRID_HEIGHT, rows);
-		
-		for(int i = 0; i < normalTrianglePoints.length; i++) {
-			// in this case, if columns goes down to 10, double all to fit
-			normalTrianglePoints[i] = normalTrianglePoints[i] / ( 20 / (GRID_WIDTH / cols))  ;
-			upsideDownTrianglePoints[i] = upsideDownTrianglePoints[i] / ( 20 / (GRID_WIDTH / cols))  ;
+
+		if (cols % 2 != 0) {
+			// make size slightly larger to fill space?
 		}
 
+		// double width = calculateSize(GRID_WIDTH, cols);
+		// double height = calculateSize(GRID_HEIGHT, rows);
+
+		// in this case, if columns goes down to 10, double all to fit
+		Double[] adjustedNormalTrianglePoints = Arrays.copyOf(normalTrianglePoints, normalTrianglePoints.length);
+		adjustedNormalTrianglePoints[4] = normalTrianglePoints[4] / (20 / (GRID_WIDTH / cols));
+		adjustedNormalTrianglePoints[0] = normalTrianglePoints[0] / (20 / (GRID_WIDTH / cols));
+
+		Double[] adjustedUpsideDownTrianglePoints = Arrays.copyOf(upsideDownTrianglePoints, upsideDownTrianglePoints.length);
+		adjustedUpsideDownTrianglePoints[4] = upsideDownTrianglePoints[4] / (20 / (GRID_WIDTH / cols));
+		adjustedUpsideDownTrianglePoints[2] = upsideDownTrianglePoints[2] / (20 / (GRID_WIDTH / cols));
+
+
 		Polygon triangle = new Polygon();
-//		rect.setStroke(Color.RED);
-//		rect.setStrokeWidth(0.1);
-		String color = ConfigurationLoader.getConfig().getAllStates().getStateByName(getCurrentstate()).getAttributes().get("color");
+		// rect.setStroke(Color.RED);
+		// rect.setStrokeWidth(0.1);
+		String color = ConfigurationLoader.getConfig().getAllStates().getStateByName(getCurrentstate()).getAttributes()
+				.get("color");
 		triangle.setFill(Color.web(color));
-		
+
 		if (isEven % 2 == 0) {
-			triangle.getPoints().addAll(normalTrianglePoints);
+			triangle.getPoints().addAll(adjustedNormalTrianglePoints);
 		} else {
-			triangle.getPoints().addAll(upsideDownTrianglePoints);
+			triangle.getPoints().addAll(adjustedUpsideDownTrianglePoints);
 		}
 		return triangle;
 	}

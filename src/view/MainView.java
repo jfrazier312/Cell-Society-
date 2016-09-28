@@ -305,6 +305,7 @@ public class MainView implements GameWorld {
 			if (btn.getDisplayName().equals(GenericButton.RESET.toString())) {
 				try {
 					// ConfigurationLoader.getConfig();
+					cellPane.getChildren().removeAll(cellPane.getChildren());
 					createCellPane();
 					createCustomButtons();
 					createSimulation();
