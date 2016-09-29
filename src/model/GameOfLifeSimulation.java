@@ -10,8 +10,8 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	private static final String DEAD = "dead";
 	private static final String ALIVE = "alive";
 	
-	public GameOfLifeSimulation() {
-		super();
+	public GameOfLifeSimulation(int row, int col) {
+		super(row, col);
 	}
 	
 	public void initSimulation() {
@@ -22,7 +22,23 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	
 	public void createGrid(double percentDead){
 		Random generator = new Random();
-		Cell[][] myGrid = getGrid();
+		ArrayList<String> initialization = getStartingStateList(percentDead);
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				setGridCell(i, j, new RectangleWithDiagonals(i, j));
+				if(initialization.size() == 0){
+					getGridCell(i, j).setCurrentstate(DEAD);
+				}
+				else{
+					int cellChoice = generator.nextInt(initialization.size());
+					getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
+					initialization.remove(cellChoice);
+				}	
+			}
+		}
+	}
+
+	private ArrayList<String> getStartingStateList(double percentDead) {
 		int size = getNumRows()*getNumCols();
 		double numDead = percentDead*size;
 		double numAlive = size-numDead;
@@ -33,28 +49,14 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 		for(int i = 0; i<numAlive; i++){
 			initialization.add(ALIVE);
 		}
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				myGrid[i][j] = new RectangleWithDiagonals(i, j);
-				if(initialization.size() == 0){
-					myGrid[i][j].setCurrentstate(DEAD);
-				}
-				else{
-					int cellChoice = generator.nextInt(initialization.size());
-					myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
-					initialization.remove(cellChoice);
-				}	
-			}
-		}
+		return initialization;
 	}
 	
 	public void updateFutureStates(){
-		Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				//RectangleWithDiagonals currentCell = (RectangleWithDiagonals)myGrid[i][j];
-				Cell currentCell = myGrid[i][j];
-				updateCell(currentCell);
+				updateCell(getGridCell(i, j));
 				//currentCell.setCurrentstate(currentCell.getFuturestate());
 			}
 		}
@@ -62,11 +64,10 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	
 	@Override
 	public void updateGrid(){
-		Cell[][] myGrid = getGrid();
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				currentCell.setCurrentstate(currentCell.getFuturestate());
 			}
 		}
@@ -119,23 +120,23 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	/**
 	 * This method is used for testing purposes to print grid locally
 	 */
-	public void printGrid(){
-		Random generator = new Random();
-		Cell[][] myGrid = getGrid();
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				if(myGrid[i][j].getCurrentstate().equals(DEAD)){
-					System.out.print(0);
-				}
-				else{
-					System.out.print(1);
-				}
-			}
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println();
-	}
+//	public void printGrid(){
+//		Random generator = new Random();
+//		Cell[][] myGrid = getGrid();
+//		for (int i = 0; i < getNumRows(); i++) {
+//			for (int j = 0; j < getNumCols(); j++) {
+//				if(myGrid[i][j].getCurrentstate().equals(DEAD)){
+//					System.out.print(0);
+//				}
+//				else{
+//					System.out.print(1);
+//				}
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
+//		System.out.println();
+//	}
 	
 	/**
 	 * Uncomment this method to test simulation locally
