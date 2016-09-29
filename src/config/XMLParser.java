@@ -25,6 +25,8 @@ import exceptions.UnrecognizedQueryMethodException;
 
 public class XMLParser {
 	
+	//TODO (cx15): Abstract XMLParser and subclass XpathXMLParser
+	
 	public static final String RESRC_PREFIX = "recourses/";
 	private static XPath XPATH_ENGINE = XPathFactory.newInstance().newXPath();
 	

@@ -70,6 +70,11 @@ public class Configuration {
 		}
 	}
 	
+	/**
+	 * Pickling/flatting/marshalling/serializing to durable storage on disk
+	 * in the form of XML
+	 * @param fileName
+	 */
 	public synchronized void serializeTo(String fileName) {
 		try {
 			parser.updateDoc("SimulationName", simulationName);
