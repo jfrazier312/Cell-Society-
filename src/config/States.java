@@ -57,6 +57,7 @@ public class States extends CompositeData implements Iterable<State>{
 	}
 	
 	public State getStateByName(String name) {
+		assert states != null;
 		for (State s : this.states) {
 			if (s.getValue().equals(name)) return s;
 		}
@@ -65,6 +66,7 @@ public class States extends CompositeData implements Iterable<State>{
 
 	@Override
 	public Iterator<State> iterator() {
+		assert states != null;
 		return states.iterator();
 	}
 }

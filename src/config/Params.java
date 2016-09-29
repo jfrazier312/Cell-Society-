@@ -52,18 +52,17 @@ public class Params extends CompositeData {
 	}
 	
 	public Set<String> getAllParams() {
+		assert customizedParams != null;
 		return customizedParams.keySet();
 	}
 	
 	public String getCustomParam(String paramName) {
-		if (customizedParams == null)
-			return null;
+		assert customizedParams != null;
 		return customizedParams.get(paramName);
 	}
 	
 	public Params setCustomParam(String paramName, String value) {
-		if (customizedParams == null)
-			return this;
+		assert customizedParams != null;
 		customizedParams.put(paramName, value);
 		return this;
 	}
