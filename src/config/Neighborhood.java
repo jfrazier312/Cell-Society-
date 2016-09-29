@@ -25,7 +25,9 @@ public class Neighborhood extends CompositeData {
 	}
 
 	@Override
-	public Neighborhood save() throws UnrecognizedQueryMethodException {
+	public Neighborhood save()
+			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
+			XPathExpressionException {
 		parser.updateDoc("NeighborhoodSize", size);
 		parser.updateDoc("NeighborhoodEdgeType", edgeType);
 		parser.updateDoc("NeighborhoodEdgeValue", edgeValue);

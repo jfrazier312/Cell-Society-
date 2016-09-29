@@ -42,41 +42,54 @@ public class XMLParser {
 	}
 	
 	private Object xpathEval(String itemName, QName type)
-			throws XPathExpressionException {
-		return XPATH_ENGINE
+			throws XPathExpressionException, MalformedXMLSourceException {
+		Object ret =  XPATH_ENGINE
 				.compile(queries.getString(itemName))
 				.evaluate(this.doc, type);
+		if (ret == null || isEmpty(ret))
+			throw new MalformedXMLSourceException();
+		return ret;
 	}
 	
 	public void updateDoc(String itemName, String value)
-			throws UnrecognizedQueryMethodException {
+			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
+			XPathExpressionException {
 		if (queryMethod.equals("Xpath")) {
-			try {
-				Node result = (Node) xpathEval(itemName, XPathConstants.NODE);
-				result.setNodeValue(value);
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
+			Node result = (Node) xpathEval(itemName, XPathConstants.NODE);
+			result.setNodeValue(value);
+			
 		} else throw new UnrecognizedQueryMethodException();
 	}
 	
 	public void updateDoc(String itemName, int value)
-			throws UnrecognizedQueryMethodException {
+			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
+			XPathExpressionException {
 		updateDoc(itemName, value + "");
+	}
+	
+	private boolean isEmpty(Object o) {
+		if (o instanceof String) {
+			return ((String) o).isEmpty();
+		} else if (o instanceof NodeList){
+			return ((NodeList) o).getLength() == 0;
+		} else return false;
+	}
+	
+	private Object getItem(String itemName, QName type)
+			throws XPathExpressionException, MalformedXMLSourceException,
+			UnrecognizedQueryMethodException {
+		if (queryMethod.equals("Xpath")) {
+			Object result = xpathEval(itemName, type);
+			return result;
+		}
+		throw new UnrecognizedQueryMethodException();
 	}
 	
 	public String getItem(String itemName)
 			throws UnrecognizedQueryMethodException,
 					XPathExpressionException,
 					MalformedXMLSourceException {
-		if (queryMethod.equals("Xpath")) {
-			String result = (String) xpathEval(itemName, XPathConstants.STRING);
-			if (result == null || result.isEmpty()) {
-				throw new MalformedXMLSourceException();
-			}
-			return result;
-		}
-		throw new UnrecognizedQueryMethodException();
+		return (String) getItem(itemName, XPathConstants.STRING);
 	}
 	
 	public int getItemAsInteger(String itemName)
@@ -88,16 +101,10 @@ public class XMLParser {
 	public NodeList getNodeList(String itemName)
 			throws UnrecognizedQueryMethodException, XPathExpressionException,
 				   MalformedXMLSourceException {
-		if (queryMethod.equals("Xpath")) {
-			NodeList result = (NodeList) xpathEval(itemName, XPathConstants.NODESET);
-			if (result == null || result.getLength() == 0) {
-				throw new MalformedXMLSourceException();
-			}
-			return result;
-		}
-		throw new UnrecognizedQueryMethodException();
+		return (NodeList) getItem(itemName, XPathConstants.NODESET);
 	}
 	
+	// TODO make this non static and call once and parse
 	public static Document parse(String sourcePath)
 				throws SourcePathFoundNoFileException, SourcePathNotInitialized {
 		if (sourcePath == null)
@@ -111,6 +118,7 @@ public class XMLParser {
 			e.printStackTrace();
 		}
 		if (doc == null)
+			// TODO throw this exception in catch
 			throw new SourcePathFoundNoFileException();
 		doc.getDocumentElement().normalize();
 		return doc;

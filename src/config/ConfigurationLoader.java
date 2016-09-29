@@ -43,6 +43,7 @@ public class ConfigurationLoader {
 			// TODO (cx15):  validation
 			Configuration config = new Configuration(doc, "Xpath");
 			storage.put(sourcePath, config);
+			// TODO throw
 		} catch (SourcePathFoundNoFileException | SourcePathNotInitialized e) {
 			e.printStackTrace();
 		}
