@@ -32,7 +32,7 @@ public class Configuration {
 		try {
 			simulationName = parser.getItem("SimulationName");
 			author = parser.getItem("SimulationAuthor");
-			numCols = parser.getItemAsInteger("GirdWidth");
+			numCols = parser.getItemAsInteger("GirdHeight");
 			numRows = parser.getItemAsInteger("GirdHeight");
 			framesPerSec = parser.getItemAsInteger("FramesPerSec");
 			allStates = new States().init(parser);

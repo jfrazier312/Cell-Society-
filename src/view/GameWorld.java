@@ -28,17 +28,11 @@ public interface GameWorld {
 	 * Add simulations to this combobox when implemented
 	 */
 	ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList(
-			"Game_Of_Life",
-			"Wa-Tor_World",
-			"Fire_Simulation",
-			"Segregation_Simulation");
-	
-	CellGrid[] SIMULATION_LIST = { new GameOfLifeSimulation(), 
-			new PredatorPreySimulation(),
-			new FireSimulation(),
-			new SegregationSimulation()
-			};
-	
+			GAME_OF_LIFE,
+			WATER_WORLD,
+			FIRE_SIMULATION,
+			SEGREGATION_SIMULATION);
+
 	public static final ComboBox<String> SIMULATIONS = new ComboBox<>(SIMULATION_OPTIONS);
 	
 	public static final int PADDING = 10;

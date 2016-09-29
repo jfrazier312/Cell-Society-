@@ -22,9 +22,7 @@ public abstract class CellGrid extends GridPane {
 	
 	private String simulationName;
 	
-	public CellGrid() {
-		int rows = ConfigurationLoader.getConfig().getNumRows();
-		int cols = ConfigurationLoader.getConfig().getNumCols();
+	public CellGrid(int rows, int cols) {
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
