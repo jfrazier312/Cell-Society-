@@ -22,10 +22,9 @@ public class Main extends Application implements GameWorld {
 		}
 		
 		MainView sim = new MainView();
-		Scene scene = sim.initSimulation(primaryStage);
 		
 		primaryStage.setTitle("Simulations");
-		primaryStage.setScene(scene);
+		primaryStage.setScene(sim.initSimulation());
 		primaryStage.show();
 		
 		

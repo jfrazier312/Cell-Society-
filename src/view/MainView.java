@@ -40,7 +40,7 @@ public class MainView implements GameWorld {
 	private Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2,
 			GRID_PADDING);
 
-	public Scene initSimulation(Stage primaryStage) throws Exception {
+	public Scene initSimulation() throws Exception {
 		// Do configuration loader to get the information for scene / etc.
 		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
 		root = new Group();
