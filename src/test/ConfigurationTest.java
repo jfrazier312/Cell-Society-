@@ -82,19 +82,26 @@ public class ConfigurationTest {
 		assertEquals(11, c2.getRowPos());
 	}
 	
-	private static final String NEW_AUTHOR = "different author",
-						  NEW_SIMULATION = "different simulation",
-						  NEW_DEFAULT_STATE_NAME = "state2";
-	private static final int NEW_GRID_WIDTH = 100,
-					   NEW_GRID_HEIGHT = 200,
-					   NEW_FPS = 10;
+	private static final String AUTHOR = "different author",
+							  SIMULATION = "different simulation",
+							  DEFAULT_STATE_NAME = "state2",
+							  STATE_CHOSEN = "state1",
+							  STATE_ATTR = "color",
+							  STATE_ATTR_VALUE = "new color",
+							  EDGE_TYPE = "random",
+							  PARAM = "probability",
+							  PARAM_VALUE = "0.2";
+	private static final int GRID_WIDTH = 100,
+						   GRID_HEIGHT = 200,
+						   FPS = 10,
+						   NEIGHBORHOOD_SIZE = 9;
 	
 	@Test
 	public void loadAgainWillReset() {
 		try {
-			config.setAuthor(NEW_AUTHOR);
+			config.setAuthor(AUTHOR);
 			ConfigurationLoader.loader().load(SOURCE);
-			assertNotEquals(ConfigurationLoader.getConfig(SOURCE), NEW_AUTHOR);
+			assertNotEquals(ConfigurationLoader.getConfig(SOURCE), AUTHOR);
 		} catch (MalformedXMLSourceException e) {
 			e.printStackTrace();
 		}
@@ -107,12 +114,16 @@ public class ConfigurationTest {
 			assertTrue(file.delete());
 		}
 		try {
-			config.setSimulationName(NEW_SIMULATION)
-				  .setAuthor(NEW_AUTHOR)
-				  .setGridHeight(NEW_GRID_HEIGHT)
-				  .setGridWidth(NEW_GRID_WIDTH)
-				  .setFramesPerSec(NEW_FPS)
-				  .setDefaultInitState(NEW_DEFAULT_STATE_NAME);
+			config.setSimulationName(SIMULATION)
+				  .setAuthor(AUTHOR)
+				  .setGridHeight(GRID_HEIGHT)
+				  .setGridWidth(GRID_WIDTH)
+				  .setFramesPerSec(FPS)
+				  .setDefaultInitState(DEFAULT_STATE_NAME)
+				  .setCustomParam(PARAM, PARAM_VALUE);
+			config.getAllStates().getStateByName(STATE_CHOSEN)
+				  .getAttributes().put(STATE_ATTR,  STATE_ATTR_VALUE);
+			config.getNeighborhood().setSize(NEIGHBORHOOD_SIZE).setEdgeType(EDGE_TYPE);
 			config.serializeTo(OUTPUT_SOURCE);
 			assertTrue(file.exists());
 			ConfigurationLoader.loader().load(OUTPUT_SOURCE);
@@ -120,11 +131,16 @@ public class ConfigurationTest {
 			assertNull(e); // should not have exceptions
 		}
 		Configuration newConfig = ConfigurationLoader.getConfig(OUTPUT_SOURCE);
-		assertEquals(newConfig.getSimulationName(), NEW_SIMULATION);
-		assertEquals(newConfig.getAuthor(), NEW_AUTHOR);
-		assertEquals(newConfig.getGirdWidth(), NEW_GRID_WIDTH);
-		assertEquals(newConfig.getGirdHeight(), NEW_GRID_HEIGHT);
-		assertEquals(newConfig.getDefaultInitState().getValue(), NEW_DEFAULT_STATE_NAME);
-		assertEquals(newConfig.getFramesPerSec(), NEW_FPS);
+		assertEquals(newConfig.getSimulationName(), SIMULATION);
+		assertEquals(newConfig.getAuthor(), AUTHOR);
+		assertEquals(newConfig.getGirdWidth(), GRID_WIDTH);
+		assertEquals(newConfig.getGirdHeight(), GRID_HEIGHT);
+		assertEquals(newConfig.getDefaultInitState().getValue(), DEFAULT_STATE_NAME);
+		assertEquals(newConfig.getFramesPerSec(), FPS);
+		assertEquals(newConfig.getAllStates().getStateByName(STATE_CHOSEN).getAttributes()
+				.get(STATE_ATTR), STATE_ATTR_VALUE);
+		assertEquals(newConfig.getNeighborhood().getSize(), NEIGHBORHOOD_SIZE);
+		assertEquals(newConfig.getNeighborhood().getEdgeType(), EDGE_TYPE);
+		assertEquals(newConfig.getCustomParam(PARAM), PARAM_VALUE);
 	}
 }

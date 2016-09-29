@@ -57,10 +57,10 @@ public class Configuration {
 				gridWidth = parser.getItemAsInteger("GridWidth");
 				gridHeight = parser.getItemAsInteger("GridHeight");
 				framesPerSec = parser.getItemAsInteger("FramesPerSec");
-				allStates = new States().init(parser);
+				allStates = new States().load(parser);
+				neighborhood = new Neighborhood().load(parser);
+				customizedParams = new Params().load(parser);
 				defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
-				neighborhood = new Neighborhood().init(parser);
-				customizedParams = new Params(parser);
 				initialCells = CellGrid.buildNonDefaultInitialCells(parser);
 				isRunning = false;
 			} catch (XPathExpressionException | UnrecognizedQueryMethodException 
@@ -78,14 +78,18 @@ public class Configuration {
 			parser.updateDoc("GridHeight", gridHeight);
 			parser.updateDoc("FramesPerSec", framesPerSec);
 			parser.updateDoc("DefaultInitState", defaultInitState.getValue());
-			// TODO (cx15): CONTINUE SERIALIZATION STARTING FROM ALLSTATES
+			allStates.save();
+			neighborhood.save();
+			customizedParams.save();
+			// TODO (cx15): FINISH SERIALIZATION ON LIST OF CELLS
 			Transformer xformer = TransformerFactory.newInstance().newTransformer();
 			xformer.transform(
 					new DOMSource(parser.getDoc()),
 					new StreamResult(new File(DATA_PATH_PREFIX + fileName))
 			);
 		} catch (TransformerFactoryConfigurationError | TransformerException 
-				| UnrecognizedQueryMethodException e) {
+				| UnrecognizedQueryMethodException | XPathExpressionException
+				| MalformedXMLSourceException e) {
 			e.printStackTrace();
 		}
 	}
@@ -192,21 +196,6 @@ public class Configuration {
 
 	public synchronized Configuration setGridHeight(int gridHeight) {
 		this.gridHeight = gridHeight;
-		return this;
-	}
-
-	public synchronized Configuration setAllStates(States allStates) {
-		this.allStates = allStates;
-		return this;
-	}
-
-	public synchronized Configuration setNeighborhood(Neighborhood neighborhood) {
-		this.neighborhood = neighborhood;
-		return this;
-	}
-
-	public synchronized Configuration setCustomizedParams(Params customizedParams) {
-		this.customizedParams = customizedParams;
 		return this;
 	}
 }
