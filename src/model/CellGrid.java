@@ -28,9 +28,7 @@ public abstract class CellGrid extends GridPane {
 	// 		 size of cells
 	// 		 have a percentage of satisfied cells (dynamically)	 
 
-	public CellGrid() {
-		int rows = ConfigurationLoader.getConfig().getNumRows();
-		int cols = ConfigurationLoader.getConfig().getNumCols();
+	public CellGrid(int rows, int cols) {
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
@@ -78,6 +76,24 @@ public abstract class CellGrid extends GridPane {
 		}
 		return neighbors;
 	}
+	
+	//assuming no diagonals
+	public ArrayList<Cell>  getSugarNeighbors(Cell cell, int vision){
+		ArrayList<Cell> neighbors = new ArrayList<>();
+		int rowPos = cell.getRowPos();
+		int colPos = cell.getColPos();
+		//int vision = 5;
+		for(int i = 0; i<cell.getRowDeltas().length; i++){
+			for(int j = 1; j<=vision; j++){
+				int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
+				int newColPos = colPos + cell.getColDeltas()[i]*j;
+				if (isValidLocation(newRowPos, newColPos)) {
+					neighbors.add(grid[newRowPos][newColPos]);
+				}
+			}	
+		}
+		return neighbors;
+	}
 
 	/* backend does this too
 	private void updateCurrentState(Cell cell) {
@@ -112,6 +128,14 @@ public abstract class CellGrid extends GridPane {
 
 	public int getNumCols() {
 		return grid[0].length;
+	}
+	
+	public void setGridCell(int row, int col, Cell myCell){
+		grid[row][col] = myCell;
+	}
+	
+	public Cell getGridCell(int row, int col){
+		return grid[row][col];
 	}
 
 	public abstract void updateGrid();

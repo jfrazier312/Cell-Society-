@@ -15,8 +15,8 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 	private static final String SHARK = "shark";
 	private Random generator;
 
-	public PredatorPreySimulation() {
-		super();
+	public PredatorPreySimulation(int row, int col) {
+		super(row, col);
 	}
 	
 	public void initSimulation() {
@@ -31,8 +31,25 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 				.getStateByName(SHARK).getAttributes().get("reproductionTime"));
 		int timeToDeath = Integer.parseInt(ConfigurationLoader.getConfig().getAllStates()
 				.getStateByName(SHARK).getAttributes().get("lifeTime"));
-		Cell[][] myGrid = getGrid();
 		generator = new Random();
+		ArrayList<String> initialization = getStartingStateList(percentEmptyCells, percentShark);
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath));
+				if(initialization.size() == 0){
+					getGridCell(i, j).setCurrentstate(EMPTY);
+				}
+				else{
+					int cellChoice = generator.nextInt(initialization.size());
+					getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
+					initialization.remove(cellChoice);
+				}
+				getGridCell(i, j).setFuturestate("");
+			}
+		}
+	}
+
+	private ArrayList<String> getStartingStateList(double percentEmptyCells, double percentShark) {
 		int size = getNumRows()*getNumCols();
 		double numEmpty = percentEmptyCells*size;
 		double numShark = percentShark*(size-numEmpty);
@@ -47,29 +64,15 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 		for(int i = 0; i<numFish; i++){
 			initialization.add(FISH);
 		}
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				myGrid[i][j] = new Fish(i, j, reproductionTime, timeToDeath);
-				if(initialization.size() == 0){
-					myGrid[i][j].setCurrentstate(EMPTY);
-				}
-				else{
-					int cellChoice = generator.nextInt(initialization.size());
-					myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
-					initialization.remove(cellChoice);
-				}
-				myGrid[i][j].setFuturestate("");
-			}
-		}
+		return initialization;
 	}
 
 	@Override
 	public void updateGrid(){
-		Cell[][] myGrid = getGrid();
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				if(currentCell.getFuturestate().equals("")){
 					currentCell.setFuturestate(EMPTY);
 				}
@@ -80,10 +83,10 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 	}
 	
 	public void updateFutureStates() {
-		Cell[][] myGrid = getGrid();
+		//Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				if(currentCell.getCurrentstate().equals(SHARK)){
 					updateCell(currentCell);
 				}
@@ -91,7 +94,7 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 		}	
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				if(!currentCell.getCurrentstate().equals(SHARK)){
 					updateCell(currentCell);
 				}
@@ -113,7 +116,6 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 		if(state.equals(SHARK)){
 			if (myFishFriends.size() > 0) {
 				Cell newSharkCell = getNewCell(myFishFriends);
-				//boolean to decide whether or not the shark ate
 				transferInformation((Fish) myCreature, (Fish) newSharkCell, true);
 				if(((Fish) myCreature).getReproductionTime()<=0){
 					giveBirth((Fish) myCreature, SHARK);

@@ -27,22 +27,21 @@ public class MainView implements GameWorld {
 	private FlowPane cellPane;
 	private CellGrid simulation;
 	private boolean simIsRunning;
+	private VBox buttonContainer;
 
 	private static final double BUTTON_WIDTH = 200;
 
 	private Timeline gameloop;
 
-	private Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, SCENE_WIDTH / 40,
-			(SCENE_HEIGHT - GRID_HEIGHT) / 2, 0);
+	private Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, GRID_PADDING,
+			(SCENE_HEIGHT - GRID_HEIGHT) / 2, -40);
 	private Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2,
 			GRID_PADDING);
 
 	// TODO: Jordan: This will return a scene, and be called in Main.
 	public Scene initSimulation(Stage primaryStage) throws Exception {
-
 		// Do configuration loader to get the information for scene / etc.
 		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
-
 		root = new BorderPane();
 		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 		// scene = new Scene(root, config.getSceneWidth(),
@@ -74,10 +73,10 @@ public class MainView implements GameWorld {
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), e-> {
 			if (SliderCreator.reset) {
 				try {
-					root.getChildren().removeAll(root.getChildren());
+//					root.getChildren().removeAll(root.getChildren());
 					createCellPane();
 					createSimulation();
-					createAllButtons();
+					createCustomButtons();
 					SliderCreator.reset = false;
 					gameloop.pause();
 				} catch (Exception e1) {
@@ -119,12 +118,13 @@ public class MainView implements GameWorld {
 	}
 
 	private void createAllButtons() throws Exception {
-		VBox buttonContainer = new VBox(PADDING);
+		buttonContainer = new VBox(PADDING);
 		simIsRunning = false;
 
 		// TODO: Jordan - set padding on buttons and button size from XML
 		HBox hbox1 = new HBox(PADDING);
 		HBox hbox2 = new HBox(PADDING);
+		VBox vbox3 = new VBox(PADDING);
 
 		// Sets simulation combo box action
 		// setSimulationEventHandler();
@@ -141,35 +141,77 @@ public class MainView implements GameWorld {
 
 		SimulationButton stepBtn = new SimulationButton(STEP);
 		setStepEventHandler(stepBtn);
-
-		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, 1.0, "FPS");
-		setFPSEventHandler(fpsSlider.getSlider());
-
+		
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
+		
+		SimulationSlider rowsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumRows(), "Rows", false);
+		setRowsEventHandler(rowsSlider.getSlider());
 
+		SimulationSlider colsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumCols(), "Cols", false);
+		setColumnsEventHandler(colsSlider.getSlider());
+		
+		vbox3.getChildren().addAll(rowsSlider.getHbox(), colsSlider.getHbox());
+
+		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, ConfigurationLoader.getConfig().getFramesPerSec(), "FPS", false);
+		setFPSEventHandler(fpsSlider.getSlider());
+	
 		VBox basicBtnBox = new VBox(PADDING);
-		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, fpsSlider.getHbox());
+		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getHbox());
+		basicBtnBox.setMinWidth(300);
+		
+		buttonContainer.getChildren().add(basicBtnBox);
 
-		VBox additionalSliders = createCustomButtons();
+		createCustomButtons();
 
-		buttonContainer.getChildren().addAll(basicBtnBox, additionalSliders);
 		// Right inset will be the same padding used on the left side of grid
 		buttonContainer.setPadding(buttonPadding);
-		buttonContainer.setMaxWidth(140);
+		buttonContainer.setMaxWidth(250);
+		buttonContainer.setMinWidth(250);
 		root.setRight(buttonContainer);
-
 	}
 
-	private VBox createCustomButtons() {
+	private void createCustomButtons() {
 		VBox custom = new VBox(PADDING);
 		// loop through the rest of the custom parameters
-		// TODO: Jordan: Right now this aint doing ass shit
 		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
 			SimulationSlider slider = new SimulationSlider(str);
 			custom.getChildren().add(slider.getVBox());
 		}
+		// this is so poorly designed
+		if (buttonContainer.getChildren().size() > 1) {
+			buttonContainer.getChildren().remove(1);
+		}
+		buttonContainer.getChildren().add(custom);
+	}
+	
+	private void setRowsEventHandler(Slider sizeSlider) {
+		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
-		return custom;
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				gameloop.pause();
+				double newval = (double) newValue;
+				ConfigurationLoader.getConfig().setNumRows((int) newval);
+				createCellPane();
+				createCustomButtons();
+				createSimulation();
+			}
+		});
+	}
+	
+	private void setColumnsEventHandler(Slider sizeSlider) {
+		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				gameloop.pause();
+				double newval = (double) newValue;
+				ConfigurationLoader.getConfig().setNumCols((int) newval);
+				createCellPane();
+				createCustomButtons();
+				createSimulation();
+			}
+		});
 	}
 
 	private void setFPSEventHandler(Slider fpsSlider) {
@@ -178,6 +220,7 @@ public class MainView implements GameWorld {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// TODO Auto-generated method stub
 				double fpsdouble = (double) 1000 / (double) newValue;
+				ConfigurationLoader.getConfig().setFramesPerSec((int)fpsdouble); 
 				gameloop.pause();
 				gameloop.getKeyFrames().remove(0);
 				gameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
@@ -195,7 +238,6 @@ public class MainView implements GameWorld {
 		simulation.updateGrid();
 		simulation.renderGrid(cellPane);
 		root.setLeft(cellPane);
-		System.out.println(simulation.getGrid()[0][0].getCurrentstate());
 	}
 
 	private void setSimulationEventHandler() {
@@ -206,13 +248,12 @@ public class MainView implements GameWorld {
 			gameloop.stop();
 			try {
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load();
-				ConfigurationLoader.getConfig();
 				root.getChildren().removeAll(root.getChildren());
 				createCellPane();
-				createSimulation();
 				createAllButtons();
+				createSimulation();
 				createGameLoop();
-
+				createResetTimelineChecker();
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -248,12 +289,11 @@ public class MainView implements GameWorld {
 					// ConfigurationLoader.loader().setSource(SIMULATIONS.getValue()
 					// + ".xml").load();
 					ConfigurationLoader.getConfig();
-					root.getChildren().removeAll(root.getChildren());
 					createCellPane();
-					createAllButtons();
+					createCustomButtons();
 					createSimulation();
-					// createGameLoop();
-
+//					createGameLoop();
+//					createResetTimelineChecker();
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					throw new IllegalArgumentException("Failed loading XML file");
@@ -280,20 +320,12 @@ public class MainView implements GameWorld {
 		// TODO: Jordan Set cellpane parameters based on XML
 		cellPane = new FlowPane(0.0, 0.0);
 
-		// cellPane.setPrefWidth(config.getGridWidth());
-		// cellPane.setPrefHeight(config.getGridHeight());
+		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
+		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
 
-		// Have to add whatever padding you add on to the left side of the grid
-		// for some
-		// strange fucking reason
-		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING + (ConfigurationLoader.getConfig().getNumCols() - 1));
-		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING + (ConfigurationLoader.getConfig().getNumCols() - 1));
+		cellPane.setMaxHeight(GRID_HEIGHT);
+		cellPane.setMinHeight(GRID_HEIGHT);
 
-		cellPane.setMaxHeight(GRID_HEIGHT + (ConfigurationLoader.getConfig().getNumRows() - 1));
-		cellPane.setMinHeight(GRID_HEIGHT + (ConfigurationLoader.getConfig().getNumRows() - 1));
-
-		// cellPane.setPrefWidth(20);
-		// cellPane.setPrefHeight(300);
 		// cellPane.setPrefWrapLength(50);
 		// cellPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
 	}

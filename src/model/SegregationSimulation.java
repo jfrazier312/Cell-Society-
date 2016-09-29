@@ -15,8 +15,8 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	ArrayList<Cell> myMovingCells;
 	Random generator;
 	
-	public SegregationSimulation() {
-		super();
+	public SegregationSimulation(int row, int col) {
+		super(row, col);
 	}
 	
 	public void initSimulation() {
@@ -30,6 +30,23 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	private void createGrid(double percentEmpty, double percenttypeA) {
 		generator = new Random();
 		int size = getNumRows()*getNumCols();
+		ArrayList<String> initialization = getStartingStateList(percentEmpty, percenttypeA, size);
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				setGridCell(i, j, new RectangleWithDiagonals(i, j));
+				if(initialization.size() == 0){
+					getGridCell(i, j).setCurrentstate(EMPTY);
+				}
+				else{
+					int cellChoice = generator.nextInt(initialization.size());
+					getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
+					initialization.remove(cellChoice);
+				}
+			}
+		}
+	}
+
+	private ArrayList<String> getStartingStateList(double percentEmpty, double percenttypeA, int size) {
 		double numEmpty = percentEmpty*size;
 		double numtypeA = percenttypeA*(size-numEmpty);
 		double numtypeB = size-numEmpty-numtypeA;
@@ -43,29 +60,15 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 		for(int i = 0; i<numtypeB; i++){
 			initialization.add(typeB);
 		}
-		Cell[][] myGrid = getGrid();
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				myGrid[i][j] = new RectangleWithDiagonals(i, j);
-				if(initialization.size() == 0){
-					myGrid[i][j].setCurrentstate(EMPTY);
-				}
-				else{
-					int cellChoice = generator.nextInt(initialization.size());
-					myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
-					initialization.remove(cellChoice);
-				}
-			}
-		}
+		return initialization;
 	}
 	
 	@Override
 	public void updateGrid(){
 		updateFutureStates();
-		Cell[][] myGrid = this.getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				currentCell.setCurrentstate(currentCell.getFuturestate());
 				
 			}
@@ -73,10 +76,9 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	}
 	
 	private void updateFutureStates(){
-		Cell[][] myGrid = this.getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				if(!currentCell.getCurrentstate().equals(EMPTY)){
 					updateCell(currentCell);
 				}
@@ -86,7 +88,7 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 		ArrayList<Cell> cellsToMakeEmpty = new ArrayList<Cell>();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				if(currentCell.getCurrentstate().equals(EMPTY)){
 					currentCell.setFuturestate(EMPTY);
 					if(myMovingCells.size()>0){

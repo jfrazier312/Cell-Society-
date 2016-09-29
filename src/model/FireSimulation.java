@@ -19,31 +19,30 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 	private double probOfBurning;
 	Random generator;
 
-	public FireSimulation() {
-		super();
+	public FireSimulation(int row, int col) {
+		super(row, col);
 
 	}
 	
 	public void initSimulation() {
 		createGrid();
-		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
+//		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		//probOfBurning = .5;
 	}
 	
 	public void createGrid() {
-		Cell[][] myGrid = getGrid();
 		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				myGrid[i][j] = new RectangleNoDiagonals(i, j);
+				setGridCell(i, j, new RectangleNoDiagonals(i, j));
 				if(i==0 || j==0 || i==getNumRows()-1 || j == getNumCols()-1){
-					myGrid[i][j].setCurrentstate(EMPTY);
+					getGridCell(i, j).setCurrentstate(EMPTY);
 				}
 				else if(i == getNumRows()/2 && j == getNumCols()/2){
-					myGrid[i][j].setCurrentstate(BURNING);
+					getGridCell(i, j).setCurrentstate(BURNING);
 				}
 				else{
-					myGrid[i][j].setCurrentstate(TREE);
+					getGridCell(i, j).setCurrentstate(TREE);
 				}
 			}
 		}
@@ -51,21 +50,20 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 	
 	@Override
 	public void updateGrid() {
-		Cell[][] myGrid = getGrid();
+		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				currentCell.setCurrentstate(currentCell.getFuturestate());
 			}
 		}
 	}
 	
 	private void updateFutureStates(){
-		Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				updateCell(myGrid[i][j]);
+				updateCell(getGridCell(i, j));
 			}
 		}
 	}
