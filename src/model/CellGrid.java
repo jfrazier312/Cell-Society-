@@ -6,6 +6,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.NodeList;
 
+import config.ConfigurationLoader;
+//import config.ConfigurationLoader;
 import config.XMLParser;
 import exceptions.MalformedXMLSourceException;
 import exceptions.UnrecognizedQueryMethodException;
@@ -17,6 +19,8 @@ import utils.Utils;
 public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid;
+	
+	private String simulationName;
 	
 	// TODO: Jordan: change parameters 
 	//       number of initially empty (resets grid)
@@ -35,13 +39,10 @@ public abstract class CellGrid extends GridPane {
 
 	// Need to change spacing in flowpane if shape is different than rectangle
 	public void renderGrid(FlowPane cellPane) {
-		// loop through 2d grid, render each cell. should have already set up state correctly, 
-		// this just needs to display it.
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
-//				Node updatedCell = currentCell.render();
-				Node updatedCell = currentCell.render(currentCell.getCurrentstate());
+				Node updatedCell = currentCell.render();
 				cellPane.getChildren().add(updatedCell);
 			}
 		}	
@@ -73,6 +74,24 @@ public abstract class CellGrid extends GridPane {
 			if (isValidLocation(newRowPos, newColPos)) {
 				neighbors.add(grid[newRowPos][newColPos]);
 			}
+		}
+		return neighbors;
+	}
+	
+	//assuming no diagonals
+	public ArrayList<Cell>  getSugarNeighbors(Cell cell, int vision){
+		ArrayList<Cell> neighbors = new ArrayList<>();
+		int rowPos = cell.getRowPos();
+		int colPos = cell.getColPos();
+		//int vision = 5;
+		for(int i = 0; i<cell.getRowDeltas().length; i++){
+			for(int j = 1; j<=vision; j++){
+				int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
+				int newColPos = colPos + cell.getColDeltas()[i]*j;
+				if (isValidLocation(newRowPos, newColPos)) {
+					neighbors.add(grid[newRowPos][newColPos]);
+				}
+			}	
 		}
 		return neighbors;
 	}
@@ -111,10 +130,22 @@ public abstract class CellGrid extends GridPane {
 	public int getNumCols() {
 		return grid[0].length;
 	}
+	
+	public void setGridCell(int row, int col, Cell myCell){
+		grid[row][col] = myCell;
+	}
+	
+	public Cell getGridCell(int row, int col){
+		return grid[row][col];
+	}
 
 	public abstract void updateGrid();
 
 	public abstract void updateCell(Cell myCell);
+	
+	public abstract String getSimulationName();
+	
+	public abstract void initSimulation();
 	
 	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
 			throws XPathExpressionException, UnrecognizedQueryMethodException,

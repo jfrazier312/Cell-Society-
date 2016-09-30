@@ -28,8 +28,8 @@ public class Configuration {
 	
 	private String simulationName;
 	private String author;
-	private int gridWidth;
-	private int gridHeight;
+	private int numCols;
+	private int numRows;
 	private States allStates;
 	private Neighborhood neighborhood;
 	private Params customizedParams;
@@ -54,8 +54,8 @@ public class Configuration {
 			try {
 				simulationName = parser.getItem("SimulationName");
 				author = parser.getItem("SimulationAuthor");
-				gridWidth = parser.getItemAsInteger("GridWidth");
-				gridHeight = parser.getItemAsInteger("GridHeight");
+				numCols = parser.getItemAsInteger("GridWidth");
+				numRows = parser.getItemAsInteger("GridHeight");
 				framesPerSec = parser.getItemAsInteger("FramesPerSec");
 				allStates = new States().load(parser);
 				neighborhood = new Neighborhood().load(parser);
@@ -79,8 +79,8 @@ public class Configuration {
 		try {
 			parser.updateDoc("SimulationName", simulationName);
 			parser.updateDoc("SimulationAuthor", author);
-			parser.updateDoc("GridWidth", gridWidth);
-			parser.updateDoc("GridHeight", gridHeight);
+			parser.updateDoc("GridWidth", numCols);
+			parser.updateDoc("GridHeight", numRows);
 			parser.updateDoc("FramesPerSec", framesPerSec);
 			parser.updateDoc("DefaultInitState", defaultInitState.getValue());
 			allStates.save();
@@ -126,14 +126,6 @@ public class Configuration {
 
 	public synchronized String getAuthor() {
 		return author;
-	}
-
-	public synchronized int getGirdWidth() {
-		return gridWidth;
-	}
-
-	public synchronized int getGirdHeight() {
-		return gridHeight;
 	}
 
 	public synchronized States getAllStates() {
@@ -194,13 +186,13 @@ public class Configuration {
 		return this;
 	}
 
-	public synchronized Configuration setGridWidth(int gridWidth) {
-		this.gridWidth = gridWidth;
+	public synchronized Configuration setNumCols(int numCols) {
+		this.numCols = numCols;
 		return this;
 	}
 
-	public synchronized Configuration setGridHeight(int gridHeight) {
-		this.gridHeight = gridHeight;
+	public synchronized Configuration setNumRows(int numRows) {
+		this.numRows = numRows;
 		return this;
 	}
 }

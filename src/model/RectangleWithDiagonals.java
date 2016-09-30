@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-
 public class RectangleWithDiagonals extends Rectangle {
 
 	private int[] rowDeltas = {-1, 0, 1, 0, 1, 1, -1, -1};

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<simulation name="Wa-Tor World" author="team19">
+<simulation name="Wa-Tor_World" author="team19">
 	<grid width="20" height="20"/>
 	<neighborhood size="5">
 		<edge type="constant" value="alive">
@@ -14,5 +14,5 @@
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="percentEmpty" value="0.1"></param>
-	<param name="sharkToFishRatio" value="0.2"></param>
+	<param name="percentShark" value="0.2"></param>
 </simulation>
