@@ -139,6 +139,14 @@ public class Configuration {
 	public synchronized List<Cell> getInitialCells() {
 		return initialCells;
 	}
+	
+	public synchronized int getNumCols() {
+		return numCols;
+	}
+
+	public synchronized int getNumRows() {
+		return numRows;
+	}
 
 	// -------- MUTATORS ---------
 	public synchronized Configuration setDefaultInitState(String defaultInitState)

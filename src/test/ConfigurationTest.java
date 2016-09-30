@@ -37,8 +37,8 @@ public class ConfigurationTest {
 	public void basicProptertiesLoadedProperly() {
 		assertEquals("The Game of Life", config.getSimulationName());
 		assertEquals("team19", config.getAuthor());
-		assertEquals(30, config.getGirdHeight());
-		assertEquals(20, config.getGirdWidth());
+		assertEquals(30, config.getNumRows());
+		assertEquals(20, config.getNumCols());
 		assertEquals(1, config.getFramesPerSec());
 	}
 	
@@ -116,8 +116,8 @@ public class ConfigurationTest {
 		try {
 			config.setSimulationName(SIMULATION)
 				  .setAuthor(AUTHOR)
-				  .setGridHeight(GRID_HEIGHT)
-				  .setGridWidth(GRID_WIDTH)
+				  .setNumRows(GRID_HEIGHT)
+				  .setNumCols(GRID_WIDTH)
 				  .setFramesPerSec(FPS)
 				  .setDefaultInitState(DEFAULT_STATE_NAME)
 				  .setCustomParam(PARAM, PARAM_VALUE);
@@ -133,8 +133,8 @@ public class ConfigurationTest {
 		Configuration newConfig = ConfigurationLoader.getConfig(OUTPUT_SOURCE);
 		assertEquals(newConfig.getSimulationName(), SIMULATION);
 		assertEquals(newConfig.getAuthor(), AUTHOR);
-		assertEquals(newConfig.getGirdWidth(), GRID_WIDTH);
-		assertEquals(newConfig.getGirdHeight(), GRID_HEIGHT);
+		assertEquals(newConfig.getNumCols(), GRID_WIDTH);
+		assertEquals(newConfig.getNumRows(), GRID_HEIGHT);
 		assertEquals(newConfig.getDefaultInitState().getValue(), DEFAULT_STATE_NAME);
 		assertEquals(newConfig.getFramesPerSec(), FPS);
 		assertEquals(newConfig.getAllStates().getStateByName(STATE_CHOSEN).getAttributes()
