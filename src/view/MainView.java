@@ -1,4 +1,6 @@
 package view;
+import java.util.ResourceBundle;
+
 import config.ConfigurationLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -36,8 +38,8 @@ public class MainView implements GameWorld {
 	private boolean simIsRunning;
 	private VBox myButtonContainer;
 
-	// TODO: put into resource bundle
-	private static final double BUTTON_WIDTH = 200;
+	private ResourceBundle queries;
+	public static final String RESRC_PATH = "resources/GridResources";
 
 	private Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, GRID_PADDING,
 			(SCENE_HEIGHT - GRID_HEIGHT) / 2, -40);
@@ -47,8 +49,10 @@ public class MainView implements GameWorld {
 	public Scene initScene() throws Exception {
 		myRoot = new Group();
 		myScene = new Scene(myRoot, SCENE_WIDTH, SCENE_HEIGHT);
+		queries = ResourceBundle.getBundle(RESRC_PATH);
 		// isGridLinesVisible = false;
 		beginInitialSetup();
+		
 		return myScene;
 	}
 	
@@ -73,7 +77,7 @@ public class MainView implements GameWorld {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		// TODO: get rid of magic number
-		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), e -> {
+		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(Double.parseDouble(queries.getString("MaxFPS"))), e -> {
 			if (SimulationSlider.reset) {
 				resetGrid();
 			}
@@ -143,6 +147,7 @@ public class MainView implements GameWorld {
 		HBox hbox2 = new HBox(PADDING);
 		VBox vbox3 = new VBox(PADDING);
 
+		// TOOD: REsource bundle
 		SimulationButton playBtn = new SimulationButton(GenericButton.PLAY);
 		setStartEventHandler(playBtn);
 
