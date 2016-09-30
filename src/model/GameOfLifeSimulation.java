@@ -4,6 +4,10 @@ import java.util.Random;
 
 import config.ConfigurationLoader;
 
+/*
+ * author: Austin Gartside
+ */
+
 public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	
 	public static final String SIMULATION_NAME = GAME_OF_LIFE;

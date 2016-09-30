@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import config.ConfigurationLoader;
-
+/*
+ * author: Austin Gartside
+ */
 public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 
 	private static final String EMPTY = "empty";

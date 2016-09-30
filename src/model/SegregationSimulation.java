@@ -4,7 +4,11 @@ import java.util.Random;
 
 import config.ConfigurationLoader;
 
-//Should we do getting neighbors in each simulation since the definition can vary?
+/*
+ * author: Austin Gartside
+ */
+
+
 public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	
 	private static final String EMPTY = "empty";

@@ -1,5 +1,7 @@
 package model;
-
+/*
+ * author: Austin Gartside
+ */
 import java.util.ArrayList;
 
 public class SugarAgent extends RectangleNoDiagonals{
@@ -25,8 +27,16 @@ public class SugarAgent extends RectangleNoDiagonals{
 		return mySugar;
 	}
 	
+	public void setSugar(int sugar){
+		mySugar = sugar;
+	}
+	
 	public int getSugarMetabolism(){
 		return mySugarMetabolism;
+	}
+	
+	public void setSugarMetabolism(int newMetabolism){
+		mySugarMetabolism = newMetabolism;
 	}
 	
 	public int getVision(){
@@ -38,8 +48,16 @@ public class SugarAgent extends RectangleNoDiagonals{
 		mySugar-=mySugarMetabolism;
 	}
 	
+	public void killAgent(){
+		mySugar = 0;
+	}
+	
 	public boolean isDead(){
 		return mySugar<=0;
+	}
+	
+	public boolean isVacant(){
+		return getFuturestate().equals("");
 	}
 	
 	
