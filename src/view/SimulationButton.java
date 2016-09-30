@@ -1,13 +1,19 @@
 package view;
 import javafx.scene.control.Button;
 
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
+
 public class SimulationButton extends Button {
 	
 	private String displayName;
 	
-	public SimulationButton(String displayName) throws Exception {
+	public SimulationButton(GenericButton displayName) {
 		
-		this.displayName = displayName;
+		this.displayName = displayName.toString();
 		setDisplayName(this.displayName);	
 		
 	}

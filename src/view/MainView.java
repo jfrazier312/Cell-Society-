@@ -1,4 +1,5 @@
 package view;
+import java.util.ResourceBundle;
 
 import config.ConfigurationLoader;
 import javafx.animation.KeyFrame;
@@ -6,13 +7,12 @@ import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CellGrid;
 import model.FireSimulation;
@@ -20,196 +20,209 @@ import model.GameOfLifeSimulation;
 import model.PredatorPreySimulation;
 import model.SegregationSimulation;
 
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
+
 public class MainView implements GameWorld {
 
-	private Scene scene;
-	private BorderPane root;
-	private FlowPane cellPane;
-	private CellGrid simulation;
+	private Scene myScene;
+	private Group myRoot;
+	private GridPane myCellPane;
+	private CellGrid mySimulation;
+	private Timeline myGameloop;
+
+	private boolean isGridLinesVisible;
 	private boolean simIsRunning;
-	private VBox buttonContainer;
+	private VBox myButtonContainer;
 
-	private static final double BUTTON_WIDTH = 200;
-
-	private Timeline gameloop;
+	private ResourceBundle queries;
+	public static final String RESRC_PATH = "resources/GridResources";
 
 	private Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, GRID_PADDING,
 			(SCENE_HEIGHT - GRID_HEIGHT) / 2, -40);
 	private Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2,
 			GRID_PADDING);
 
-	// TODO: Jordan: This will return a scene, and be called in Main.
-	public Scene initSimulation(Stage primaryStage) throws Exception {
-		// Do configuration loader to get the information for scene / etc.
-		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
-		root = new BorderPane();
-		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-		// scene = new Scene(root, config.getSceneWidth(),
-		// config.getSceneHeight());
-
-		// Creates initial cell grid
-		createCellPane();
-
-		// Creates initial simulation
-		createSimulation();
-
-		// add the buttons
-		createAllButtons();
+	public Scene initScene() throws Exception {
+		myRoot = new Group();
+		myScene = new Scene(myRoot, SCENE_WIDTH, SCENE_HEIGHT);
+		queries = ResourceBundle.getBundle(RESRC_PATH);
+		// isGridLinesVisible = false;
+		beginInitialSetup();
+		
+		return myScene;
+	}
+	
+	private void beginInitialSetup() {
+		initSimulation();
 		setSimulationEventHandler();
-
-		// create game loop
-		createGameLoop();
-
-		// Checks if slider needs to reset grid
 		createResetTimelineChecker();
+		createGameLoop();
+	}
 
-		return scene;
-
+	private void initSimulation() {
+		// Configuration config = new Configuration();
+		myRoot.getChildren().removeAll(myRoot.getChildren());
+		createCellPane();
+		createSimulation();
+		// createAllButtons(config);
+		createAllButtons();
+//		createResetTimelineChecker();
 	}
 
 	private void createResetTimelineChecker() {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), e-> {
-			if (SliderCreator.reset) {
-				try {
-//					root.getChildren().removeAll(root.getChildren());
-					createCellPane();
-					createSimulation();
-					createCustomButtons();
-					SliderCreator.reset = false;
-					gameloop.pause();
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
+		// TODO: get rid of magic number
+		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(Double.parseDouble(queries.getString("MaxFPS"))), e -> {
+			if (SimulationSlider.reset) {
+				resetGrid();
 			}
 		}));
 		timeline.play();
 	}
 
-	private void createSimulation() {
-		String simulationName = ConfigurationLoader.getConfig().getSimulationName();
-		// sets simulation to correct simulation
-		findSimulation(simulationName);
-		simulation.initSimulation();
-		simulation.renderGrid(cellPane);
-		cellPane.setPadding(cellPanePadding);
-		root.setLeft(cellPane);
+	private void resetGrid() {
+		initSimulation();
+		SimulationSlider.reset = false;
+		myGameloop.pause();
+		simIsRunning = false;
 	}
+
+	private void createSimulation() {
+		// Configuration config = new Configuration();
+		String simulationName = ConfigurationLoader.getConfig().getSimulationName();
+		// findSimulation(config.getSimulationName());
+		findSimulation(simulationName);
+		mySimulation.initSimulation();
+		mySimulation.renderGrid(myCellPane);
+	}
+
+	// private void findSimulation(String sim) {
+	// if (sim.equals(FIRE_SIMULATION)) {
+	// mySimulation = new FireSimulation(config);
+	// } else if (sim.equals(GAME_OF_LIFE)) {
+	// mySimulation = new GameOfLifeSimulation(config);
+	// } else if (sim.equals(SEGREGATION_SIMULATION)) {
+	// mySimulation = new SegregationSimulation(config);
+	// } else if (sim.equals(WATOR_WORLD)) {
+	// mySimulation = new PredatorPreySimulation(config);
+	// }
+	// }
 
 	private void findSimulation(String sim) {
 		if (sim.equals(FIRE_SIMULATION)) {
-			simulation = new FireSimulation();
+			mySimulation = new FireSimulation();
 		} else if (sim.equals(GAME_OF_LIFE)) {
-			simulation = new GameOfLifeSimulation();
+			mySimulation = new GameOfLifeSimulation();
 		} else if (sim.equals(SEGREGATION_SIMULATION)) {
-			simulation = new SegregationSimulation();
+			mySimulation = new SegregationSimulation();
 		} else if (sim.equals(WATOR_WORLD)) {
-			simulation = new PredatorPreySimulation();
+			mySimulation = new PredatorPreySimulation();
 		}
 	}
 
 	private void createGameLoop() {
 		// TODO: Duration should come from XML frames/sec
-		gameloop = new Timeline();
-		gameloop.getKeyFrames().add(new KeyFrame(Duration.seconds(1), e -> {
-			createKeyFrameEvents();
+		myGameloop = new Timeline();
+		myGameloop.getKeyFrames().add(new KeyFrame(Duration.seconds(1), e -> {
+			updateGrid();
 		}));
 	}
 
-	private void createAllButtons() throws Exception {
-		buttonContainer = new VBox(PADDING);
-		simIsRunning = false;
+	private void updateGrid() {
+		myCellPane.getChildren().removeAll(myCellPane.getChildren());
+		mySimulation.updateGrid();
+		mySimulation.renderGrid(myCellPane);
+	}
 
-		// TODO: Jordan - set padding on buttons and button size from XML
+	// private void createAllButtons(Configuration config) {
+	private void createAllButtons() {
+		myButtonContainer = new VBox(PADDING);
+
 		HBox hbox1 = new HBox(PADDING);
 		HBox hbox2 = new HBox(PADDING);
 		VBox vbox3 = new VBox(PADDING);
 
-		// Sets simulation combo box action
-		// setSimulationEventHandler();
-
-		SimulationButton playBtn = new SimulationButton(PLAY);
+		// TOOD: REsource bundle
+		SimulationButton playBtn = new SimulationButton(GenericButton.PLAY);
 		setStartEventHandler(playBtn);
 
-		SimulationButton pauseBtn = new SimulationButton(PAUSE);
+		SimulationButton pauseBtn = new SimulationButton(GenericButton.PAUSE);
 		setStopEventHandler(pauseBtn);
-		hbox1.getChildren().addAll(playBtn, pauseBtn);
 
-		SimulationButton resetBtn = new SimulationButton(RESET);
+		SimulationButton resetBtn = new SimulationButton(GenericButton.RESET);
 		setStopEventHandler(resetBtn);
 
-		SimulationButton stepBtn = new SimulationButton(STEP);
+		SimulationButton stepBtn = new SimulationButton(GenericButton.STEP);
 		setStepEventHandler(stepBtn);
-		
-		hbox2.getChildren().addAll(stepBtn, resetBtn);
-		
-		SimulationSlider rowsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumRows(), "Rows", false);
-		setRowsEventHandler(rowsSlider.getSlider());
 
-		SimulationSlider colsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumCols(), "Cols", false);
-		setColumnsEventHandler(colsSlider.getSlider());
-		
-		vbox3.getChildren().addAll(rowsSlider.getHbox(), colsSlider.getHbox());
+		// TODO: Magic numbers
+		SimulationSlider rowsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumRows(),
+				GenericButton.ROWS, false);
+		setRowAndColEventHandler(rowsSlider.getSlider(), true);
 
-		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, ConfigurationLoader.getConfig().getFramesPerSec(), "FPS", false);
+		SimulationSlider colsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getNumCols(),
+				GenericButton.COLS, false);
+		setRowAndColEventHandler(colsSlider.getSlider(), false);
+
+		SimulationSlider fpsSlider = new SimulationSlider(1.0, 50.0, ConfigurationLoader.getConfig().getFramesPerSec(),
+				GenericButton.FPS, false);
 		setFPSEventHandler(fpsSlider.getSlider());
-	
+
+		// TODO: Grid lines
+		SimulationButton gridVisible = new SimulationButton(GenericButton.GRID_LINES);
+//		 setGridLinesVisible(gridVisible);
+
+		hbox1.getChildren().addAll(playBtn, pauseBtn);
+		hbox2.getChildren().addAll(stepBtn, resetBtn);
+		vbox3.getChildren().addAll(rowsSlider.getGenericSlider(), colsSlider.getGenericSlider());
+
 		VBox basicBtnBox = new VBox(PADDING);
-		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getHbox());
+		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getGenericSlider(), gridVisible);
+		// TODO: Magic numbers
 		basicBtnBox.setMinWidth(300);
-		
-		buttonContainer.getChildren().add(basicBtnBox);
+		myButtonContainer.getChildren().add(basicBtnBox);
 
 		createCustomButtons();
-
-		// Right inset will be the same padding used on the left side of grid
-		buttonContainer.setPadding(buttonPadding);
-		buttonContainer.setMaxWidth(250);
-		buttonContainer.setMinWidth(250);
-		root.setRight(buttonContainer);
+//		createCustomButtons(config);
+		setButtonContainerParameters();
 	}
 
+	private void setButtonContainerParameters() {
+		// TODO: Magic numbers
+		myButtonContainer.setPadding(buttonPadding);
+		myButtonContainer.setMaxWidth(250);
+		myButtonContainer.setMinWidth(250);
+		myButtonContainer.setLayoutX(SCENE_WIDTH - myButtonContainer.getMaxWidth());
+		myRoot.getChildren().add(myButtonContainer);
+	}
+
+//	private void createCustomButtons(Configuration config) {
 	private void createCustomButtons() {
 		VBox custom = new VBox(PADDING);
-		// loop through the rest of the custom parameters
+//		for (String str : config.getAllCustomParamNames()) {
 		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
 			SimulationSlider slider = new SimulationSlider(str);
-			custom.getChildren().add(slider.getVBox());
+			custom.getChildren().add(slider.getCustomSlider());
 		}
-		// this is so poorly designed
-		if (buttonContainer.getChildren().size() > 1) {
-			buttonContainer.getChildren().remove(1);
-		}
-		buttonContainer.getChildren().add(custom);
+		myButtonContainer.getChildren().add(custom);
 	}
-	
-	private void setRowsEventHandler(Slider sizeSlider) {
-		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
+	private void setRowAndColEventHandler(Slider sizeSlider, boolean isRow) {
+		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				gameloop.pause();
-				double newval = (double) newValue;
-				ConfigurationLoader.getConfig().setNumRows((int) newval);
-				createCellPane();
-				createCustomButtons();
-				createSimulation();
-			}
-		});
-	}
-	
-	private void setColumnsEventHandler(Slider sizeSlider) {
-		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				gameloop.pause();
-				double newval = (double) newValue;
-				ConfigurationLoader.getConfig().setNumCols((int) newval);
-				createCellPane();
-				createCustomButtons();
-				createSimulation();
+				myGameloop.pause();
+				int newval = (int)((double) newValue);
+				if (isRow) {
+					ConfigurationLoader.getConfig().setNumRows(newval);
+				} else {
+					ConfigurationLoader.getConfig().setNumCols(newval);
+				}
 			}
 		});
 	}
@@ -218,26 +231,19 @@ public class MainView implements GameWorld {
 		fpsSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				// TODO Auto-generated method stub
-				double fpsdouble = (double) 1000 / (double) newValue;
-				ConfigurationLoader.getConfig().setFramesPerSec((int)fpsdouble); 
-				gameloop.pause();
-				gameloop.getKeyFrames().remove(0);
-				gameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
-					createKeyFrameEvents();
+				double fpsdouble = 1000.0 / (double) newValue;
+				// TODO: Config area
+				ConfigurationLoader.getConfig().setFramesPerSec((int) fpsdouble);
+				myGameloop.pause();
+				myGameloop.getKeyFrames().remove(0);
+				myGameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
+					updateGrid();
 				}));
 				if (simIsRunning) {
-					gameloop.playFromStart();
+					myGameloop.playFromStart();
 				}
 			}
 		});
-	}
-
-	private void createKeyFrameEvents() {
-		cellPane.getChildren().removeAll(cellPane.getChildren());
-		simulation.updateGrid();
-		simulation.renderGrid(cellPane);
-		root.setLeft(cellPane);
 	}
 
 	private void setSimulationEventHandler() {
@@ -245,20 +251,15 @@ public class MainView implements GameWorld {
 		SIMULATIONS.setMinWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.setMaxWidth(BUTTON_WIDTH + PADDING);
 		SIMULATIONS.valueProperty().addListener(e -> {
-			gameloop.stop();
+			// TODO: config area
+			myGameloop.stop();
+			myRoot.getChildren().removeAll(myRoot.getChildren());
 			try {
 				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load();
-				root.getChildren().removeAll(root.getChildren());
-				createCellPane();
-				createAllButtons();
-				createSimulation();
-				createGameLoop();
-				createResetTimelineChecker();
+				initSimulation();
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				throw new NullPointerException("Unable to load simulation");
 			}
-
 		});
 	}
 
@@ -266,60 +267,68 @@ public class MainView implements GameWorld {
 		setDimensions(btn);
 		btn.setOnAction(e -> {
 			simIsRunning = true;
-			gameloop.setCycleCount(Timeline.INDEFINITE);
-			gameloop.playFromStart();
+			myGameloop.setCycleCount(Timeline.INDEFINITE);
+			myGameloop.playFromStart();
 		});
 	}
 
 	private void setStepEventHandler(SimulationButton btn) {
 		setDimensions(btn);
 		btn.setOnAction(e -> {
-			gameloop.pause();
+			myGameloop.pause();
 			simIsRunning = false;
-			stepOnce();
+			updateGrid();
 		});
 	}
 
 	private void setStopEventHandler(SimulationButton btn) {
 		setDimensions(btn);
 		btn.setOnAction(e -> {
-			// If button is reset, then reset parameters back to what's on XML
-			if (btn.getDisplayName().equals(RESET)) {
+			if (btn.getDisplayName().equals(GenericButton.RESET.toString())) {
 				try {
-					// ConfigurationLoader.loader().setSource(SIMULATIONS.getValue()
-					// + ".xml").load();
-					ConfigurationLoader.getConfig();
-					createCellPane();
-					createCustomButtons();
-					createSimulation();
-//					createGameLoop();
-//					createResetTimelineChecker();
+					initSimulation();
 				} catch (Exception e1) {
-					e1.printStackTrace();
-					throw new IllegalArgumentException("Failed loading XML file");
+					throw new NullPointerException("Unable to init simulation");
 				}
 			}
-			gameloop.pause();
+			myGameloop.pause();
 			simIsRunning = false;
 		});
 	}
 
-	private void stepOnce() {
-		cellPane.getChildren().removeAll(cellPane.getChildren());
-		simulation.updateGrid();
-		simulation.renderGrid(cellPane);
-		root.setLeft(cellPane);
-	}
+	// private void setGridLinesVisible(SimulationButton btn) {
+	// setDimensions(btn);
+	// btn.setOnAction(e -> {
+	// if (!gridLinesVisible) {
+	// setGridLines(true);
+	// } else {
+	// setGridLines(false);
+	// }
+	// });
+	// }
+	//
+	// private void setGridLines(boolean isVisible) {
+	// if (isVisible) {
+	// cellPane.setGridLinesVisible(true);
+	// gridLinesVisible = true;
+	// } else {
+	// cellPane.setGridLinesVisible(false);
+	// gridLinesVisible = false;
+	// }
+	// }c
 
 	private void setDimensions(SimulationButton btn) {
 		btn.setMinWidth(BUTTON_WIDTH / 2);
 		btn.setMaxWidth(BUTTON_WIDTH / 2);
 	}
 
+	/**
+	 * Creates a new GridPane for your simulation and adds it to the root
+	 */
 	private void createCellPane() {
-		// TODO: Jordan Set cellpane parameters based on XML
-		cellPane = new FlowPane(0.0, 0.0);
-
+		myCellPane = new GridPane();
+		myCellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
+		// cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
 		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
 		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
 

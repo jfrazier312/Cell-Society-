@@ -13,9 +13,11 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	public static final String SIMULATION_NAME = GAME_OF_LIFE;
 	private static final String DEAD = "dead";
 	private static final String ALIVE = "alive";
+	private int isEven;
 	
 	public GameOfLifeSimulation(int row, int col) {
 		super(row, col);
+		isEven = 0;
 	}
 	
 	public void initSimulation() {
@@ -120,6 +122,9 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	public String getSimulationName() {
 		return SIMULATION_NAME;
 	}
+	/**
+	 * This method is used for testing purposes to print grid locally
+	 */
 	
 	/**
 	 * This method is used for testing purposes to print grid locally

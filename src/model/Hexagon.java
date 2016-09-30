@@ -89,6 +89,46 @@
 //									// sqrt(3)) = r / sqrt(3)
 //	}
 //
+//
+//		if (XYVertex)
+//			cx = new double[] { x, x + HEX_SIZE, x + HEX_SIZE + HEX_SMALL_SIDE, x + HEX_SIZE, x, x - HEX_SMALL_SIDE };
+//		else
+//			cx = new double[] { x + HEX_SMALL_SIDE, x + HEX_SIZE + HEX_SMALL_SIDE, x + HEX_SIZE + HEX_SMALL_SIDE + HEX_SMALL_SIDE, x + HEX_SIZE + HEX_SMALL_SIDE, x + HEX_SMALL_SIDE, x }; 
+//
+//		cy = new double[] { y, y, y + r, y + r + r, y + r + r, y + r };
+//
+//	}
+//
+//	public static void setXYasVertex(boolean b) {
+//		XYVertex = b;
+//	}
+//
+//	public static void setBorders(int b) {
+//		BORDERS = b;
+//	}
+//
+//	/**
+//	 * This functions takes the Side length in pixels and uses that as the basic
+//	 * dimension of the hex. It calculates all other needed constants from this
+//	 * dimension.
+//	 */
+//	public static void setSide(int side) {
+//		HEX_SIZE = side;
+//		HEX_SMALL_SIDE = (HEX_SIZE / 2); // t = s sin(30) = (int) CalculateH(s);
+//		r = (HEX_SIZE * 0.8660254037844); // r = s cos(30) = (int) CalculateR(s);
+//		h = 2 * r;
+//	}
+//
+//	public static void setHeight(int height) {
+//		h = height; // h = basic dimension: height (distance between two adj
+//					// centresr aka size)
+//		r = h / 2; // r = radius of inscribed circle
+//		HEX_SIZE = (h / 1.73205); // s = (h/2)/cos(30)= (h/2) / (sqrt(3)/2) = h /
+//									// sqrt(3)
+//		HEX_SMALL_SIDE = (r / 1.73205); // t = (h/2) tan30 = (h/2) 1/sqrt(3) = h / (2
+//									// sqrt(3)) = r / sqrt(3)
+//	}
+//
 //	@Override
 //	public Node render() {
 //		/*
