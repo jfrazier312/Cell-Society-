@@ -1,5 +1,7 @@
 package model;
-
+/*
+ * author: Austin Gartside
+ */
 public class Fish extends RectangleNoDiagonals {
 
 	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };

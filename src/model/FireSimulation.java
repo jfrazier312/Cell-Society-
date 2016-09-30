@@ -6,11 +6,8 @@ import java.util.Random;
 import config.ConfigurationLoader;
 
 /*
- * Should I be setting the future state to be the same as the current state, 
- * or will the front end do that by default?
- * 
- */ 
-
+ * author: Austin Gartside
+ */
 public class FireSimulation extends CellGrid implements view.GameWorld {
 	public static final String SIMULATION_NAME = FIRE_SIMULATION ;
 	private static final String EMPTY = "empty";

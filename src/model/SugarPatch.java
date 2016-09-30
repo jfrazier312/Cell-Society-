@@ -1,5 +1,7 @@
 package model;
-
+/*
+ * author: Austin Gartside
+ */
 public class SugarPatch{
 	private int mySugar;
 	private int myMaxSugar;
@@ -16,8 +18,8 @@ public class SugarPatch{
 		return myMaxSugar;
 	}
 	
-	public void decreaseSugar(int amount){
-		mySugar-= amount;
+	public void decreaseSugar(){
+		mySugar = 0;
 	}
 	
 	public void addSugar(int amount){

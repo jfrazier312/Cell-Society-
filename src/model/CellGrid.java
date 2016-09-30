@@ -15,7 +15,9 @@ import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import utils.Utils;
-
+/*
+ * author: Austin Gartside and Jordan Frazier
+ */
 public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid;
