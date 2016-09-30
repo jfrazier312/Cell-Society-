@@ -28,6 +28,8 @@ public class Rectangle extends Cell implements view.GameWorld {
 		double height = calculateSize(GRID_HEIGHT, rows);
 
 		javafx.scene.shape.Rectangle rect = new javafx.scene.shape.Rectangle(width, height);
+		
+		
 
 		String color = ConfigurationLoader.getConfig().getAllStates().getStateByName(getCurrentstate()).getAttributes()
 				.get("color");

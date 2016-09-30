@@ -46,8 +46,7 @@ public class SimulationSlider {
 		});
 	}
 
-	public SimulationSlider(double min, double max, double defaultVal, GenericButton button, boolean set) {
-		String displayName = button.toString();
+	public SimulationSlider(double min, double max, double defaultVal, String displayName, boolean set) {
 		Label lbl = new Label(String.valueOf(defaultVal));
 		Label display = new Label(displayName);
 

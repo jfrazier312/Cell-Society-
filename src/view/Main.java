@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 /**
  * 
- * @author Jordan Frazier (jrf30) Charles Xu (NET ID) Austin Gartside (NET ID)
+ * @author Jordan Frazier, Charles Xu, Austin Gartside
  *
  */
 

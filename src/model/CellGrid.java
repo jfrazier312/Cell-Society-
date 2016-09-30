@@ -1,26 +1,20 @@
 package model;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import org.w3c.dom.NodeList;
-
 import config.ConfigurationLoader;
 //import config.ConfigurationLoader;
 import config.XMLParser;
 import exceptions.MalformedXMLSourceException;
 import exceptions.UnrecognizedQueryMethodException;
 import javafx.scene.Node;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import utils.Utils;
-/*
+
+/**
  * author: Austin Gartside and Jordan Frazier
- */
- * @author Jordan Frazier (jrf30) Austin Gartside (NET ID)
- *
  */
 public abstract class CellGrid extends GridPane {
 
@@ -28,16 +22,13 @@ public abstract class CellGrid extends GridPane {
 	
 	private String simulationName;
 	
-	public CellGrid() {
-		int rows = ConfigurationLoader.getConfig().getNumRows();
-		int cols = ConfigurationLoader.getConfig().getNumCols();
+	public CellGrid(int rows, int cols) {
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
 		grid = new Cell[rows][cols];
 	}
 
-	// Need to change spacing in gridpane? if shape is different than rectangle?
 	public void renderGrid(GridPane cellPane) {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
