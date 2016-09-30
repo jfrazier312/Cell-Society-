@@ -7,17 +7,19 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
+/** 
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
 public class Triangle extends Cell implements view.GameWorld {
 
-	private int[] rowDeltas = { -1, 0, 1 };
 	private int isEven;
-
+	private int[] rowDeltas = { -1, 0, 1 };
 	private int[] evenColDeltas = { 0, 1, 0 };
 	private int[] oddColDeltas = { 0, -1, 0 };
-	
-	private static final double TRIANGLE_WIDTH = 20;
 
-	// Will need to scale this based on XML inputs?
+	private static final double TRIANGLE_WIDTH = 20;
 	private Double[] normalTrianglePoints = { TRIANGLE_WIDTH / 2, 0.0, 0.0, 20.0, TRIANGLE_WIDTH, 20.0 };
 	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_WIDTH, 0.0, TRIANGLE_WIDTH / 2, 20.0 };
 
@@ -26,9 +28,9 @@ public class Triangle extends Cell implements view.GameWorld {
 		this.isEven = isEven;
 	}
 
-	// Need to change spacing in flowpane if its a triangle
 	@Override
 	public Node render() {
+		// TODO: Configuration area
 		double rows = ConfigurationLoader.getConfig().getNumRows();
 		double cols = ConfigurationLoader.getConfig().getNumCols();
 

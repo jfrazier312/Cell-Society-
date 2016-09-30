@@ -37,6 +37,8 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 		}
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
+				// TODO: Should be able to arbitrarily change shapes
+				// possible just do a getconfig.getShape()? 
 				myGrid[i][j] = new Triangle(i, j, isEven++);
 				if(initialization.size() == 0){
 					myGrid[i][j].setCurrentstate(DEAD);

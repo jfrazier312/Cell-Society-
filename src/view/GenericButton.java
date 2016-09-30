@@ -1,5 +1,11 @@
 package view;
 
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
+
 public enum GenericButton {
 	
 	PLAY,

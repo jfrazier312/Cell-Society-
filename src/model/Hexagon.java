@@ -4,6 +4,9 @@
 //import javafx.scene.paint.Color;
 //import javafx.scene.shape.Line;
 //import javafx.scene.shape.Polygon;
+/**
+ * @author: Jordan Frazier (jrf30)
+ */
 //
 //public class Hexagon extends Cell implements view.GameWorld {
 //

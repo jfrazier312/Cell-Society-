@@ -16,13 +16,20 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import utils.Utils;
 
+/**
+ * 
+ * @author Jordan Frazier (jrf30) Austin Gartside (NET ID)
+ *
+ */
 public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid;
 	
 	private String simulationName;
 	
-	public CellGrid(int rows, int cols) {
+	public CellGrid() {
+		int rows = ConfigurationLoader.getConfig().getNumRows();
+		int cols = ConfigurationLoader.getConfig().getNumCols();
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}

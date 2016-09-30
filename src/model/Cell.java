@@ -3,6 +3,11 @@ import java.util.ArrayList;
 
 import javafx.scene.Node;
 
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
 public class Cell {
 	
 	private int rowPos;
@@ -56,10 +61,6 @@ public class Cell {
 	public void setNeighbors(ArrayList<Cell> neighbors) {
 		this.neighbors = neighbors;
 	}
-	
-//	public Node render(String a) {
-//		return null;
-//	}
 	
 	public Node render() { return null; }
 	

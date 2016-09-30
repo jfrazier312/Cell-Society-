@@ -1,6 +1,12 @@
 package view;
 import javafx.scene.control.Button;
 
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
+
 public class SimulationButton extends Button {
 	
 	private String displayName;

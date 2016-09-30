@@ -4,6 +4,12 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Jordan Frazier (jrf30) Charles Xu (NET ID) Austin Gartside (NET ID)
+ *
+ */
+
 public class Main extends Application implements GameWorld {
 
 	public static void main(String[] args) {

@@ -2,12 +2,12 @@ package view;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
-import model.CellGrid;
-import model.FireSimulation;
-import model.GameOfLifeSimulation;
-import model.PredatorPreySimulation;
-import model.SegregationSimulation;
 
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
 public interface GameWorld {
 
 	public static double SCENE_WIDTH = 800;
@@ -29,7 +29,7 @@ public interface GameWorld {
 	 */
 	ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList(
 			GAME_OF_LIFE,
-			WATER_WORLD,
+			WATOR_WORLD,
 			FIRE_SIMULATION,
 			SEGREGATION_SIMULATION);
 
