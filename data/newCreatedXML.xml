@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><simulation author="different author" name="different simulation">
+	<grid height="200" width="100"/>
+	<neighborhood size="9">
+		<edge type="random" value="state1">
+		</edge>
+	</neighborhood>
+	<states>
+		
+		
+	<state color="new color">state1</state><state color="color2" lifeTime="20">state2</state></states>
+	<init default="state2" mode="enum">
+		<cell col="20" row="10" state="state2"/>
+		<cell col="20" row="11" state="state2"/>
+	</init>
+	<animation framesPerSec="10"/>
+	
+<param name="probability" value="0.2"/></simulation>
