@@ -19,9 +19,6 @@ import utils.Utils;
 /*
  * author: Austin Gartside and Jordan Frazier
  */
- * @author Jordan Frazier (jrf30) Austin Gartside (NET ID)
- *
- */
 public abstract class CellGrid extends GridPane {
 
 	private Cell[][] grid;
