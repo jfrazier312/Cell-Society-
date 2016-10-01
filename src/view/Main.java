@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 /**
  * 
- * @author Jordan Frazier (jrf30) Charles Xu (NET ID) Austin Gartside (NET ID)
+ * @author Jordan Frazier, Charles Xu, Austin Gartside
  *
  */
 
@@ -18,15 +18,15 @@ public class Main extends Application implements GameWorld {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-//		Configuration config;
-		try {
-			ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
-//			config = ConfigurationLoader.getConfig();
-//			System.out.println(config.getAllStates());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+////		Configuration config;
+//		try {
+//			ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
+////			config = ConfigurationLoader.getConfig();
+////			System.out.println(config.getAllStates());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
 		MainView sim = new MainView();
 		primaryStage.setTitle("Simulations");
 		primaryStage.setScene(sim.initScene());
