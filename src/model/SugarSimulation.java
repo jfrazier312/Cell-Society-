@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import config.Configuration;
+
 //TODO: talk with Jordan to make it so that the agent only renders if it is alive
 //right now every patch has an agent, but should only display if it's sugar is above 0
 /**
@@ -17,10 +19,12 @@ public class SugarSimulation extends CellGrid{
 	private static final String AGENT = "agent";
 	private static final String NOAGENT = "no_agent";
 	private int sugarGrowBackRate;
+	Configuration myConfig;
 	Random generator;
 	
-	public SugarSimulation(int row, int col) {
+	public SugarSimulation(int row, int col, Configuration config) {
 		super(row, col);
+		myConfig = config;
 		//change this for second model
 		sugarGrowBackRate = 1;
 	}
@@ -41,11 +45,11 @@ public class SugarSimulation extends CellGrid{
 				int myPatchSugar = generator.nextInt(patchSugar)+1;
 				if(patch){
 					int sugarVal = generator.nextInt(21)+5;
-					setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar));
+					setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar, myConfig));
 					getGridCell(i, j).setCurrentstate(AGENT);
 				}
 				else{
-					setGridCell(i, j, new SugarAgent(i, j, 0, metabolism, vision, myPatchSugar));
+					setGridCell(i, j, new SugarAgent(i, j, 0, metabolism, vision, myPatchSugar, myConfig));
 					getGridCell(i, j).setCurrentstate(NOAGENT);
 				}
 				getGridCell(i, j).setFuturestate("");

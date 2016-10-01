@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import config.Configuration;
 /**
  * @author austingartside
  *
@@ -23,6 +25,8 @@ public class AntSimulation extends CellGrid{
 	private static final String HOME_ANT = "home_ant";
 	private static final String FOOD_ANT = "food_ant";
 	
+	private Configuration myConfig;
+	
 	
 	//have them set these
 //	private int foodSourceRow;
@@ -34,21 +38,24 @@ public class AntSimulation extends CellGrid{
 	private int pheromoneLoss;
 	private Random generator;
 	
-	public AntSimulation(int rows, int cols) {
+	public AntSimulation(int rows, int cols, Configuration config) {
 		super(rows, cols);
 		pheromoneConstant = SOURCE_PHEROMONES/((rows+cols)/2);
 		pheromoneLoss = pheromoneConstant/5;
+		myConfig = config;
 	}
 	
 	public void createGrid(){
 		generator = new Random();
+		double percentObstacle = .3;
+		List<String> myStates = getStartingStates(percentObstacle);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				//have the xml set these
 				if(i == 1 && j == 1){
 					//homeSourceRow = i;
 					//homeSourceCol = j;
-					setGridCell(i, j, new AntCell(i, j, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES, 0));
+					setGridCell(i, j, new AntCell(i, j, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES, 0, myConfig));
 					getGridCell(i, j).setCurrentstate(HOME_SOURCE);
 					//getGridCell(i, j).setFuturestate(HOME_SOURCE);
 				}
@@ -56,26 +63,42 @@ public class AntSimulation extends CellGrid{
 				else if(i == getNumRows()-2 && j == getNumRows()-2){
 					//foodSourceRow = i;
 					//foodSourceCol = j;
-					setGridCell(i, j, new AntCell(i, j, 0, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES));
+					setGridCell(i, j, new AntCell(i, j, 0, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES, myConfig));
 					getGridCell(i, j).setCurrentstate(FOOD_SOURCE);
 					//getGridCell(i, j).setFuturestate(FOOD_SOURCE);
 				}
 				else{
-					createRandomCell(i, j);
+					int typeChoice = generator.nextInt(myStates.size());
+					String type = myStates.get(typeChoice);
+					myStates.remove(typeChoice);
+					createRandomCell(i, j, type);
 				}
 			}
 		}
 	}
 	
-	public void createRandomCell(int row, int col){
-		int cellType = generator.nextInt(5);
-		if(cellType<1){
-			setGridCell(row, col, new AntCell(row, col, -1, -1, -1, -1));
+	private List<String> getStartingStates(double percentObstacles) {
+		int size = getNumRows()*getNumCols();
+		double numObstacles = size*percentObstacles;
+		int numNonObstacles = (int) (size-numObstacles);
+		List<String> obstacleOrNot = new ArrayList<String>();
+		for(int i = 0; i<numNonObstacles-1; i++){
+			obstacleOrNot.add(OBSTACLE);
+		}
+		for(int i = 0; i<numObstacles-1; i++){
+			obstacleOrNot.add(OPEN);
+		}
+		return obstacleOrNot;
+	}
+	
+	public void createRandomCell(int row, int col, String state){
+		if(state.equals(OBSTACLE)){
+			setGridCell(row, col, new AntCell(row, col, -1, -1, -1, -1, myConfig));
 			getGridCell(row, col).setCurrentstate(OBSTACLE);
 			//getGridCell(row, col).setFuturestate(OBSTACLE);
 		}
 		else{
-			setGridCell(row, col, new AntCell(row, col, 10, 10, 0, 0));
+			setGridCell(row, col, new AntCell(row, col, 10, 10, 0, 0, myConfig));
 			getGridCell(row, col).setCurrentstate(OPEN);
 			//getGridCell(row, col).setFuturestate(OPEN);
 		}		

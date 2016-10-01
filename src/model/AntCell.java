@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import config.Configuration;
 /**
  * @author austingartside
  *
@@ -18,8 +20,11 @@ public class AntCell extends RectangleWithDiagonals{
 	private boolean gainedHomeAnts;
 	private boolean gainedFoodAnts;
 	
-	public AntCell(int row, int col, int homePheromones, int foodPheromones, int maxHomePheromones, int maxFoodPheromones) {
-		super(row, col);
+	Configuration myConfig;
+	
+	public AntCell(int row, int col, int homePheromones, int foodPheromones, int maxHomePheromones, int maxFoodPheromones,
+			Configuration config) {
+		super(row, col, config);
 		myAnts = new ArrayList<Ant>();
 		myHomePheromones = homePheromones;
 		myFoodPheromones = foodPheromones;
@@ -93,6 +98,10 @@ public class AntCell extends RectangleWithDiagonals{
 	public void resetAntGain(){
 		gainedHomeAnts = false;
 		gainedFoodAnts = false;
+	}
+	
+	public boolean hasAnts(){
+		return myAnts.size()>0;
 	}
 
 }

@@ -3,6 +3,8 @@ package model;
  * author: Austin Gartside
  */
 import java.util.ArrayList;
+
+import config.Configuration;
 /**
  * @author austingartside
  *
@@ -14,8 +16,8 @@ public class SugarAgent extends RectangleNoDiagonals{
 	private int myVision;
 	SugarPatch myPatch;
 	
-	public SugarAgent(int row, int col, int initSugar, int sugarMetabolism, int vision, int patchSugar){
-		super(row, col);
+	public SugarAgent(int row, int col, int initSugar, int sugarMetabolism, int vision, int patchSugar, Configuration config){
+		super(row, col, config);
 		mySugar = initSugar;
 		mySugarMetabolism = sugarMetabolism;
 		myVision = vision;

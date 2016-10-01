@@ -2,6 +2,7 @@ package model;
 
 import java.util.Arrays;
 
+import config.Configuration;
 import config.ConfigurationLoader;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -18,27 +19,30 @@ public class Triangle extends Cell implements view.GameWorld {
 	private int[] rowDeltas = { -1, 0, 1 };
 	private int[] evenColDeltas = { 0, 1, 0 };
 	private int[] oddColDeltas = { 0, -1, 0 };
+	
+	Configuration myConfig;
 
 	private static final double TRIANGLE_WIDTH = 20;
 	private Double[] normalTrianglePoints = { TRIANGLE_WIDTH / 2, 0.0, 0.0, 20.0, TRIANGLE_WIDTH, 20.0 };
 	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_WIDTH, 0.0, TRIANGLE_WIDTH / 2, 20.0 };
 
-	public Triangle(int row, int col, int isEven) {
+	public Triangle(int row, int col, int isEven, Configuration config) {
 		super(row, col);
 		this.isEven = isEven;
+		myConfig = config;
 	}
 
 	@Override
 	public Node render() {
 		// TODO: Configuration area
-		double rows = ConfigurationLoader.getConfig().getNumRows();
-		double cols = ConfigurationLoader.getConfig().getNumCols();
+		double rows = myConfig.getNumRows();
+		double cols = myConfig.getNumCols();
 
 		Double[] adjustedNormalTrianglePoints = getAdjustedPoints(true, (int) rows, (int) cols);
 		Double[] adjustedUpsideDownTrianglePoints = getAdjustedPoints(false, (int) rows, (int) cols);
 
 		Polygon triangle = new Polygon();
-		String color = ConfigurationLoader.getConfig().getAllStates().getStateByName(getCurrentstate()).getAttributes()
+		String color = myConfig.getAllStates().getStateByName(getCurrentstate()).getAttributes()
 				.get("color");
 		triangle.setFill(Color.web(color));
 
