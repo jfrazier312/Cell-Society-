@@ -6,6 +6,9 @@ import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 
+/**
+ * @author CharlesXu
+ */
 public class Neighborhood extends CompositeData {
 	
 	private int size;

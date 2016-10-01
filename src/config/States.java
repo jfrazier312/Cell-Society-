@@ -12,6 +12,9 @@ import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 
+/**
+ * @author CharlesXu
+ */
 public class States extends CompositeData implements Iterable<State>{
 	
 	private final String ITEMS = "States";

@@ -16,6 +16,9 @@ import exceptions.QueryExpressionException;
 import exceptions.XMLParserException;
 import exceptions.UnrecognizedQueryMethodException;
 
+/**
+ * @author CharlesXu
+ */
 public abstract class XMLParser {
 	
 	public static final String RESRC_PREFIX = "resources/";

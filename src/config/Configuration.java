@@ -28,8 +28,9 @@ import model.CellGrid;
       |  So must synchronize such access to ensure atomicity.      |
      _|      												       |
     (_/___________________________________________________________/
+ 
+ * @author CharlesXu
  */
-
 public class Configuration {
 	
 	public static final String DATA_PATH_PREFIX = "data/";

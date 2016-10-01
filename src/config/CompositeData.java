@@ -9,6 +9,9 @@ import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 
+/**
+ * @author CharlesXu
+ */
 public abstract class CompositeData {
 	
 	protected XMLParser parser;

@@ -6,7 +6,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
+/**
+ * @author CharlesXu
+ */
 public class Utils {
 	
 	public static String getAttrFromFirstMatch(Document doc, String tag, String attr) {
