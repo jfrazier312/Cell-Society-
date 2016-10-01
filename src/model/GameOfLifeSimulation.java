@@ -1,30 +1,31 @@
 package model;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import config.Configuration;
-import config.ConfigurationLoader;
+import view.Simulations;
 
 /**
  * @author austingartside
  *
  */
-public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
+public class GameOfLifeSimulation extends CellGrid {
 	
-	public static final String SIMULATION_NAME = GAME_OF_LIFE;
-	private static final String DEAD = "dead";
-	private static final String ALIVE = "alive";
+	public static final String SIMULATION_NAME = Simulations.GAME_OF_LIFE.getName();
+	private String DEAD;
+	private String ALIVE;
 	private int isEven;
-	Configuration myConfig;
-	
+		
 	public GameOfLifeSimulation(int row, int col, Configuration config) {
-		super(row, col);
+		super(row, col, config);
 		isEven = 0;
-		myConfig = config;
+		DEAD = myResources.getString("Dead");
+		ALIVE = myResources.getString("Alive");
 	}
 	
 	public void initSimulation() {
-		double percentDead = Double.parseDouble(myConfig.getCustomParam("percentDead"));
+		double percentDead = Double.parseDouble(getConfig().getCustomParam("percentDead"));
 		//double percentDead = .5;
 		createGrid(percentDead);
 	}
@@ -34,7 +35,7 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 		ArrayList<String> initialization = getStartingStateList(percentDead);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleWithDiagonals(i, j, myConfig));
+				setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
 				if(initialization.size() == 0){
 					getGridCell(i, j).setCurrentstate(DEAD);
 				}

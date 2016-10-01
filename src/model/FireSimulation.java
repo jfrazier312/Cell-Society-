@@ -1,35 +1,33 @@
 package model;
 import java.util.ArrayList;
-
 import java.util.Random;
 
 import config.Configuration;
-import config.ConfigurationLoader;
+import view.Simulations;
 
 /**
  * @author austingartside
  *
  */
-public class FireSimulation extends CellGrid implements view.GameWorld {
-	public static final String SIMULATION_NAME = FIRE_SIMULATION ;
-	private static final String EMPTY = "empty";
-	private static final String TREE = "tree";
-	private static final String BURNING = "burning";
+public class FireSimulation extends CellGrid {
+	public static final String SIMULATION_NAME = Simulations.FIRE.getName();
+	private String EMPTY;
+	private String TREE;
+	private String BURNING;
 	private static final int VISION = 1;
 	private double probOfBurning;
 	Random generator;
 	
-	private Configuration myConfig;
-
 	public FireSimulation(int row, int col, Configuration config) {
-		super(row, col);
-		myConfig = config;
-
+		super(row, col, config);
+		EMPTY = myResources.getString("Empty");
+		TREE = myResources.getString("Tree");
+		BURNING = myResources.getString("Burning");
 	}
 	
 	public void initSimulation() {
 		createGrid();
-		probOfBurning = Double.parseDouble(myConfig.getCustomParam("probability"));
+		probOfBurning = Double.parseDouble(getConfig().getCustomParam("probability"));
 		//probOfBurning = .5;
 	}
 	
@@ -37,7 +35,7 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleNoDiagonals(i, j, myConfig));
+				setGridCell(i, j, new RectangleNoDiagonals(i, j, getConfig()));
 				if(i==0 || j==0 || i==getNumRows()-1 || j == getNumCols()-1){
 					getGridCell(i, j).setCurrentstate(EMPTY);
 				}

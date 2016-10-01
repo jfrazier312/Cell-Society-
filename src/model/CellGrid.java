@@ -2,8 +2,11 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
+
 import org.w3c.dom.NodeList;
-import config.ConfigurationLoader;
+
+import config.Configuration;
 //import config.ConfigurationLoader;
 import config.XMLParser;
 import exceptions.MalformedXMLSourceException;
@@ -18,12 +21,18 @@ import utils.Utils;
  */
 public abstract class CellGrid extends GridPane {
 
+	protected ResourceBundle myResources;
+	public static final String RESRC_PATH = "resources/SimulationResources";	
+	
 	private Cell[][] grid;
 	
 	private String simulationName;
 	
-	public CellGrid(int rows, int cols) {
-		//int cols = ConfigurationLoader.getConfig().getNumCols();
+	private Configuration myConfig;
+	
+	public CellGrid(int rows, int cols, Configuration config) {
+		myResources = ResourceBundle.getBundle(RESRC_PATH);
+		myConfig = config;
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
@@ -118,6 +127,25 @@ public abstract class CellGrid extends GridPane {
 				&& y < getNumCols();
 	}
 	
+
+	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
+				   NumberFormatException, MalformedXMLSourceException {
+		List<Cell> initialCells = new ArrayList<Cell>();
+		if (parser.getItem("CellsMode").equals("enum")) {
+			NodeList nl = parser.getNodeList("Cells");
+			for (int i = 0; i < nl.getLength(); i++) {
+				String state = Utils.getAttrFromNode(nl.item(i), "state");
+				int row = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "row"));
+				int col = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "col"));
+				Cell c = new Cell(row, col);
+				c.setCurrentstate(state);
+				initialCells.add(c);
+		    }
+		}
+		return initialCells;
+	}
+	
 	public Cell[][] getGrid() {
 		return grid;
 	}
@@ -137,30 +165,17 @@ public abstract class CellGrid extends GridPane {
 	public Cell getGridCell(int row, int col){
 		return grid[row][col];
 	}
+	
+	public Configuration getConfig() {
+		return myConfig;
+	}
 
 	public abstract void updateGrid();
 
 	public abstract void updateCell(Cell myCell);
 	
 	public abstract String getSimulationName();
-	
+
 	public abstract void initSimulation();
-	
-	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
-			throws QueryExpressionException, UnrecognizedQueryMethodException,
-				   NumberFormatException, MalformedXMLSourceException {
-		List<Cell> initialCells = new ArrayList<Cell>();
-		if (parser.getItem("CellsMode").equals("enum")) {
-			NodeList nl = parser.getNodeList("Cells");
-			for (int i = 0; i < nl.getLength(); i++) {
-				String state = Utils.getAttrFromNode(nl.item(i), "state");
-				int row = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "row"));
-				int col = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "col"));
-				Cell c = new Cell(row, col);
-				c.setCurrentstate(state);
-				initialCells.add(c);
-		    }
-		}
-		return initialCells;
-	}
+
 }

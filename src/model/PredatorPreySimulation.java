@@ -1,46 +1,47 @@
 package model;
 
 import java.util.ArrayList;
-
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import config.Configuration;
-import config.ConfigurationLoader;
+import view.Simulations;
 /**
  * @author austingartside
  *
  */
-public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
+public class PredatorPreySimulation extends CellGrid {
 
-	private static final String EMPTY = "empty";
-	private static final String FISH = "fish";
-	public static final String SIMULATION_NAME = WATOR_WORLD;
-	private static final String SHARK = "shark";
+	private String EMPTY;
+	private String FISH;
+	private String SHARK;
+	public static final String SIMULATION_NAME = Simulations.PREDATOR_PREY.getName();
 	public static final int VISION = 1;
 	private Random generator;
-	Configuration myConfig;
 
 	public PredatorPreySimulation(int row, int col, Configuration config) {
-		super(row, col);
-		myConfig = config;
+		super(row, col, config);
+		EMPTY = myResources.getString("Empty");
+		FISH = myResources.getString("Fish");
+		SHARK = myResources.getString("Shark");
 	}
 	
 	public void initSimulation() {
-		double percentEmptyCells = Double.parseDouble(myConfig.getCustomParam("percentEmpty"));
-		double percentShark = Double.parseDouble(myConfig.getCustomParam("percentShark"));
+		double percentEmptyCells = Double.parseDouble(getConfig().getCustomParam("percentEmpty"));
+		double percentShark = Double.parseDouble(getConfig().getCustomParam("percentShark"));
 		createGrid(percentEmptyCells, percentShark);
 	}
 
 	public void createGrid(double percentEmptyCells, double percentShark) {
-		int reproductionTime = Integer.parseInt(myConfig.getAllStates()
+		int reproductionTime = Integer.parseInt(getConfig().getAllStates()
 				.getStateByName(SHARK).getAttributes().get("reproductionTime"));
-		int timeToDeath = Integer.parseInt(myConfig.getAllStates()
+		int timeToDeath = Integer.parseInt(getConfig().getAllStates()
 				.getStateByName(SHARK).getAttributes().get("lifeTime"));
 		generator = new Random();
 		ArrayList<String> initialization = getStartingStateList(percentEmptyCells, percentShark);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath, myConfig));
+				setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath, getConfig()));
 				if(initialization.size() == 0){
 					getGridCell(i, j).setCurrentstate(EMPTY);
 				}
