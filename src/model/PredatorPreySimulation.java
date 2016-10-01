@@ -19,8 +19,8 @@ public class PredatorPreySimulation extends CellGrid {
 	public static final int VISION = 1;
 	private Random generator;
 
-	public PredatorPreySimulation(int row, int col, Configuration config) {
-		super(row, col, config);
+	public PredatorPreySimulation(Configuration config) {
+		super(config);
 		EMPTY = myResources.getString("Empty");
 		FISH = myResources.getString("Fish");
 		SHARK = myResources.getString("Shark");

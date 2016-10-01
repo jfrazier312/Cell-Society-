@@ -18,8 +18,8 @@ public class FireSimulation extends CellGrid {
 	private double probOfBurning;
 	Random generator;
 	
-	public FireSimulation(int row, int col, Configuration config) {
-		super(row, col, config);
+	public FireSimulation(Configuration config) {
+		super(config);
 		EMPTY = myResources.getString("Empty");
 		TREE = myResources.getString("Tree");
 		BURNING = myResources.getString("Burning");

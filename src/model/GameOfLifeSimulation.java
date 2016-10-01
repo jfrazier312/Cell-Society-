@@ -17,8 +17,8 @@ public class GameOfLifeSimulation extends CellGrid {
 	private String ALIVE;
 	private int isEven;
 		
-	public GameOfLifeSimulation(int row, int col, Configuration config) {
-		super(row, col, config);
+	public GameOfLifeSimulation(Configuration config) {
+		super(config);
 		isEven = 0;
 		DEAD = myResources.getString("Dead");
 		ALIVE = myResources.getString("Alive");

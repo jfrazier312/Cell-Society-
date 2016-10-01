@@ -30,13 +30,13 @@ public abstract class CellGrid extends GridPane {
 	
 	private Configuration myConfig;
 	
-	public CellGrid(int rows, int cols, Configuration config) {
+	public CellGrid(Configuration config) {
 		myResources = ResourceBundle.getBundle(RESRC_PATH);
 		myConfig = config;
-		if (rows <= 0 || cols <= 0) {
+		if (config.getNumRows() <= 0 || config.getNumCols() <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
-		grid = new Cell[rows][cols];
+		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
 	public void renderGrid(GridPane cellPane) {

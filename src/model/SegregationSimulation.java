@@ -25,8 +25,8 @@ public class SegregationSimulation extends CellGrid {
 	ArrayList<Cell> myMovingCells;
 	Random generator;
 	
-	public SegregationSimulation(int row, int col, Configuration config) {
-		super(row, col, config);
+	public SegregationSimulation(Configuration config) {
+		super(config);
 		EMPTY = myResources.getString("Empty");
 		TYPEA = myResources.getString("TypeA");
 		TYPEB = myResources.getString("TypeB");
