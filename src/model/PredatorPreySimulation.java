@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
+import config.Configuration;
 import config.ConfigurationLoader;
-/*
- * author: Austin Gartside
+/**
+ * @author austingartside
+ *
  */
 public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 
@@ -14,29 +16,31 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 	private static final String FISH = "fish";
 	public static final String SIMULATION_NAME = WATOR_WORLD;
 	private static final String SHARK = "shark";
+	public static final int VISION = 1;
 	private Random generator;
+	Configuration myConfig;
 
-	public PredatorPreySimulation(int row, int col) {
+	public PredatorPreySimulation(int row, int col, Configuration config) {
 		super(row, col);
+		myConfig = config;
 	}
 	
 	public void initSimulation() {
-		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
-		double percentShark = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentShark"));
-
+		double percentEmptyCells = Double.parseDouble(myConfig.getCustomParam("percentEmpty"));
+		double percentShark = Double.parseDouble(myConfig.getCustomParam("percentShark"));
 		createGrid(percentEmptyCells, percentShark);
 	}
 
 	public void createGrid(double percentEmptyCells, double percentShark) {
-		int reproductionTime = Integer.parseInt(ConfigurationLoader.getConfig().getAllStates()
+		int reproductionTime = Integer.parseInt(myConfig.getAllStates()
 				.getStateByName(SHARK).getAttributes().get("reproductionTime"));
-		int timeToDeath = Integer.parseInt(ConfigurationLoader.getConfig().getAllStates()
+		int timeToDeath = Integer.parseInt(myConfig.getAllStates()
 				.getStateByName(SHARK).getAttributes().get("lifeTime"));
 		generator = new Random();
 		ArrayList<String> initialization = getStartingStateList(percentEmptyCells, percentShark);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath));
+				setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath, myConfig));
 				if(initialization.size() == 0){
 					getGridCell(i, j).setCurrentstate(EMPTY);
 				}
@@ -177,7 +181,7 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 	}
 
 	private ArrayList<Cell> getAvailableCells(Cell myCreature) {
-		ArrayList<Cell> neighbors = getNeighbors(myCreature);
+		ArrayList<Cell> neighbors = getNeighbors(myCreature, VISION);
 		ArrayList<Cell> availableCells = new ArrayList<Cell>();
 		for (Cell neighbor : neighbors) {
 			if (neighbor.getCurrentstate().equals(EMPTY) &&
@@ -207,7 +211,7 @@ public class PredatorPreySimulation extends CellGrid implements view.GameWorld {
 	}
 
 	private ArrayList<Cell> getFishNeighbors(Cell myShark) {
-		ArrayList<Cell> neighbors = getNeighbors(myShark);
+		ArrayList<Cell> neighbors = getNeighbors(myShark, VISION);
 		ArrayList<Cell> myFishFriends = new ArrayList<Cell>();
 		for (Cell neighbor : neighbors) {
 			if (neighbor.getCurrentstate().equals(FISH) && neighbor.getFuturestate().equals("")) {

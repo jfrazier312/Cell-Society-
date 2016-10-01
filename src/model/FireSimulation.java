@@ -3,27 +3,33 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
+import config.Configuration;
 import config.ConfigurationLoader;
 
-/*
- * author: Austin Gartside
+/**
+ * @author austingartside
+ *
  */
 public class FireSimulation extends CellGrid implements view.GameWorld {
 	public static final String SIMULATION_NAME = FIRE_SIMULATION ;
 	private static final String EMPTY = "empty";
 	private static final String TREE = "tree";
 	private static final String BURNING = "burning";
+	private static final int VISION = 1;
 	private double probOfBurning;
 	Random generator;
+	
+	private Configuration myConfig;
 
-	public FireSimulation(int row, int col) {
+	public FireSimulation(int row, int col, Configuration config) {
 		super(row, col);
+		myConfig = config;
 
 	}
 	
 	public void initSimulation() {
 		createGrid();
-//		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
+		probOfBurning = Double.parseDouble(myConfig.getCustomParam("probability"));
 		//probOfBurning = .5;
 	}
 	
@@ -31,7 +37,7 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleNoDiagonals(i, j));
+				setGridCell(i, j, new RectangleNoDiagonals(i, j, myConfig));
 				if(i==0 || j==0 || i==getNumRows()-1 || j == getNumCols()-1){
 					getGridCell(i, j).setCurrentstate(EMPTY);
 				}
@@ -47,7 +53,6 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 	
 	@Override
 	public void updateGrid() {
-		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -68,7 +73,7 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 	@Override
 	public void updateCell(Cell myCell){
 		String myState = myCell.getCurrentstate();
-		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell, VISION);
 		if(myState.equals(BURNING)){
 			myCell.setFuturestate(EMPTY);
 		}

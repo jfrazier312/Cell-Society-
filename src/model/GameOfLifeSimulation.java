@@ -2,26 +2,29 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import config.Configuration;
 import config.ConfigurationLoader;
 
-/*
- * author: Austin Gartside
+/**
+ * @author austingartside
+ *
  */
-
 public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	
 	public static final String SIMULATION_NAME = GAME_OF_LIFE;
 	private static final String DEAD = "dead";
 	private static final String ALIVE = "alive";
 	private int isEven;
+	Configuration myConfig;
 	
-	public GameOfLifeSimulation(int row, int col) {
+	public GameOfLifeSimulation(int row, int col, Configuration config) {
 		super(row, col);
 		isEven = 0;
+		myConfig = config;
 	}
 	
 	public void initSimulation() {
-		double percentDead = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentDead"));
+		double percentDead = Double.parseDouble(myConfig.getCustomParam("percentDead"));
 		//double percentDead = .5;
 		createGrid(percentDead);
 	}
@@ -31,7 +34,7 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 		ArrayList<String> initialization = getStartingStateList(percentDead);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleWithDiagonals(i, j));
+				setGridCell(i, j, new RectangleWithDiagonals(i, j, myConfig));
 				if(initialization.size() == 0){
 					getGridCell(i, j).setCurrentstate(DEAD);
 				}
@@ -84,7 +87,7 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 		String myState = myCell.getCurrentstate();
 		//ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myCell, myGrid);
 		//ArrayList<RectangleWithDiagonals> currentNeighbors = getNeighbors(myCell);
-		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell, 1);
 		int liveCount = countCellsOfState(currentNeighbors, ALIVE);
 		if(myState.equals(DEAD)){
 			if(liveCount == 3){

@@ -23,6 +23,7 @@ public abstract class CellGrid extends GridPane {
 	private String simulationName;
 	
 	public CellGrid(int rows, int cols) {
+		//int cols = ConfigurationLoader.getConfig().getNumCols();
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
@@ -61,7 +62,7 @@ public abstract class CellGrid extends GridPane {
 	 */
 	
 	//changed to protected so that the segregation simulation could see, not sure if that's good design
-	protected ArrayList<Cell> getNeighbors(Cell cell) {
+	protected ArrayList<Cell> getNeighbors(Cell cell, int vision) {
 		// could change implementation based on definition of 'neighbor'
 		ArrayList<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
@@ -89,7 +90,7 @@ public abstract class CellGrid extends GridPane {
 				if (isValidLocation(newRowPos, newColPos)) {
 					neighbors.add(grid[newRowPos][newColPos]);
 				}
-			}	
+			}
 		}
 		return neighbors;
 	}

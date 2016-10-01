@@ -1,6 +1,7 @@
 package model;
-/*
- * author: Austin Gartside
+/**
+ * @author austingartside
+ *
  */
 public class SugarPatch{
 	private int mySugar;
