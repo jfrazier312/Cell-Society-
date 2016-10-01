@@ -8,6 +8,7 @@ import javafx.scene.control.ComboBox;
  * @author Jordan Frazier (jrf30)
  *
  */
+@Deprecated
 public interface GameWorld {
 
 //	public static double SCENE_WIDTH = 800;
@@ -27,12 +28,12 @@ public interface GameWorld {
 	/**
 	 * Add simulations to this combobox when implemented
 	 */
-	ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList(
-			GAME_OF_LIFE,
-			WATOR_WORLD,
-			FIRE_SIMULATION,
-			SEGREGATION_SIMULATION);
-
-	public static final ComboBox<String> SIMULATIONS = new ComboBox<>(SIMULATION_OPTIONS);
+//	ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList(
+//			GAME_OF_LIFE,
+//			WATOR_WORLD,
+//			FIRE_SIMULATION,
+//			SEGREGATION_SIMULATION);
+//
+//	public static final ComboBox<String> SIMULATIONS = new ComboBox<>(SIMULATION_OPTIONS);
 	
 }

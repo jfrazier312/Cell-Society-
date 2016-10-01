@@ -15,11 +15,9 @@ public enum SceneConstant {
 	
 	GRID_PADDING(40),
 	PADDING(10),
-	
 	BUTTON_CONTAINER_WIDTH(250),
 	
 	SLIDER_MINIMUM(1.0),
-	
 	SLIDER_MAXIMUM(50.0);
 	
 	double myVal;
