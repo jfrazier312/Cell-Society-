@@ -18,8 +18,6 @@ import exceptions.UnrecognizedQueryMethodException;
 
 public abstract class XMLParser {
 	
-	//TODO (cx15): JAVA DOC + generalize exceptions and not just xpath
-	
 	public static final String RESRC_PREFIX = "resources/";
 	
 	protected Document doc;
@@ -29,26 +27,75 @@ public abstract class XMLParser {
 		parse(scrPath);
 	}
 	
+	/**
+	 * Update the value of the element identified by itemName with String
+	 * value passed in
+	 * @param itemName
+	 * @param value
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws MalformedXMLSourceException
+	 * @throws QueryExpressionException
+	 */
 	public abstract void updateDoc(String itemName, String value)
 			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
 			QueryExpressionException;
 	
+	/**
+	 * Update the value of the element identified by itemName with int
+	 * value passed in
+	 * @param itemName
+	 * @param value
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws MalformedXMLSourceException
+	 * @throws QueryExpressionException
+	 */
 	public abstract void updateDoc(String itemName, int value)
 			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
 			QueryExpressionException;
 	
+	/**
+	 * Return the String value of element identified by itemName in doc
+	 * @param itemName
+	 * @return
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws QueryExpressionException
+	 * @throws MalformedXMLSourceException
+	 */
 	public abstract String getItem(String itemName)
 			throws UnrecognizedQueryMethodException,
 					QueryExpressionException, MalformedXMLSourceException;
 	
+	/**
+	 * Return the int value of element identified by itemName in doc
+	 * @param itemName
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws QueryExpressionException
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws MalformedXMLSourceException
+	 */
 	public abstract int getItemAsInteger(String itemName)
 			throws NumberFormatException, QueryExpressionException,
 				   UnrecognizedQueryMethodException, MalformedXMLSourceException;
 	
+	/**
+	 * 
+	 * @param itemName
+	 * @return
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws QueryExpressionException
+	 * @throws MalformedXMLSourceException
+	 */
 	public abstract NodeList getNodeList(String itemName)
 			throws UnrecognizedQueryMethodException, QueryExpressionException,
 				   MalformedXMLSourceException;
 	
+	/**
+	 * Parse the XML file specified at sourcePath to create a Document
+	 * used to initialize this.doc
+	 * @param sourcePath
+	 * @throws XMLParserException
+	 */
 	private void parse(String sourcePath)
 				throws XMLParserException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

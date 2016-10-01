@@ -19,6 +19,17 @@ import exceptions.XMLParserException;
 import model.Cell;
 import model.CellGrid;
 
+/**
+    ,____________________________________________________________.
+   (_\     													      \
+      |  All getters and setters are thread safe / synchronized    |
+      |  since event handlers runs on multiple different threads   |
+      |  not to block UI thread and they all invoke setters here.  |
+      |  So must synchronize such access to ensure atomicity.      |
+     _|      												       |
+    (_/___________________________________________________________/
+ */
+
 public class Configuration {
 	
 	public static final String DATA_PATH_PREFIX = "data/";
@@ -37,22 +48,6 @@ public class Configuration {
 	private boolean isRunning;
 	private int framesPerSec;
 	
-	// TODO: deserialize to new XML
-	
-	/**
-	 * @throws  
-	 * @throws  
-	 * @throws NumberFormatException 
-	 * All getters and setters are thread safe / synchronized
-	 * since event handlers runs on multiple different threads to not block UI thread
-	 * and they all invoke setters here.
-	 * Must synchronize such access to ensure atomicity.
-	 * @throws UnrecognizedQueryMethodException 
-	 * @throws XMLParserException 
-	 * @throws QueryExpressionException 
-	 * @throws  
-	 */
-
 	public Configuration(String src)
 			throws MalformedXMLSourceException, XMLParserException,
 			UnrecognizedQueryMethodException, QueryExpressionException, NumberFormatException {
@@ -104,7 +99,7 @@ public class Configuration {
 		}
 	}
 	
-	public static String buildSourcePath(String src) {
+	private static String buildSourcePath(String src) {
 		return DATA_PATH_PREFIX + src;
 	}
 	
