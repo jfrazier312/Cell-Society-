@@ -36,7 +36,6 @@ public class MainView implements GameWorld {
 	private GridPane myCellPane;
 	private CellGrid mySimulation;
 	private Timeline myGameloop;
-	private VBox myButtonContainer;
 
 	private boolean isGridLinesVisible;
 	private boolean simIsRunning;
@@ -55,7 +54,7 @@ public class MainView implements GameWorld {
 		myResources = ResourceBundle.getBundle(RESRC_PATH);
 		// isGridLinesVisible = false;
 		beginInitialSetup();
-
+  
 		return myScene;
 	}
 
@@ -79,7 +78,6 @@ public class MainView implements GameWorld {
 	private void createResetTimelineChecker() {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
-		// TODO: get rid of magic number
 		timeline.getKeyFrames()
 				.add(new KeyFrame(Duration.millis(Double.parseDouble(myResources.getString("MaxFPS"))), e -> {
 					if (SimulationSlider.reset) {
@@ -145,7 +143,7 @@ public class MainView implements GameWorld {
 
 	// private void createAllButtons(Configuration config) {
 	private void createAllButtons() {
-		myButtonContainer = new VBox(SceneConstant.PADDING.getValue());
+		VBox buttonContainer = new VBox(SceneConstant.PADDING.getValue());
 
 		HBox hbox1 = new HBox(SceneConstant.PADDING.getValue());
 		HBox hbox2 = new HBox(SceneConstant.PADDING.getValue());
@@ -201,13 +199,12 @@ public class MainView implements GameWorld {
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
 		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getGenericSlider(), gridVisible);
-		// TODO: Magic numbers
 		basicBtnBox.setMinWidth(300);
-		myButtonContainer.getChildren().add(basicBtnBox);
+		buttonContainer.getChildren().add(basicBtnBox);
 
-		createCustomButtons();
+		createCustomButtons(buttonContainer);
 		// createCustomButtons(config);
-		setButtonContainerParameters();
+		setButtonContainerParameters(buttonContainer);
 	}
 
 	/**
@@ -253,24 +250,23 @@ public class MainView implements GameWorld {
 	}
 
 
-	private void setButtonContainerParameters() {
-		// TODO: Magic numbers
-		myButtonContainer.setPadding(buttonPadding);
-		myButtonContainer.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
-		myButtonContainer.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
-		myButtonContainer.setLayoutX(Integer.parseInt(myResources.getString("SceneWidth")) - SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
-		myRoot.getChildren().add(myButtonContainer);
+	private void setButtonContainerParameters(VBox buttonContainer) {
+		buttonContainer.setPadding(buttonPadding);
+		buttonContainer.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
+		buttonContainer.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
+		buttonContainer.setLayoutX(Integer.parseInt(myResources.getString("SceneWidth")) - SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
+		myRoot.getChildren().add(buttonContainer);
 	}
 
 	// private void createCustomButtons(Configuration config) {
-	private void createCustomButtons() {
+	private void createCustomButtons(VBox buttonContainer) {
 		VBox custom = new VBox(SceneConstant.PADDING.getValue());
-		// for (String str : config.getAllCustomParamNames()) {
-		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
+		 for (String str : config.getAllCustomParamNames()) {
+//		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
 			SimulationSlider slider = new SimulationSlider(str);
 			custom.getChildren().add(slider.getCustomSlider());
 		}
-		myButtonContainer.getChildren().add(custom);
+		buttonContainer.getChildren().add(custom);
 	}
 
 	private void setRowAndColEventHandler(Slider sizeSlider, boolean isRow) {
