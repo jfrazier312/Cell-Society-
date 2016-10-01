@@ -2,14 +2,13 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.w3c.dom.NodeList;
 
 import config.ConfigurationLoader;
 //import config.ConfigurationLoader;
 import config.XMLParser;
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
@@ -148,7 +147,7 @@ public abstract class CellGrid extends GridPane {
 	public abstract void initSimulation();
 	
 	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
-			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
 				   NumberFormatException, MalformedXMLSourceException {
 		List<Cell> initialCells = new ArrayList<Cell>();
 		if (parser.getItem("CellsMode").equals("enum")) {

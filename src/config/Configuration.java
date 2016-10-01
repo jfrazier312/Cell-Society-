@@ -10,13 +10,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Document;
 
 import exceptions.InconsistentCrossReferenceInXMLException;
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
+import exceptions.XMLParserException;
 import model.Cell;
 import model.CellGrid;
 
@@ -41,32 +40,36 @@ public class Configuration {
 	// TODO: deserialize to new XML
 	
 	/**
+	 * @throws  
+	 * @throws  
+	 * @throws NumberFormatException 
 	 * All getters and setters are thread safe / synchronized
 	 * since event handlers runs on multiple different threads to not block UI thread
 	 * and they all invoke setters here.
 	 * Must synchronize such access to ensure atomicity.
+	 * @throws UnrecognizedQueryMethodException 
+	 * @throws XMLParserException 
+	 * @throws QueryExpressionException 
+	 * @throws  
 	 */
 
-	public Configuration(Document doc, String queryMethod)
-			throws MalformedXMLSourceException {
+	public Configuration(String src)
+			throws MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException, NumberFormatException {
+		String srcPath = buildSourcePath(src);
 		synchronized (this) {
-			parser = new XMLParser(queryMethod, doc);
-			try {
-				simulationName = parser.getItem("SimulationName");
-				author = parser.getItem("SimulationAuthor");
-				numCols = parser.getItemAsInteger("GridWidth");
-				numRows = parser.getItemAsInteger("GridHeight");
-				framesPerSec = parser.getItemAsInteger("FramesPerSec");
-				allStates = new States().load(parser);
-				neighborhood = new Neighborhood().load(parser);
-				customizedParams = new Params().load(parser);
-				defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
-				initialCells = CellGrid.buildNonDefaultInitialCells(parser);
-				isRunning = false;
-			} catch (XPathExpressionException | UnrecognizedQueryMethodException 
-					| NumberFormatException e) {
-				e.printStackTrace();
-			}
+			parser = XMLParserFactory.build(XMLQueryMethod.XPATH, srcPath);
+			simulationName = parser.getItem("SimulationName");
+			author = parser.getItem("SimulationAuthor");
+			numCols = parser.getItemAsInteger("GridWidth");
+			numRows = parser.getItemAsInteger("GridHeight");
+			framesPerSec = parser.getItemAsInteger("FramesPerSec");
+			allStates = new States().load(parser);
+			neighborhood = new Neighborhood().load(parser);
+			customizedParams = new Params().load(parser);
+			defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
+			initialCells = CellGrid.buildNonDefaultInitialCells(parser);
+			isRunning = false;
 		}
 	}
 	
@@ -74,8 +77,10 @@ public class Configuration {
 	 * Pickling/flatting/marshalling/serializing to durable storage on disk
 	 * in the form of XML
 	 * @param fileName
+	 * @throws QueryExpressionException 
 	 */
-	public synchronized void serializeTo(String fileName) {
+	public synchronized void serializeTo(String fileName)
+			throws QueryExpressionException {
 		try {
 			parser.updateDoc("SimulationName", simulationName);
 			parser.updateDoc("SimulationAuthor", author);
@@ -93,10 +98,14 @@ public class Configuration {
 					new StreamResult(new File(DATA_PATH_PREFIX + fileName))
 			);
 		} catch (TransformerFactoryConfigurationError | TransformerException 
-				| UnrecognizedQueryMethodException | XPathExpressionException
+				| UnrecognizedQueryMethodException | QueryExpressionException
 				| MalformedXMLSourceException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static String buildSourcePath(String src) {
+		return DATA_PATH_PREFIX + src;
 	}
 	
 	// -------- ACCESSORS ---------

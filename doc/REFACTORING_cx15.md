@@ -1,5 +1,4 @@
 Charles Xu (cx15)
-Jordan Frazier (jrf30)
 
 I refactored XMLParser.java to eliminate the duplicated code in getItem() and getNodeList().
 
