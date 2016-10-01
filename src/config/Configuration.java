@@ -35,6 +35,7 @@ public class Configuration {
 	public static final String DATA_PATH_PREFIX = "data/";
 	
 	private XMLParser parser;
+	private String srcPath;
 	
 	private String simulationName;
 	private String author;
@@ -51,21 +52,34 @@ public class Configuration {
 	public Configuration(String src)
 			throws MalformedXMLSourceException, XMLParserException,
 			UnrecognizedQueryMethodException, QueryExpressionException, NumberFormatException {
-		String srcPath = buildSourcePath(src);
-		synchronized (this) {
-			parser = XMLParserFactory.build(XMLQueryMethod.XPATH, srcPath);
-			simulationName = parser.getItem("SimulationName");
-			author = parser.getItem("SimulationAuthor");
-			numCols = parser.getItemAsInteger("GridWidth");
-			numRows = parser.getItemAsInteger("GridHeight");
-			framesPerSec = parser.getItemAsInteger("FramesPerSec");
-			allStates = new States().load(parser);
-			neighborhood = new Neighborhood().load(parser);
-			customizedParams = new Params().load(parser);
-			defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
-			initialCells = CellGrid.buildNonDefaultInitialCells(parser);
-			isRunning = false;
-		}
+		srcPath = buildSourcePath(src);
+		reset();
+	}
+	
+	/**
+	 * Reset all private states to spec read form XML.
+	 * @return
+	 * @throws XMLParserException
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws QueryExpressionException
+	 * @throws MalformedXMLSourceException
+	 */
+	public synchronized Configuration reset()
+			throws XMLParserException, UnrecognizedQueryMethodException,
+			QueryExpressionException, MalformedXMLSourceException {
+		parser = XMLParserFactory.build(XMLQueryMethod.XPATH, srcPath);
+		simulationName = parser.getItem("SimulationName");
+		author = parser.getItem("SimulationAuthor");
+		numCols = parser.getItemAsInteger("GridWidth");
+		numRows = parser.getItemAsInteger("GridHeight");
+		framesPerSec = parser.getItemAsInteger("FramesPerSec");
+		allStates = new States().load(parser);
+		neighborhood = new Neighborhood().load(parser);
+		customizedParams = new Params().load(parser);
+		defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
+		initialCells = CellGrid.buildNonDefaultInitialCells(parser);
+		isRunning = false;
+		return this;
 	}
 	
 	/**

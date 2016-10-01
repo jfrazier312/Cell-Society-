@@ -111,6 +111,18 @@ public class ConfigurationTest {
 	}
 	
 	@Test
+	public void resetClearsOldStates() {
+		try {
+			config.setAuthor(AUTHOR);
+			config.reset();
+			assertNotEquals(config.getAuthor(), AUTHOR);
+		} catch (XMLParserException | UnrecognizedQueryMethodException | QueryExpressionException
+				| MalformedXMLSourceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
 	public void serializationWritesUpdatedValues() {
 		File file = new File(Configuration.DATA_PATH_PREFIX + OUTPUT_SOURCE);
 		if (file.exists()) {
