@@ -15,10 +15,8 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import utils.Utils;
-/*
- * author: Austin Gartside and Jordan Frazier
- */
- * @author Jordan Frazier (jrf30) Austin Gartside (NET ID)
+/**
+ * @author austingartside and Jordan Frazier
  *
  */
 public abstract class CellGrid extends GridPane {
@@ -27,9 +25,10 @@ public abstract class CellGrid extends GridPane {
 	
 	private String simulationName;
 	
-	public CellGrid() {
-		int rows = ConfigurationLoader.getConfig().getNumRows();
-		int cols = ConfigurationLoader.getConfig().getNumCols();
+	//public CellGrid() {
+	public CellGrid(int rows, int cols) {
+		//int rows = ConfigurationLoader.getConfig().getNumRows();
+		//int cols = ConfigurationLoader.getConfig().getNumCols();
 		if (rows <= 0 || cols <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
@@ -69,35 +68,28 @@ public abstract class CellGrid extends GridPane {
 	 */
 	
 	//changed to protected so that the segregation simulation could see, not sure if that's good design
-	protected ArrayList<Cell> getNeighbors(Cell cell) {
+	protected ArrayList<Cell> getNeighbors(Cell cell, int vision) {
 		// could change implementation based on definition of 'neighbor'
 		ArrayList<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
 		for (int i = 0; i < cell.getRowDeltas().length; i++) {
-			int newRowPos = rowPos + cell.getRowDeltas()[i];
-			int newColPos = colPos + cell.getColDeltas()[i];
-			if (isValidLocation(newRowPos, newColPos)) {
-				neighbors.add(grid[newRowPos][newColPos]);
+			if(vision>1){
+				for(int j = 1; j<=vision; j++){
+					int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
+					int newColPos = colPos + cell.getColDeltas()[i]*j;
+					if (isValidLocation(newRowPos, newColPos)) {
+						neighbors.add(grid[newRowPos][newColPos]);
+					}
+				}
 			}
-		}
-		return neighbors;
-	}
-	
-	//assuming no diagonals
-	public ArrayList<Cell>  getSugarNeighbors(Cell cell, int vision){
-		ArrayList<Cell> neighbors = new ArrayList<>();
-		int rowPos = cell.getRowPos();
-		int colPos = cell.getColPos();
-		//int vision = 5;
-		for(int i = 0; i<cell.getRowDeltas().length; i++){
-			for(int j = 1; j<=vision; j++){
-				int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
-				int newColPos = colPos + cell.getColDeltas()[i]*j;
+			else{
+				int newRowPos = rowPos + cell.getRowDeltas()[i];
+				int newColPos = colPos + cell.getColDeltas()[i];
 				if (isValidLocation(newRowPos, newColPos)) {
 					neighbors.add(grid[newRowPos][newColPos]);
 				}
-			}	
+			}
 		}
 		return neighbors;
 	}

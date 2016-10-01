@@ -1,33 +1,37 @@
 package model;
 import java.util.ArrayList;
+
 import java.util.Random;
 
+import config.Configuration;
 import config.ConfigurationLoader;
 
-/*
- * author: Austin Gartside
+/**
+ * @author austingartside
+ *
  */
-
-
 public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	
 	private static final String EMPTY = "empty";
 	public static final String SIMULATION_NAME = SEGREGATION_SIMULATION;
 	private static final String typeA = "typeA";
 	private static final String typeB = "typeB";
+	public static final int VISION = 1;
 	private double myProbability;
+	private Configuration myConfig;
 	ArrayList<Cell> myMovingCells;
 	Random generator;
 	
-	public SegregationSimulation(int row, int col) {
+	public SegregationSimulation(int row, int col, Configuration config) {
 		super(row, col);
+		myConfig = config;
 	}
 	
 	public void initSimulation() {
-		myProbability  = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
+		myProbability  = Double.parseDouble(myConfig.getCustomParam("probability"));
 		myMovingCells = new ArrayList<Cell>();
-		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
-		double percenttypeA = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentTypeA"));
+		double percentEmptyCells = Double.parseDouble(myConfig.getCustomParam("percentEmpty"));
+		double percenttypeA = Double.parseDouble(myConfig.getCustomParam("percentTypeA"));
 		createGrid(percentEmptyCells, percenttypeA);
 	}
 	
@@ -37,7 +41,7 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 		ArrayList<String> initialization = getStartingStateList(percentEmpty, percenttypeA, size);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleWithDiagonals(i, j));
+				setGridCell(i, j, new RectangleWithDiagonals(i, j, myConfig));
 				if(initialization.size() == 0){
 					getGridCell(i, j).setCurrentstate(EMPTY);
 				}
@@ -118,7 +122,7 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	
 	@Override
 	public void updateCell(Cell myCell){
-		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
+		ArrayList<Cell> currentNeighbors = getNeighbors(myCell, VISION);
 		double matchingCellCount = 0.0;
 		double nonEmptyCellCount = 0.0;
 		for(int i = 0; i<currentNeighbors.size(); i++){

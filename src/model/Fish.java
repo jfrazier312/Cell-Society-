@@ -1,21 +1,25 @@
 package model;
-/*
- * author: Austin Gartside
+
+import config.Configuration;
+
+/**
+ * @author austingartside
+ *
  */
 public class Fish extends RectangleNoDiagonals {
+//public class Fish extends Cell{
 
-	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };
+	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0};
 	private int[] noDiagonalColDeltas = { 0, -1, 0, 1 };
 	private int myReproductionTime;
 	private int myMaxReproductionTime;
 	private int myTimeToDeath;
 
-	public Fish(int row, int col, int reproductionTime, int timeToDeath) {
-		super(row, col);
+	public Fish(int row, int col, int reproductionTime, int timeToDeath, Configuration config) {
+		super(row, col, config);
 		myReproductionTime = reproductionTime;
 		myMaxReproductionTime = reproductionTime;
 		myTimeToDeath = timeToDeath;
-
 	}
 
 	public void setReproductionTime(int reproductionTime) {
