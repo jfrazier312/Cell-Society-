@@ -77,7 +77,7 @@ public class Configuration {
 		allStates = new States().load(parser);
 		neighborhood = new Neighborhood().load(parser);
 		customizedParams = new Params().load(parser);
-		defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
+		defaultInitState = allStates.getDefaultState();
 		initialCells = CellGrid.buildNonDefaultInitialCells(parser);
 		isRunning = false;
 		return this;
