@@ -3,6 +3,9 @@ package config;
 import exceptions.UnrecognizedQueryMethodException;
 import exceptions.XMLParserException;
 
+/**
+ * @author CharlesXu
+ */
 public class XMLParserFactory {
 	
 	public static XMLParser build(XMLQueryMethod method, String srcPath)

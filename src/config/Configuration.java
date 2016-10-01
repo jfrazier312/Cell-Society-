@@ -28,8 +28,9 @@ import model.CellGrid;
       |  So must synchronize such access to ensure atomicity.      |
      _|      												       |
     (_/___________________________________________________________/
+ 
+ * @author CharlesXu
  */
-
 public class Configuration {
 	
 	public static final String DATA_PATH_PREFIX = "data/";
@@ -76,7 +77,7 @@ public class Configuration {
 		allStates = new States().load(parser);
 		neighborhood = new Neighborhood().load(parser);
 		customizedParams = new Params().load(parser);
-		defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
+		defaultInitState = allStates.getDefaultState();
 		initialCells = CellGrid.buildNonDefaultInitialCells(parser);
 		isRunning = false;
 		return this;

@@ -12,9 +12,14 @@ import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 
+/**
+ * @author CharlesXu
+ */
 public class States extends CompositeData implements Iterable<State>{
 	
 	private final String ITEMS = "States";
+	private final String INIT_MODE = "InitStateMode";
+	private State defaultState;
 	private List<State> states;
 	
 	@Override
@@ -24,7 +29,18 @@ public class States extends CompositeData implements Iterable<State>{
 		super.load(parser);
 		this.states = new ArrayList<State>();
 		super.traverseChildren(ITEMS, false);
+		if (parser.getItem(INIT_MODE).equals("enum")) {
+			defaultState = getStateByName(parser.getItem("DefaultInitState"));
+		}
 		return this;
+	}
+	
+	public State getDefaultState() {
+		return defaultState;
+	}
+
+	public void setDefaultState(State defaultState) {
+		this.defaultState = defaultState;
 	}
 	
 	@Override
