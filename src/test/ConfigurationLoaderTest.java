@@ -8,6 +8,9 @@ import org.junit.Test;
 import config.Configuration;
 import config.ConfigurationLoader;
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
+import exceptions.UnrecognizedQueryMethodException;
+import exceptions.XMLParserException;
 
 public class ConfigurationLoaderTest {
 	
@@ -17,7 +20,11 @@ public class ConfigurationLoaderTest {
 	@Before
 	public void onceExecutedBeforeEachTestCase() {
 		try {
-			ConfigurationLoader.loader().load(SOURCE).load(SOURCE2);
+			try {
+				ConfigurationLoader.loader().load(SOURCE).load(SOURCE2);
+			} catch (XMLParserException | UnrecognizedQueryMethodException | QueryExpressionException e) {
+				e.printStackTrace();
+			}
 		} catch (MalformedXMLSourceException e) {
 			e.printStackTrace();
 		}

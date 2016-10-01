@@ -3,12 +3,13 @@ package config;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 
 import exceptions.MalformedXMLSourceException;
-import exceptions.SourcePathFoundNoFileException;
-import exceptions.SourcePathNotInitialized;
+import exceptions.QueryExpressionException;
+import exceptions.XMLParserException;
+import exceptions.UnrecognizedQueryMethodException;
 
+@Deprecated
 public class ConfigurationLoader {
 	
 	public static final String DATA_PATH_PREFIX = "data/";
@@ -35,17 +36,11 @@ public class ConfigurationLoader {
 	}
 	
 	public synchronized ConfigurationLoader load(String src)
-			throws MalformedXMLSourceException {
+			throws MalformedXMLSourceException, XMLParserException, 
+			UnrecognizedQueryMethodException, QueryExpressionException {
 		String sourcePath = buildSourcePath(src);
-		Document doc;
-		try {
-			doc = XMLParser.parse(sourcePath);
-			// TODO (cx15):  validation
-			Configuration config = new Configuration(doc, "Xpath");
-			storage.put(sourcePath, config);
-		} catch (SourcePathFoundNoFileException | SourcePathNotInitialized e) {
-			e.printStackTrace();
-		}
+		Configuration config = new Configuration(src);
+		storage.put(sourcePath, config);
 		return this;
 	}
 	

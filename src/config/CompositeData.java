@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 
 public abstract class CompositeData {
@@ -22,7 +23,7 @@ public abstract class CompositeData {
 	 * @throws MalformedXMLSourceException
 	 */
 	public CompositeData load(XMLParser parser)
-			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
 			MalformedXMLSourceException {
 		this.parser = parser;
 		return this;
@@ -34,10 +35,11 @@ public abstract class CompositeData {
 	 * @throws XPathExpressionException
 	 * @throws UnrecognizedQueryMethodException
 	 * @throws MalformedXMLSourceException
+	 * @throws QueryExpressionException 
 	 */
 	public abstract CompositeData save()
-			throws XPathExpressionException, UnrecognizedQueryMethodException,
-			MalformedXMLSourceException;
+			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
+			QueryExpressionException;
 	
 	/**
 	 * Use the input Node to get necessary information to populate the instance
@@ -57,7 +59,7 @@ public abstract class CompositeData {
 	 * @throws MalformedXMLSourceException
 	 */
 	public final Node traverseChildren(String item, boolean removeAll)
-			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
 			MalformedXMLSourceException {
 		NodeList nl = parser.getNodeList(item);
 		Node parent = nl.item(0).getParentNode();

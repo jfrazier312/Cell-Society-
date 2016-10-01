@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 
 public class States extends CompositeData implements Iterable<State>{
@@ -20,7 +19,7 @@ public class States extends CompositeData implements Iterable<State>{
 	
 	@Override
 	public States load(XMLParser parser)
-			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
 			MalformedXMLSourceException {
 		super.load(parser);
 		this.states = new ArrayList<State>();
@@ -30,7 +29,7 @@ public class States extends CompositeData implements Iterable<State>{
 	
 	@Override
 	public States save()
-			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
 			MalformedXMLSourceException {
 		Node parent = traverseChildren(ITEMS, true);
 		for (State s : states) {
