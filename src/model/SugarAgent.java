@@ -3,7 +3,10 @@ package model;
  * author: Austin Gartside
  */
 import java.util.ArrayList;
-
+/**
+ * @author austingartside
+ *
+ */
 public class SugarAgent extends RectangleNoDiagonals{
 	
 	private int mySugar;
