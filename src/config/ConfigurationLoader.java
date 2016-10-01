@@ -9,6 +9,9 @@ import exceptions.QueryExpressionException;
 import exceptions.XMLParserException;
 import exceptions.UnrecognizedQueryMethodException;
 
+/**
+ * @author CharlesXu
+ */
 @Deprecated
 public class ConfigurationLoader {
 	

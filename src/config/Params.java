@@ -12,6 +12,9 @@ import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 import utils.Utils;
 
+/**
+ * @author CharlesXu
+ */
 public class Params extends CompositeData {
 	
 	private final String ITEMS = "Params",

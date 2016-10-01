@@ -1,5 +1,8 @@
 package config;
 
+/**
+ * @author CharlesXu
+ */
 public enum XMLQueryMethod {
 	
 	XPATH,

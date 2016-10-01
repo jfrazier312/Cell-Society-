@@ -20,6 +20,9 @@ import exceptions.UnrecognizedQueryMethodException;
 import exceptions.XMLParserException;
 import model.Cell;
 
+/**
+ * @author CharlesXu
+ */
 public class ConfigurationTest {
 	
 	private static Configuration config;

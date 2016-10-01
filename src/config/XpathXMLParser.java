@@ -16,6 +16,9 @@ import exceptions.QueryExpressionException;
 import exceptions.XMLParserException;
 import exceptions.UnrecognizedQueryMethodException;
 
+/**
+ * @author CharlesXu
+ */
 public class XpathXMLParser extends XMLParser {
 	
 	private static XPath XPATH_ENGINE = XPathFactory.newInstance().newXPath();

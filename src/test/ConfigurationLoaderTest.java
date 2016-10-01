@@ -12,6 +12,9 @@ import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 import exceptions.XMLParserException;
 
+/**
+ * @author CharlesXu
+ */
 public class ConfigurationLoaderTest {
 	
 	private static String SOURCE = "testxml.xml";
@@ -50,6 +53,14 @@ public class ConfigurationLoaderTest {
 	
 	@Test
 	public void storeOverwritePreviousKV() {
+		ConfigurationLoader.loader().store(
+				SOURCE2, ConfigurationLoader.getConfig(SOURCE));
+		assertEquals(ConfigurationLoader.getConfig(SOURCE),
+					 ConfigurationLoader.getConfig(SOURCE2));
+	}
+
+	@Test
+	public void testStore() {
 		ConfigurationLoader.loader().store(
 				SOURCE2, ConfigurationLoader.getConfig(SOURCE));
 		assertEquals(ConfigurationLoader.getConfig(SOURCE),
