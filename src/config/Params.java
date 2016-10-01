@@ -4,12 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 import utils.Utils;
 
@@ -22,7 +21,7 @@ public class Params extends CompositeData {
 	
 	@Override
 	public Params load(XMLParser parser)
-			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
 			MalformedXMLSourceException {
 		super.load(parser);
 		customizedParams = new HashMap<String, String>();
@@ -39,7 +38,7 @@ public class Params extends CompositeData {
 	
 	@Override
 	public CompositeData save()
-			throws XPathExpressionException, UnrecognizedQueryMethodException,
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
 			MalformedXMLSourceException {
 		Node parent = traverseChildren(ITEMS, true);
 		for (String param : customizedParams.keySet()) {

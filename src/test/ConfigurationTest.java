@@ -15,6 +15,9 @@ import config.State;
 import config.States;
 import exceptions.InconsistentCrossReferenceInXMLException;
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
+import exceptions.UnrecognizedQueryMethodException;
+import exceptions.XMLParserException;
 import model.Cell;
 
 public class ConfigurationTest {
@@ -26,8 +29,7 @@ public class ConfigurationTest {
 	@Before
 	public void executedOnceBeforeEach() {
 		try {
-			ConfigurationLoader.loader().load(SOURCE);
-			config = ConfigurationLoader.getConfig(SOURCE);
+			config = new Configuration(SOURCE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -97,12 +99,25 @@ public class ConfigurationTest {
 						   NEIGHBORHOOD_SIZE = 9;
 	
 	@Test
+	@Deprecated
 	public void loadAgainWillReset() {
 		try {
 			config.setAuthor(AUTHOR);
 			ConfigurationLoader.loader().load(SOURCE);
 			assertNotEquals(ConfigurationLoader.getConfig(SOURCE), AUTHOR);
-		} catch (MalformedXMLSourceException e) {
+		} catch (MalformedXMLSourceException | XMLParserException | UnrecognizedQueryMethodException | QueryExpressionException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void resetClearsOldStates() {
+		try {
+			config.setAuthor(AUTHOR);
+			config.reset();
+			assertNotEquals(config.getAuthor(), AUTHOR);
+		} catch (XMLParserException | UnrecognizedQueryMethodException | QueryExpressionException
+				| MalformedXMLSourceException e) {
 			e.printStackTrace();
 		}
 	}
@@ -126,21 +141,25 @@ public class ConfigurationTest {
 			config.getNeighborhood().setSize(NEIGHBORHOOD_SIZE).setEdgeType(EDGE_TYPE);
 			config.serializeTo(OUTPUT_SOURCE);
 			assertTrue(file.exists());
-			ConfigurationLoader.loader().load(OUTPUT_SOURCE);
-		} catch (MalformedXMLSourceException | InconsistentCrossReferenceInXMLException e) {
+		} catch (InconsistentCrossReferenceInXMLException | QueryExpressionException e) {
 			assertNull(e); // should not have exceptions
 		}
-		Configuration newConfig = ConfigurationLoader.getConfig(OUTPUT_SOURCE);
-		assertEquals(newConfig.getSimulationName(), SIMULATION);
-		assertEquals(newConfig.getAuthor(), AUTHOR);
-		assertEquals(newConfig.getNumCols(), GRID_WIDTH);
-		assertEquals(newConfig.getNumRows(), GRID_HEIGHT);
-		assertEquals(newConfig.getDefaultInitState().getValue(), DEFAULT_STATE_NAME);
-		assertEquals(newConfig.getFramesPerSec(), FPS);
-		assertEquals(newConfig.getAllStates().getStateByName(STATE_CHOSEN).getAttributes()
-				.get(STATE_ATTR), STATE_ATTR_VALUE);
-		assertEquals(newConfig.getNeighborhood().getSize(), NEIGHBORHOOD_SIZE);
-		assertEquals(newConfig.getNeighborhood().getEdgeType(), EDGE_TYPE);
-		assertEquals(newConfig.getCustomParam(PARAM), PARAM_VALUE);
+		try {
+			Configuration newConfig = new Configuration(OUTPUT_SOURCE);
+			assertEquals(newConfig.getSimulationName(), SIMULATION);
+			assertEquals(newConfig.getAuthor(), AUTHOR);
+			assertEquals(newConfig.getNumCols(), GRID_WIDTH);
+			assertEquals(newConfig.getNumRows(), GRID_HEIGHT);
+			assertEquals(newConfig.getDefaultInitState().getValue(), DEFAULT_STATE_NAME);
+			assertEquals(newConfig.getFramesPerSec(), FPS);
+			assertEquals(newConfig.getAllStates().getStateByName(STATE_CHOSEN).getAttributes()
+					.get(STATE_ATTR), STATE_ATTR_VALUE);
+			assertEquals(newConfig.getNeighborhood().getSize(), NEIGHBORHOOD_SIZE);
+			assertEquals(newConfig.getNeighborhood().getEdgeType(), EDGE_TYPE);
+			assertEquals(newConfig.getCustomParam(PARAM), PARAM_VALUE);
+		} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
+				| UnrecognizedQueryMethodException | QueryExpressionException e) {
+			assertNull(e); // should not have exceptions
+		}
 	}
 }

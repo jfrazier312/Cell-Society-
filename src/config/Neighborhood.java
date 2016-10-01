@@ -1,10 +1,9 @@
 package config;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.w3c.dom.Node;
 
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 
 public class Neighborhood extends CompositeData {
@@ -15,7 +14,7 @@ public class Neighborhood extends CompositeData {
 	
 	@Override
 	public Neighborhood load(XMLParser parser)
-			throws NumberFormatException, XPathExpressionException,
+			throws NumberFormatException, QueryExpressionException,
 			UnrecognizedQueryMethodException, MalformedXMLSourceException {
 		super.load(parser);
 		size = parser.getItemAsInteger("NeighborhoodSize");
@@ -25,7 +24,9 @@ public class Neighborhood extends CompositeData {
 	}
 
 	@Override
-	public Neighborhood save() throws UnrecognizedQueryMethodException {
+	public Neighborhood save()
+			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
+			QueryExpressionException {
 		parser.updateDoc("NeighborhoodSize", size);
 		parser.updateDoc("NeighborhoodEdgeType", edgeType);
 		parser.updateDoc("NeighborhoodEdgeValue", edgeValue);

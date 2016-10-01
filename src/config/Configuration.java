@@ -10,21 +10,32 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Document;
 
 import exceptions.InconsistentCrossReferenceInXMLException;
 import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
+import exceptions.XMLParserException;
 import model.Cell;
 import model.CellGrid;
+
+/**
+    ,____________________________________________________________.
+   (_\     													      \
+      |  All getters and setters are thread safe / synchronized    |
+      |  since event handlers runs on multiple different threads   |
+      |  not to block UI thread and they all invoke setters here.  |
+      |  So must synchronize such access to ensure atomicity.      |
+     _|      												       |
+    (_/___________________________________________________________/
+ */
 
 public class Configuration {
 	
 	public static final String DATA_PATH_PREFIX = "data/";
 	
 	private XMLParser parser;
+	private String srcPath;
 	
 	private String simulationName;
 	private String author;
@@ -38,44 +49,47 @@ public class Configuration {
 	private boolean isRunning;
 	private int framesPerSec;
 	
-	// TODO: deserialize to new XML
+	public Configuration(String src)
+			throws MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException, NumberFormatException {
+		srcPath = buildSourcePath(src);
+		reset();
+	}
 	
 	/**
-	 * All getters and setters are thread safe / synchronized
-	 * since event handlers runs on multiple different threads to not block UI thread
-	 * and they all invoke setters here.
-	 * Must synchronize such access to ensure atomicity.
+	 * Reset all private states to spec read form XML.
+	 * @return
+	 * @throws XMLParserException
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws QueryExpressionException
+	 * @throws MalformedXMLSourceException
 	 */
-
-	public Configuration(Document doc, String queryMethod)
-			throws MalformedXMLSourceException {
-		synchronized (this) {
-			parser = new XMLParser(queryMethod, doc);
-			try {
-				simulationName = parser.getItem("SimulationName");
-				author = parser.getItem("SimulationAuthor");
-				numCols = parser.getItemAsInteger("GridWidth");
-				numRows = parser.getItemAsInteger("GridHeight");
-				framesPerSec = parser.getItemAsInteger("FramesPerSec");
-				allStates = new States().load(parser);
-				neighborhood = new Neighborhood().load(parser);
-				customizedParams = new Params().load(parser);
-				defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
-				initialCells = CellGrid.buildNonDefaultInitialCells(parser);
-				isRunning = false;
-			} catch (XPathExpressionException | UnrecognizedQueryMethodException 
-					| NumberFormatException e) {
-				e.printStackTrace();
-			}
-		}
+	public synchronized Configuration reset()
+			throws XMLParserException, UnrecognizedQueryMethodException,
+			QueryExpressionException, MalformedXMLSourceException {
+		parser = XMLParserFactory.build(XMLQueryMethod.XPATH, srcPath);
+		simulationName = parser.getItem("SimulationName");
+		author = parser.getItem("SimulationAuthor");
+		numCols = parser.getItemAsInteger("GridWidth");
+		numRows = parser.getItemAsInteger("GridHeight");
+		framesPerSec = parser.getItemAsInteger("FramesPerSec");
+		allStates = new States().load(parser);
+		neighborhood = new Neighborhood().load(parser);
+		customizedParams = new Params().load(parser);
+		defaultInitState = allStates.getStateByName(parser.getItem("DefaultInitState"));
+		initialCells = CellGrid.buildNonDefaultInitialCells(parser);
+		isRunning = false;
+		return this;
 	}
 	
 	/**
 	 * Pickling/flatting/marshalling/serializing to durable storage on disk
 	 * in the form of XML
 	 * @param fileName
+	 * @throws QueryExpressionException 
 	 */
-	public synchronized void serializeTo(String fileName) {
+	public synchronized void serializeTo(String fileName)
+			throws QueryExpressionException {
 		try {
 			parser.updateDoc("SimulationName", simulationName);
 			parser.updateDoc("SimulationAuthor", author);
@@ -93,10 +107,14 @@ public class Configuration {
 					new StreamResult(new File(DATA_PATH_PREFIX + fileName))
 			);
 		} catch (TransformerFactoryConfigurationError | TransformerException 
-				| UnrecognizedQueryMethodException | XPathExpressionException
+				| UnrecognizedQueryMethodException | QueryExpressionException
 				| MalformedXMLSourceException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static String buildSourcePath(String src) {
+		return DATA_PATH_PREFIX + src;
 	}
 	
 	// -------- ACCESSORS ---------
