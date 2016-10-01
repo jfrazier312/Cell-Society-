@@ -78,7 +78,6 @@ public class Configuration {
 		neighborhood = new Neighborhood().load(parser);
 		customizedParams = new Params().load(parser);
 		defaultInitState = allStates.getDefaultState();
-		initialCells = CellGrid.buildNonDefaultInitialCells(parser);
 		isRunning = false;
 		return this;
 	}

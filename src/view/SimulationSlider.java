@@ -1,7 +1,8 @@
 package view;
 
+import java.util.ResourceBundle;
+
 import config.Configuration;
-import config.ConfigurationLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
@@ -18,11 +19,15 @@ public class SimulationSlider {
 	private HBox genericSliderContainer;
 	private Slider slider;
 	private VBox customSliderContainer;
+	
+	private ResourceBundle myResources;
+	public static final String RESRC_PATH = "resources/GridResources";
 
 	// Used in MainView to determine whether a slider needs to reset the grid on release
 	public static boolean reset;
 	
 	public SimulationSlider(String text, Configuration config) {
+		myResources = ResourceBundle.getBundle(RESRC_PATH);
 		reset = false;
 
 		double defaultValue = Double.parseDouble(config.getCustomParam(text));
@@ -41,13 +46,14 @@ public class SimulationSlider {
 			Double newValue = (double) Math.round(slider.getValue() * 100.0) / 100.0;
 			lbl.textProperty().setValue(String.valueOf(newValue * 100.00));
 			config.setCustomParam(text, String.valueOf(newValue));
-			if (text.contains("percent")) {
+			if (text.contains(myResources.getString("Percent"))) {
 				reset = true;
 			}
 		});
 	}
 
 	public SimulationSlider(SceneConstant min, SceneConstant max, double defaultVal, String displayName, boolean set) {
+		myResources = ResourceBundle.getBundle(RESRC_PATH);
 		Label lbl = new Label(String.valueOf(defaultVal));
 		Label display = new Label(displayName);
 
@@ -58,11 +64,11 @@ public class SimulationSlider {
 
 		updateSliderOnDrag(lbl, 10.0);
 		
-		if (displayName.contains("percent") || displayName.toLowerCase().contains("row")
-				|| displayName.toLowerCase().contains("col")) {
+		if (displayName.contains(myResources.getString("Percent")) || displayName.contains(myResources.getString("Columns"))
+				|| displayName.contains(myResources.getString("Rows"))) {
 			slider.setOnMouseReleased(e -> {
 				Double newValue = (double) Math.round(slider.getValue() * 10.0) / 10.0;
-				if (displayName.toLowerCase().contains("row") || displayName.toLowerCase().contains("col")) {
+				if (displayName.toLowerCase().contains(myResources.getString("Rows")) || displayName.toLowerCase().contains(myResources.getString("Columns"))) {
 					int i = newValue.intValue();
 					lbl.textProperty().setValue(String.valueOf(i));
 				} else {

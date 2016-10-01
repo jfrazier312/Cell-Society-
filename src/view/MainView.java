@@ -58,9 +58,9 @@ public class MainView {
 	// TODO: Move these
 	private static final ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList(
 			"Game_Of_Life",
-			"Wa-tor_World",
-			"Fire_Simulation",
-			"Segregation_Simulation");
+			"Predator_Prey",
+			"Fire",
+			"Segregation");
 
 	public static final ComboBox<String> SIMULATIONS = new ComboBox<>(SIMULATION_OPTIONS);
 
@@ -75,7 +75,7 @@ public class MainView {
 	}
 
 	private void beginInitialSetup() throws NumberFormatException, MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException, QueryExpressionException {
-		myConfig = new Configuration("Game_Of_Life.xml");
+		myConfig = new Configuration("Fire.xml");
 		initSimulation();
 		setSimulationEventHandler();
 		createResetTimelineChecker();
@@ -116,7 +116,7 @@ public class MainView {
 	}
 
 	private void resetGrid() throws NumberFormatException, MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException, QueryExpressionException {
-		myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
+//		myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
 		initSimulation();
 		SimulationSlider.reset = false;
 		myGameloop.pause();
@@ -322,12 +322,18 @@ public class MainView {
 		SIMULATIONS.valueProperty().addListener(e -> {
 			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
-			try {
-				myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
-				initSimulation();
-			} catch (Exception e1) {
-				throw new NullPointerException("Unable to load simulation");
-			}
+//			try {
+				try {
+					myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
+					initSimulation();
+				} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
+						| UnrecognizedQueryMethodException | QueryExpressionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+//			} catch (Exception e1) {
+//				throw new NullPointerException("Unable to load simulation");
+//			}
 		});
 	}
 
@@ -370,7 +376,8 @@ public class MainView {
 
 		myCellPane.setMaxHeight(SceneConstant.GRID_HEIGHT.getValue());
 		myCellPane.setMinHeight(SceneConstant.GRID_HEIGHT.getValue());
-
+		
+		myRoot.getChildren().add(myCellPane);
 		// cellPane.setPrefWrapLength(50);
 		// cellPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
 	}
