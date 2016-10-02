@@ -39,7 +39,7 @@ public class FireSimulation extends CellGrid {
 	
 	public void initSimulation() {
 		createGrid();
-		load(); // if initial cells are empty, will not overwrite cell
+//		load(); // if initial cells are empty, will not overwrite cell
 		probOfBurning = Double.parseDouble(getConfig().getCustomParam("probability"));
 		//probOfBurning = .5;
 	}
