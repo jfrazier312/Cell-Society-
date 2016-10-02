@@ -63,7 +63,7 @@ public class Fish extends RectangleNoDiagonals{
 	// shark stuff
 
 	public void increaseTimeToDeath() {
-		myTimeToDeath += 5;
+		myTimeToDeath += 1;
 	}
 
 	public void decrementTimeToDeath() {
