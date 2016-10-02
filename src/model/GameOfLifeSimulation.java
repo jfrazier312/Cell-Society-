@@ -16,7 +16,10 @@ public class GameOfLifeSimulation extends CellGrid {
 	private String DEAD;
 	private String ALIVE;
 	private int isEven;
-	//private String neighborConvention;
+	
+	private String neighborConvention;
+	private ArrayList<Integer> numsToSurvive;
+	private ArrayList<Integer> numsToBeBorn;
 	
 	private static final int[] ROW_DELTAS = {-1, -1, 0, 1, 1, 1, 0, -1};
 	private static final int[] COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
@@ -26,7 +29,26 @@ public class GameOfLifeSimulation extends CellGrid {
 		isEven = 0;
 		DEAD = myResources.getString("Dead");
 		ALIVE = myResources.getString("Alive");
-		//neighborConvention = "B3/S23";
+		neighborConvention = "B2 S23";
+		getNeighborConvention();
+	}
+	
+	public void getNeighborConvention(){
+		String[] neighborConventionList = neighborConvention.split(" ");
+		numsToSurvive = new ArrayList<Integer>();
+		numsToBeBorn = new ArrayList<Integer>();
+		if(neighborConventionList[0].length()>0){
+			String numsForBirth = neighborConventionList[0].substring(1);
+			for(int i = 0; i<numsForBirth.length(); i++){
+				numsToBeBorn.add(Character.getNumericValue(numsForBirth.charAt(i)));
+			}
+		}
+		if(neighborConventionList[1].length()>0){
+			String numsForSurvival = neighborConventionList[1].substring(1);
+			for(int i = 0; i<numsForSurvival.length(); i++){
+				numsToSurvive.add(Character.getNumericValue(numsForSurvival.charAt(i)));
+			}
+		}
 	}
 	
 	public void initSimulation() {
@@ -71,9 +93,7 @@ public class GameOfLifeSimulation extends CellGrid {
 	private void updateFutureStates(){
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				//RectangleWithDiagonals currentCell = (RectangleWithDiagonals)myGrid[i][j];
 				updateCell(getGridCell(i, j));
-				//currentCell.setCurrentstate(currentCell.getFuturestate());
 			}
 		}
 	}
@@ -103,26 +123,39 @@ public class GameOfLifeSimulation extends CellGrid {
 	}
 	
 	
-	private void liveCellUpdate(Cell myCell, int liveCount) {
-		if(liveCount<2){
-			myCell.setFuturestate(DEAD);
-		}
-		else if(liveCount>=2 && liveCount <=3){
+//	private void liveCellUpdate(Cell myCell, int liveCount) {
+//		if(liveCount<2){
+//			myCell.setFuturestate(DEAD);
+//		}
+//		else if(liveCount>=2 && liveCount <=3){
+//			myCell.setFuturestate(ALIVE);
+//		}
+//		else{
+//			myCell.setFuturestate(DEAD);
+//		}
+//	}
+	private void liveCellUpdate(Cell myCell, int liveCount){
+		myCell.setFuturestate(DEAD);
+		if(numsToSurvive.contains(liveCount)){
 			myCell.setFuturestate(ALIVE);
-		}
-		else{
-			myCell.setFuturestate(DEAD);
 		}
 	}
 
-	private void deadCellUpdate(Cell myCell, int liveCount) {
-		if(liveCount == 3){
+	
+	private void deadCellUpdate(Cell myCell, int liveCount){
+		myCell.setFuturestate(DEAD);
+		if(numsToBeBorn.contains(liveCount)){
 			myCell.setFuturestate(ALIVE);
 		}
-		else{
-			myCell.setFuturestate(DEAD);
-		}
 	}
+//	private void deadCellUpdate(Cell myCell, int liveCount) {
+//		if(liveCount == 3){
+//			myCell.setFuturestate(ALIVE);
+//		}
+//		else{
+//			myCell.setFuturestate(DEAD);
+//		}
+//	}
 	
 	public int countCellsOfState(ArrayList<Cell> currentNeighbors, String state){
 		int stateCount = 0;
