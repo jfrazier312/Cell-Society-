@@ -31,7 +31,9 @@ public class FireSimulation extends CellGrid {
 		for (State s :getConfig().getInitialCells()) {
 			int row = Integer.parseInt(s.getAttributes().get("row"));
 			int col = Integer.parseInt(s.getAttributes().get("col"));
-			setGridCell(row, col, new RectangleNoDiagonals(row, col, getConfig()));
+			RectangleNoDiagonals r = new RectangleNoDiagonals(row, col, getConfig());
+			r.setCurrentstate(s.getAttributes().get("currentState"));
+			setGridCell(row, col, r);
 		}
 	}
 	
