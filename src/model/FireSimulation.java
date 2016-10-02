@@ -18,7 +18,6 @@ public class FireSimulation extends CellGrid {
 	private String BURNING;
 	private static final int VISION = 1;
 	private double probOfBurning;
-	private boolean isToroidal;
 	Random generator;
 	
 	public FireSimulation(Configuration config) {
@@ -28,11 +27,23 @@ public class FireSimulation extends CellGrid {
 		BURNING = myResources.getString("Burning");
 		//gonna have to change this
 		generator = new Random();
-		isToroidal = false;
+	}
+	
+	@Override
+	public void load() {
+		for (State s : getConfig().getInitialCells()) {
+			int row = Integer.parseInt(s.getAttributes().get("row"));
+			int col = Integer.parseInt(s.getAttributes().get("col"));
+			Cell r = new RectangleNoDiagonals(row, col, getConfig());
+			r.setCurrentstate(s.getAttributes().get("currentState"));
+			r.setFuturestate(s.getAttributes().get("futureState"));
+			setGridCell(row, col, r);
+		}
 	}
 	
 	public void initSimulation() {
-		if(isToroidal){
+		super.initSimulation();
+		if(isToroidal()){
 			createToroidalGrid();
 		}
 		else{

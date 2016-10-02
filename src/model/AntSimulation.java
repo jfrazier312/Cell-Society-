@@ -13,7 +13,7 @@ import view.Simulations;
 
 //set row deltas in each simulation based on what shape is chosen
 //define all the row deltas in cell grid
-public class AntSimulation extends CellGrid{
+public class AntSimulation extends CellGrid {
 
 	private static final String SIMULATION_NAME = Simulations.ANT.getName();
 	private static final String OPEN = "open";
@@ -51,6 +51,7 @@ public class AntSimulation extends CellGrid{
 	
 	@Override
 	public void initSimulation(){
+		super.initSimulation();
 		setDeltas(ROW_DELTAS, COL_DELTAS);
 		//should get this from config
 		double percentObstacles = .3;

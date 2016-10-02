@@ -46,6 +46,8 @@ public class Configuration {
 //	private State defaultInitState;
 	private boolean isRunning;
 	private int framesPerSec;
+	private String shape;
+	private String wrapping;
 	
 	public Configuration(String src)
 			throws MalformedXMLSourceException, XMLParserException,
@@ -167,6 +169,14 @@ public class Configuration {
 	public synchronized XMLParser getParser() {
 		return parser;
 	}
+	
+	public synchronized String getShape() {
+		return shape;
+	}
+	
+	public synchronized String getWrapping() {
+		return wrapping;
+	}
 
 	// -------- MUTATORS ---------
 //	public synchronized Configuration setDefaultInitState(String defaultInitState)
@@ -211,6 +221,16 @@ public class Configuration {
 
 	public synchronized Configuration setNumRows(int numRows) {
 		this.numRows = numRows;
+		return this;
+	}
+	
+	public synchronized Configuration setShape(String shape) {
+		this.shape = shape;
+		return this;
+	}
+	
+	public synchronized Configuration setWrapping(String wrapping) {
+		this.wrapping = wrapping;
 		return this;
 	}
 }

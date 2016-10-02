@@ -36,6 +36,7 @@ public class SegregationSimulation extends CellGrid {
 	}
 	
 	public void initSimulation() {
+		super.initSimulation();
 		setDeltas(ROW_DELTAS, COL_DELTAS);
 		myProbability  = Double.parseDouble(getConfig().getCustomParam("probability"));
 		myMovingCells = new ArrayList<Cell>();
