@@ -28,6 +28,7 @@ public class PredatorPreySimulation extends CellGrid {
 	}
 	
 	public void initSimulation() {
+		super.initSimulation();
 		double percentEmptyCells = Double.parseDouble(getConfig().getCustomParam("percentEmpty"));
 		double percentShark = Double.parseDouble(getConfig().getCustomParam("percentShark"));
 		createGrid(percentEmptyCells, percentShark);
