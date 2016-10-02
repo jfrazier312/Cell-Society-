@@ -4,7 +4,11 @@ package model;
  */
 import java.util.ArrayList;
 
+import org.w3c.dom.Element;
+
 import config.Configuration;
+import config.State;
+import config.XMLParser;
 /**
  * @author austingartside
  *
@@ -22,6 +26,16 @@ public class SugarAgent extends Cell{
 		mySugarMetabolism = sugarMetabolism;
 		myVision = vision;
 		myPatch = new SugarPatch(patchSugar);
+	}
+	
+	public State serialize() {
+		State s = new State();
+		s.getAttributes().put("mySugar", mySugar + "");
+		s.getAttributes().put("mySugarMetabolism", mySugarMetabolism + "");
+		s.getAttributes().put("myVision", myVision + "");
+		s.getAttributes().put("myPatchSugar", myPatch.getSugar() + "");
+		s.getAttributes().put("myPatchMaxSugar", myPatch.getMaxSugar() + "");
+		return s;
 	}
 	
 	public SugarPatch getPatch(){
@@ -64,9 +78,4 @@ public class SugarAgent extends Cell{
 	public boolean isVacant(){
 		return getFuturestate().equals("");
 	}
-	
-	
-	
-	
-
 }

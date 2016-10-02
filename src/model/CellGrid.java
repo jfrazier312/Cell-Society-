@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import config.Cells;
 import config.Configuration;
 //import config.ConfigurationLoader;
 import config.XMLParser;
@@ -17,7 +19,7 @@ import javafx.scene.layout.GridPane;
 import utils.Utils;
 
 /**
- * author: Austin Gartside and Jordan Frazier
+ * author: Austin Gartside, Jordan Frazier and Charles Xu
  */
 public abstract class CellGrid extends GridPane {
 
@@ -179,22 +181,19 @@ public abstract class CellGrid extends GridPane {
 //		cell.setFuturestate(futurestate);
 //	}
 	
-	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
-			throws QueryExpressionException, UnrecognizedQueryMethodException,
-				   NumberFormatException, MalformedXMLSourceException {
-		List<Cell> initialCells = new ArrayList<Cell>();
-		if (parser.getItem("CellsMode").equals("enum")) {
-			NodeList nl = parser.getNodeList("Cells");
-			for (int i = 0; i < nl.getLength(); i++) {
-				String state = Utils.getAttrFromNode(nl.item(i), "state");
-				int row = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "row"));
-				int col = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "col"));
-				Cell c = new Cell(row, col);
-				c.setCurrentstate(state);
-				initialCells.add(c);
-		    }
+
+	/**
+	 * Save each cell to the configuration which then could be serialized 
+	 * @return
+	 */
+	public Configuration save() {
+		myConfig.getInitialCells().clear();
+		for(int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				myConfig.getInitialCells().add(grid[i][j].serialize());
+			}
 		}
-		return initialCells;
+		return myConfig;
 	}
 	
 	private void chooseRowDeltas(){
@@ -223,7 +222,12 @@ public abstract class CellGrid extends GridPane {
 	
 	private int[] getColDeltas(){
 		return colDeltas;
-	}
+	/**
+	 * Load cellgrid from config
+	 */
+	public void load() {}
+	
+	// TODO (cx15) deserialize grid. each cell does not need a deserialize
 
 	public int getNumRows() {
 		return grid.length;
