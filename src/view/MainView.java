@@ -1,85 +1,112 @@
 package view;
 
-import config.ConfigurationLoader;
+import java.util.ResourceBundle;
+
+import config.Configuration;
+import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
+import exceptions.UnrecognizedQueryMethodException;
+import exceptions.XMLParserException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.AntSimulation;
 import model.CellGrid;
 import model.FireSimulation;
 import model.GameOfLifeSimulation;
 import model.PredatorPreySimulation;
 import model.SegregationSimulation;
+import model.SugarSimulation;
 
-public class MainView implements GameWorld {
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
+public class MainView {
 
-	private Scene scene;
-	private BorderPane root;
-	private FlowPane cellPane;
-	private CellGrid simulation;
+	private Scene myScene;
+	private Group myRoot;
+	private GridPane myCellPane;
+	private CellGrid mySimulation;
+	private Timeline myGameloop;
+
+	private Configuration myConfig;
+	private boolean isGridLinesVisible;
 	private boolean simIsRunning;
-	private VBox buttonContainer;
 
-	private static final double BUTTON_WIDTH = 200;
+	private ResourceBundle myResources;
+	public static final String RESRC_PATH = "resources/GridResources";
 
-	private Timeline gameloop;
+	private Insets buttonPadding = new Insets(
+			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
+			SceneConstant.GRID_PADDING.getValue(),
+			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
+			-1 * SceneConstant.GRID_PADDING.getValue());
+	private Insets cellPanePadding = new Insets(
+			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2, 0,
+			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
+			SceneConstant.GRID_PADDING.getValue());
 
-	private Insets buttonPadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, GRID_PADDING,
-			(SCENE_HEIGHT - GRID_HEIGHT) / 2, -40);
-	private Insets cellPanePadding = new Insets((SCENE_HEIGHT - GRID_HEIGHT) / 2, 0, (SCENE_HEIGHT - GRID_HEIGHT) / 2,
-			GRID_PADDING);
+	public Scene initScene() throws Exception {
+		myRoot = new Group();
+		myScene = new Scene(myRoot, SceneConstant.SCENE_WIDTH.getValue(), SceneConstant.SCENE_HEIGHT.getValue());
+		myResources = ResourceBundle.getBundle(RESRC_PATH);
+		// isGridLinesVisible = false;
+		beginInitialSetup();
+		myScene.getStylesheets().add("view/SimulationStyle.css");
+		return myScene;
+	}
 
-	// TODO: Jordan: This will return a scene, and be called in Main.
-	public Scene initSimulation(Stage primaryStage) throws Exception {
-		// Do configuration loader to get the information for scene / etc.
-		// ConfigurationLoader.loader().setSource("Game_Of_Life.xml").load();
-		root = new BorderPane();
-		scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-		// scene = new Scene(root, config.getSceneWidth(),
-		// config.getSceneHeight());
-
-		// Creates initial cell grid
-		createCellPane();
-
-		// Creates initial simulation
-		createSimulation();
-
-		// add the buttons
-		createAllButtons();
+	private void beginInitialSetup() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException {
+		myConfig = new Configuration("Fire.xml");
+		initSimulation();
 		setSimulationEventHandler();
-
-		// create game loop
-		createGameLoop();
-
-		// Checks if slider needs to reset grid
 		createResetTimelineChecker();
+		createGameLoop();
+	}
 
-		return scene;
-
+	private void initSimulation() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException {
+		myRoot.getChildren().removeAll(myRoot.getChildren());
+		createCellPane();
+		createSimulation();
+		createAllButtons();
 	}
 
 	private void createResetTimelineChecker() {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), e-> {
-			if (SliderCreator.reset) {
+		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(SceneConstant.MAX_FPS.getValue()), e -> {
+			if (SimulationSlider.reset) {
 				try {
-//					root.getChildren().removeAll(root.getChildren());
-					createCellPane();
-					createSimulation();
-					createCustomButtons();
-					SliderCreator.reset = false;
-					gameloop.pause();
-				} catch (Exception e1) {
+					resetGrid();
+					// TODO: Handle each error based on exception type
+				} catch (NumberFormatException e1) {
+					e1.printStackTrace();
+				} catch (MalformedXMLSourceException e1) {
+					e1.printStackTrace();
+				} catch (XMLParserException e1) {
+					e1.printStackTrace();
+				} catch (UnrecognizedQueryMethodException e1) {
+					// when user tries to parse with a different query
+					// method
+					e1.printStackTrace();
+				} catch (QueryExpressionException e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -87,245 +114,318 @@ public class MainView implements GameWorld {
 		timeline.play();
 	}
 
-	private void createSimulation() {
-		String simulationName = ConfigurationLoader.getConfig().getSimulationName();
-		// sets simulation to correct simulation
-		findSimulation(simulationName);
-		simulation.initSimulation();
-		simulation.renderGrid(cellPane);
-		cellPane.setPadding(cellPanePadding);
-		root.setLeft(cellPane);
+	private void resetGrid() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException {
+		initSimulation();
+		SimulationSlider.reset = false;
+		pauseGrid();
 	}
 
-	private void findSimulation(String sim) {
-		if (sim.equals(FIRE_SIMULATION)) {
-			simulation = new FireSimulation();
-		} else if (sim.equals(GAME_OF_LIFE)) {
-			simulation = new GameOfLifeSimulation();
-		} else if (sim.equals(SEGREGATION_SIMULATION)) {
-			simulation = new SegregationSimulation();
-		} else if (sim.equals(WATOR_WORLD)) {
-			simulation = new PredatorPreySimulation();
+	private void createSimulation() {
+		findSimulation();
+		mySimulation.initSimulation();
+		mySimulation.renderGrid(myCellPane, myConfig);
+	}
+
+	private void findSimulation() {
+		String simName = myConfig.getSimulationName();
+		if (simName.equals(Simulations.FIRE.getName())) {
+			mySimulation = new FireSimulation(myConfig);
+		} else if (simName.equals(Simulations.GAME_OF_LIFE.getName())) {
+			mySimulation = new GameOfLifeSimulation(myConfig);
+		} else if (simName.equals(Simulations.SEGREGATION.getName())) {
+			mySimulation = new SegregationSimulation(myConfig);
+		} else if (simName.equals(Simulations.PREDATOR_PREY.getName())) {
+			mySimulation = new PredatorPreySimulation(myConfig);
+		} else if (simName.equals(Simulations.ANT.getName())) {
+			mySimulation = new AntSimulation(myConfig);
+		} else if (simName.equals(Simulations.SUGAR.getName())) {
+			mySimulation = new SugarSimulation(myConfig);
+
 		}
 	}
 
 	private void createGameLoop() {
-		// TODO: Duration should come from XML frames/sec
-		gameloop = new Timeline();
-		gameloop.getKeyFrames().add(new KeyFrame(Duration.seconds(1), e -> {
-			createKeyFrameEvents();
+		myGameloop = new Timeline();
+		myGameloop.getKeyFrames().add(new KeyFrame(Duration.seconds(1), e -> {
+			updateGrid();
 		}));
 	}
 
-	private void createAllButtons() throws Exception {
-		buttonContainer = new VBox(PADDING);
-		simIsRunning = false;
-
-		// TODO: Jordan - set padding on buttons and button size from XML
-		HBox hbox1 = new HBox(PADDING);
-		HBox hbox2 = new HBox(PADDING);
-		VBox vbox3 = new VBox(PADDING);
-
-		// Sets simulation combo box action
-		// setSimulationEventHandler();
-
-		SimulationButton playBtn = new SimulationButton(PLAY);
-		setStartEventHandler(playBtn);
-
-		SimulationButton pauseBtn = new SimulationButton(PAUSE);
-		setStopEventHandler(pauseBtn);
-		hbox1.getChildren().addAll(playBtn, pauseBtn);
-
-		SimulationButton resetBtn = new SimulationButton(RESET);
-		setStopEventHandler(resetBtn);
-
-		SimulationButton stepBtn = new SimulationButton(STEP);
-		setStepEventHandler(stepBtn);
-		
-		hbox2.getChildren().addAll(stepBtn, resetBtn);
-		
-		SimulationSlider rowsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumRows(), "Rows", false);
-		setRowsEventHandler(rowsSlider.getSlider());
-
-		SimulationSlider colsSlider = new SimulationSlider(1.0, 100.0, ConfigurationLoader.getConfig().getNumCols(), "Cols", false);
-		setColumnsEventHandler(colsSlider.getSlider());
-		
-		vbox3.getChildren().addAll(rowsSlider.getHbox(), colsSlider.getHbox());
-
-		SimulationSlider fpsSlider = new SimulationSlider(1.0, 60.0, ConfigurationLoader.getConfig().getFramesPerSec(), "FPS", false);
-		setFPSEventHandler(fpsSlider.getSlider());
-	
-		VBox basicBtnBox = new VBox(PADDING);
-		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getHbox());
-		basicBtnBox.setMinWidth(300);
-		
-		buttonContainer.getChildren().add(basicBtnBox);
-
-		createCustomButtons();
-
-		// Right inset will be the same padding used on the left side of grid
-		buttonContainer.setPadding(buttonPadding);
-		buttonContainer.setMaxWidth(250);
-		buttonContainer.setMinWidth(250);
-		root.setRight(buttonContainer);
+	private void updateGrid() {
+		myCellPane.getChildren().removeAll(myCellPane.getChildren());
+		mySimulation.updateGrid();
+		mySimulation.renderGrid(myCellPane, myConfig);
 	}
 
-	private void createCustomButtons() {
-		VBox custom = new VBox(PADDING);
-		// loop through the rest of the custom parameters
-		for (String str : ConfigurationLoader.getConfig().getAllCustomParamNames()) {
-			SimulationSlider slider = new SimulationSlider(str);
-			custom.getChildren().add(slider.getVBox());
+	private void setTitleName() {
+		Label title = new Label("Cellular Automata!");
+		title.getStyleClass().add("simulationTitle");
+		title.setMinWidth(SceneConstant.SCENE_WIDTH.getValue());
+		title.setAlignment(Pos.CENTER);
+		myRoot.getChildren().add(title);
+	}
+
+	private void createAllButtons() {
+		setTitleName();
+		VBox buttonContainer = new VBox(SceneConstant.PADDING.getValue());
+
+		HBox hbox1 = new HBox(SceneConstant.PADDING.getValue());
+		HBox hbox2 = new HBox(SceneConstant.PADDING.getValue());
+		HBox hbox3 = new HBox(SceneConstant.PADDING.getValue());
+		VBox vbox = new VBox(SceneConstant.PADDING.getValue());
+
+		SimulationButton playBtn = makeButton("Play", new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				playButtonHandler();
+			}
+		});
+
+		SimulationButton pauseBtn = makeButton("Pause", new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				pauseButtonHandler();
+			}
+		});
+
+		SimulationButton resetBtn = makeButton("Reset", new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				resetButtonHandler();
+			}
+		});
+
+		SimulationButton stepBtn = makeButton("Step", new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				stepButtonHandler();
+			}
+		});
+
+		SimulationButton saveBtn = makeButton("Save", new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					saveButtonHandler();
+				} catch (NumberFormatException | QueryExpressionException | MalformedXMLSourceException
+						| XMLParserException | UnrecognizedQueryMethodException e) {
+					// TODO Exceptions
+					e.printStackTrace();
+				}
+			}
+		});
+
+		SimulationSlider rowsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM,
+				myConfig.getNumRows(), myResources.getString("Rows"), false, myConfig);
+		// setRowAndColEventHandler(rowsSlider.getSlider(), true);
+
+		SimulationSlider colsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM,
+				myConfig.getNumCols(), myResources.getString("Columns"), false, myConfig);
+		// setRowAndColEventHandler(colsSlider.getSlider(), false);
+
+		SimulationSlider fpsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM,
+				myConfig.getFramesPerSec(), myResources.getString("FPS"), false, myConfig);
+		setFPSEventHandler(fpsSlider.getSlider());
+
+		// TODO: Grid lines
+		SimulationButton gridVisible = new SimulationButton(myResources.getString("GridLines"));
+		// setGridLinesVisible(gridVisible);
+
+		hbox1.getChildren().addAll(playBtn, pauseBtn);
+		hbox2.getChildren().addAll(stepBtn, resetBtn);
+		hbox3.getChildren().addAll(gridVisible, saveBtn);
+		vbox.getChildren().addAll(rowsSlider.getGenericSlider(), colsSlider.getGenericSlider());
+
+		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
+		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(), hbox1, hbox2, vbox,
+				fpsSlider.getGenericSlider(), hbox3);
+		basicBtnBox.setMinWidth(300);
+		buttonContainer.getChildren().add(basicBtnBox);
+
+		createCustomButtons(buttonContainer);
+		setButtonContainerParameters(buttonContainer);
+	}
+
+	/**
+	 * Creates button and sets an event handler
+	 * 
+	 * @param name
+	 *            - name of the button
+	 * @param handler
+	 *            - the event handler of the button
+	 * @return
+	 */
+	private SimulationButton makeButton(String name, EventHandler<ActionEvent> handler) {
+		SimulationButton button = new SimulationButton(myResources.getString(name));
+		setDimensions(button);
+		button.setOnAction(handler);
+		return button;
+	}
+
+	private void playButtonHandler() {
+		simIsRunning = true;
+		myGameloop.setCycleCount(Timeline.INDEFINITE);
+		myGameloop.playFromStart();
+	}
+
+	private void stepButtonHandler() {
+		pauseGrid();
+		updateGrid();
+	}
+
+	private void pauseButtonHandler() {
+		pauseGrid();
+	}
+
+	private void resetButtonHandler() {
+		try {
+			initSimulation();
+		} catch (Exception e) {
+			// TODO: Exception
+			throw new NullPointerException("Unable to init simulation");
 		}
-		// this is so poorly designed
-		if (buttonContainer.getChildren().size() > 1) {
-			buttonContainer.getChildren().remove(1);
+		pauseGrid();
+	}
+
+	private void saveButtonHandler() throws QueryExpressionException, NumberFormatException,
+			MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException {
+		mySimulation.save();
+		String newXMLFile = mySimulation.getSimulationName() + "-RESTORE";
+		myConfig.serializeTo(newXMLFile + ".xml");
+		myConfig = new Configuration(newXMLFile + ".xml");
+		Simulations.COMBOBOX.getSimulationComboBox().getItems().add(newXMLFile);
+	}
+
+	private void pauseGrid() {
+		myGameloop.pause();
+		simIsRunning = false;
+	}
+
+	private void setButtonContainerParameters(VBox buttonContainer) {
+		buttonContainer.setPadding(buttonPadding);
+		buttonContainer.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
+		buttonContainer.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
+		buttonContainer
+				.setLayoutX(SceneConstant.SCENE_WIDTH.getValue() - SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
+		myRoot.getChildren().add(buttonContainer);
+	}
+
+	private void createCustomButtons(VBox buttonContainer) {
+		VBox custom = new VBox(SceneConstant.PADDING.getValue());
+		for (String str : myConfig.getAllCustomParamNames()) {
+			SimulationSlider slider = new SimulationSlider(str, myConfig);
+			custom.getChildren().add(slider.getCustomSlider());
 		}
 		buttonContainer.getChildren().add(custom);
 	}
-	
-	private void setRowsEventHandler(Slider sizeSlider) {
-		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
+	@Deprecated
+	private void setRowAndColEventHandler(Slider sizeSlider, boolean isRow) {
+		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				gameloop.pause();
-				double newval = (double) newValue;
-				ConfigurationLoader.getConfig().setNumRows((int) newval);
-				createCellPane();
-				createCustomButtons();
-				createSimulation();
-			}
-		});
-	}
-	
-	private void setColumnsEventHandler(Slider sizeSlider) {
-		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				gameloop.pause();
-				double newval = (double) newValue;
-				ConfigurationLoader.getConfig().setNumCols((int) newval);
-				createCellPane();
-				createCustomButtons();
-				createSimulation();
+				myGameloop.pause();
+				int newval = (int) ((double) newValue);
+				if (isRow) {
+					myConfig.setNumRows(newval);
+				} else {
+					myConfig.setNumCols(newval);
+				}
 			}
 		});
 	}
 
 	private void setFPSEventHandler(Slider fpsSlider) {
-		fpsSlider.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				// TODO Auto-generated method stub
-				double fpsdouble = (double) 1000 / (double) newValue;
-				ConfigurationLoader.getConfig().setFramesPerSec((int)fpsdouble); 
-				gameloop.pause();
-				gameloop.getKeyFrames().remove(0);
-				gameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
-					createKeyFrameEvents();
-				}));
-				if (simIsRunning) {
-					gameloop.playFromStart();
-				}
-			}
+		fpsSlider.setOnMouseReleased(e -> {
+			resetFrameRate(fpsSlider);
 		});
 	}
 
-	private void createKeyFrameEvents() {
-		cellPane.getChildren().removeAll(cellPane.getChildren());
-		simulation.updateGrid();
-		simulation.renderGrid(cellPane);
-		root.setLeft(cellPane);
+	private void resetFrameRate(Slider fpsSlider) {
+		double fpsdouble = 1000.0 / (double) fpsSlider.getValue();
+		myConfig.setFramesPerSec((int) fpsSlider.getValue());
+		myGameloop.pause();
+		updateGameLoopFPS(fpsdouble);
+		if (simIsRunning) {
+			myGameloop.playFromStart();
+		}
+	}
+
+	private void updateGameLoopFPS(double fpsdouble) {
+		myGameloop.getKeyFrames().remove(0);
+		myGameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), ev -> {
+			updateGrid();
+		}));
 	}
 
 	private void setSimulationEventHandler() {
-		SIMULATIONS.setValue(ConfigurationLoader.getConfig().getSimulationName());
-		SIMULATIONS.setMinWidth(BUTTON_WIDTH + PADDING);
-		SIMULATIONS.setMaxWidth(BUTTON_WIDTH + PADDING);
-		SIMULATIONS.valueProperty().addListener(e -> {
-			gameloop.stop();
+		Simulations.COMBOBOX.getSimulationComboBox().setValue(myConfig.getSimulationName());
+		Simulations.COMBOBOX.getSimulationComboBox()
+				.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		Simulations.COMBOBOX.getSimulationComboBox()
+				.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+
+		Simulations.COMBOBOX.getSimulationComboBox().valueProperty().addListener(e -> {
+			myGameloop.stop();
+			myRoot.getChildren().removeAll(myRoot.getChildren());
 			try {
-				ConfigurationLoader.loader().setSource(SIMULATIONS.getValue() + ".xml").load();
-				root.getChildren().removeAll(root.getChildren());
-				createCellPane();
-				createAllButtons();
-				createSimulation();
-				createGameLoop();
-				createResetTimelineChecker();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
+				myConfig = new Configuration(Simulations.COMBOBOX.getSimulationComboBox().getValue() + ".xml");
+				updateGameLoopFPS(SceneConstant.SLIDER_MINIMUM.getValue() * 1000);
+				initSimulation();
+				// Only load if its a restored version
+				if (Simulations.COMBOBOX.getSimulationComboBox().getValue().contains("RESTORE")) {
+					mySimulation.load();
+//					initSimulation();
+					mySimulation.renderGrid(myCellPane, myConfig);
+				}
+
+			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
+					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
+				// TODO handle excpetions JORdan
 				e1.printStackTrace();
 			}
-
 		});
 	}
 
-	private void setStartEventHandler(SimulationButton btn) {
-		setDimensions(btn);
-		btn.setOnAction(e -> {
-			simIsRunning = true;
-			gameloop.setCycleCount(Timeline.INDEFINITE);
-			gameloop.playFromStart();
-		});
-	}
-
-	private void setStepEventHandler(SimulationButton btn) {
-		setDimensions(btn);
-		btn.setOnAction(e -> {
-			gameloop.pause();
-			simIsRunning = false;
-			stepOnce();
-		});
-	}
-
-	private void setStopEventHandler(SimulationButton btn) {
-		setDimensions(btn);
-		btn.setOnAction(e -> {
-			// If button is reset, then reset parameters back to what's on XML
-			if (btn.getDisplayName().equals(RESET)) {
-				try {
-					// ConfigurationLoader.loader().setSource(SIMULATIONS.getValue()
-					// + ".xml").load();
-					ConfigurationLoader.getConfig();
-					createCellPane();
-					createCustomButtons();
-					createSimulation();
-//					createGameLoop();
-//					createResetTimelineChecker();
-				} catch (Exception e1) {
-					e1.printStackTrace();
-					throw new IllegalArgumentException("Failed loading XML file");
-				}
-			}
-			gameloop.pause();
-			simIsRunning = false;
-		});
-	}
-
-	private void stepOnce() {
-		cellPane.getChildren().removeAll(cellPane.getChildren());
-		simulation.updateGrid();
-		simulation.renderGrid(cellPane);
-		root.setLeft(cellPane);
-	}
+	// private void setGridLinesVisible(SimulationButton btn) {
+	// setDimensions(btn);
+	// btn.setOnAction(e -> {
+	// if (!gridLinesVisible) {
+	// setGridLines(true);
+	// } else {
+	// setGridLines(false);
+	// }
+	// });
+	// }
+	//
+	// private void setGridLines(boolean isVisible) {
+	// if (isVisible) {
+	// cellPane.setGridLinesVisible(true);
+	// gridLinesVisible = true;
+	// } else {
+	// cellPane.setGridLinesVisible(false);
+	// gridLinesVisible = false;
+	// }
+	// }c
 
 	private void setDimensions(SimulationButton btn) {
-		btn.setMinWidth(BUTTON_WIDTH / 2);
-		btn.setMaxWidth(BUTTON_WIDTH / 2);
+		btn.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() / 2);
+		btn.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() / 2);
 	}
 
 	private void createCellPane() {
-		// TODO: Jordan Set cellpane parameters based on XML
-		cellPane = new FlowPane(0.0, 0.0);
+		myCellPane = new GridPane();
+		myCellPane.setPadding(cellPanePadding);
+		myCellPane.setMaxWidth(SceneConstant.GRID_WIDTH.getValue() + SceneConstant.GRID_PADDING.getValue());
+		// cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
+		myCellPane.setMaxWidth(SceneConstant.GRID_WIDTH.getValue() + SceneConstant.GRID_PADDING.getValue());
+		myCellPane.setMinWidth(SceneConstant.GRID_WIDTH.getValue() + SceneConstant.GRID_PADDING.getValue());
 
-		cellPane.setMaxWidth(GRID_WIDTH + GRID_PADDING);
-		cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
+		myCellPane.setMaxHeight(SceneConstant.GRID_HEIGHT.getValue());
+		myCellPane.setMinHeight(SceneConstant.GRID_HEIGHT.getValue());
 
-		cellPane.setMaxHeight(GRID_HEIGHT);
-		cellPane.setMinHeight(GRID_HEIGHT);
-
+		myRoot.getChildren().add(myCellPane);
 		// cellPane.setPrefWrapLength(50);
 		// cellPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
 	}

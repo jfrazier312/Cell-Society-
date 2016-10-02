@@ -1,107 +1,163 @@
 package model;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-import config.ConfigurationLoader;
+import config.Configuration;
+import view.Simulations;
 
-public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
+/**
+ * @author austingartside
+ *
+ */
+public class GameOfLifeSimulation extends CellGrid {
 	
-	public static final String SIMULATION_NAME = GAME_OF_LIFE;
-	private static final String DEAD = "dead";
-	private static final String ALIVE = "alive";
+	private static final String SIMULATION_NAME = Simulations.GAME_OF_LIFE.getName();
+	private String DEAD;
+	private String ALIVE;
+	private int isEven;
 	
-	public GameOfLifeSimulation() {
-		super();
+	private String neighborConvention;
+	private List<Integer> numsToSurvive;
+	private List<Integer> numsToBeBorn;
+	
+	private static final int[] ROW_DELTAS = {-1, -1, 0, 1, 1, 1, 0, -1};
+	private static final int[] COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
+		
+	public GameOfLifeSimulation(Configuration config) {
+		super(config);
+		isEven = 0;
+		DEAD = myResources.getString("Dead");
+		ALIVE = myResources.getString("Alive");
+		neighborConvention = "B2 S23";
+		getNeighborConvention();
+	}
+	
+	public void getNeighborConvention(){
+		String[] neighborConventionList = neighborConvention.split(" ");
+		numsToSurvive = new ArrayList<Integer>();
+		numsToBeBorn = new ArrayList<Integer>();
+		if(neighborConventionList[0].length()>0){
+			String numsForBirth = neighborConventionList[0].substring(1);
+			for(int i = 0; i<numsForBirth.length(); i++){
+				numsToBeBorn.add(Character.getNumericValue(numsForBirth.charAt(i)));
+			}
+		}
+		if(neighborConventionList[1].length()>0){
+			String numsForSurvival = neighborConventionList[1].substring(1);
+			for(int i = 0; i<numsForSurvival.length(); i++){
+				numsToSurvive.add(Character.getNumericValue(numsForSurvival.charAt(i)));
+			}
+		}
 	}
 	
 	public void initSimulation() {
-		double percentDead = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentDead"));
-		//double percentDead = .5;
+		double percentDead = Double.parseDouble(getConfig().getCustomParam("percentDead"));
+		setDeltas(ROW_DELTAS, COL_DELTAS);
 		createGrid(percentDead);
 	}
 	
+	
 	public void createGrid(double percentDead){
 		Random generator = new Random();
-		Cell[][] myGrid = getGrid();
+		List<String> initialization = getStartingStateList(percentDead);
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
+				if(initialization.size() == 0){
+					getGridCell(i, j).setCurrentstate(DEAD);
+				}
+				else{
+					int cellChoice = generator.nextInt(initialization.size());
+					getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
+					initialization.remove(cellChoice);
+				}	
+			}
+		}
+	}
+
+	private List<String> getStartingStateList(double percentDead) {
 		int size = getNumRows()*getNumCols();
 		double numDead = percentDead*size;
 		double numAlive = size-numDead;
-		ArrayList<String> initialization = new ArrayList<String>();
+		List<String> initialization = new ArrayList<String>();
 		for(int i = 0; i<numDead; i++){
 			initialization.add(DEAD);
 		}
 		for(int i = 0; i<numAlive; i++){
 			initialization.add(ALIVE);
 		}
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				myGrid[i][j] = new RectangleWithDiagonals(i, j);
-				if(initialization.size() == 0){
-					myGrid[i][j].setCurrentstate(DEAD);
-				}
-				else{
-					int cellChoice = generator.nextInt(initialization.size());
-					myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
-					initialization.remove(cellChoice);
-				}	
-			}
-		}
+		return initialization;
 	}
 	
-	public void updateFutureStates(){
-		Cell[][] myGrid = getGrid();
+	private void updateFutureStates(){
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				//RectangleWithDiagonals currentCell = (RectangleWithDiagonals)myGrid[i][j];
-				Cell currentCell = myGrid[i][j];
-				updateCell(currentCell);
-				//currentCell.setCurrentstate(currentCell.getFuturestate());
+				updateCell(getGridCell(i, j));
 			}
 		}
 	}
 	
 	@Override
 	public void updateGrid(){
-		Cell[][] myGrid = getGrid();
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				currentCell.setCurrentstate(currentCell.getFuturestate());
 			}
 		}
 	}
 	
-	//public void updateCell(RectangleWithDiagonals myCell){
+	@Override
 	public void updateCell(Cell myCell){
 		String myState = myCell.getCurrentstate();
-		//ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myCell, myGrid);
-		//ArrayList<RectangleWithDiagonals> currentNeighbors = getNeighbors(myCell);
-		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
+		List<Cell> currentNeighbors = getNeighbors(myCell, 1);
 		int liveCount = countCellsOfState(currentNeighbors, ALIVE);
 		if(myState.equals(DEAD)){
-			if(liveCount == 3){
-				myCell.setFuturestate(ALIVE);
-			}
-			else{
-				myCell.setFuturestate(DEAD);
-			}
-			
+			deadCellUpdate(myCell, liveCount);	
 		}
 		else{
-			if(liveCount<2){
-				myCell.setFuturestate(DEAD);
-			}
-			else if(liveCount>=2 && liveCount <=3){
-				myCell.setFuturestate(ALIVE);
-			}
-			else{
-				myCell.setFuturestate(DEAD);
-			}
+			liveCellUpdate(myCell, liveCount);
 		}
 	}
 	
-	public int countCellsOfState(ArrayList<Cell> currentNeighbors, String state){
+	
+//	private void liveCellUpdate(Cell myCell, int liveCount) {
+//		if(liveCount<2){
+//			myCell.setFuturestate(DEAD);
+//		}
+//		else if(liveCount>=2 && liveCount <=3){
+//			myCell.setFuturestate(ALIVE);
+//		}
+//		else{
+//			myCell.setFuturestate(DEAD);
+//		}
+//	}
+	private void liveCellUpdate(Cell myCell, int liveCount){
+		myCell.setFuturestate(DEAD);
+		if(numsToSurvive.contains(liveCount)){
+			myCell.setFuturestate(ALIVE);
+		}
+	}
+
+	
+	private void deadCellUpdate(Cell myCell, int liveCount){
+		myCell.setFuturestate(DEAD);
+		if(numsToBeBorn.contains(liveCount)){
+			myCell.setFuturestate(ALIVE);
+		}
+	}
+//	private void deadCellUpdate(Cell myCell, int liveCount) {
+//		if(liveCount == 3){
+//			myCell.setFuturestate(ALIVE);
+//		}
+//		else{
+//			myCell.setFuturestate(DEAD);
+//		}
+//	}
+	
+	public int countCellsOfState(List<Cell> currentNeighbors, String state){
 		int stateCount = 0;
 		for(Cell neighborCell: currentNeighbors){
 			if(neighborCell.getCurrentstate().equals(state)){
@@ -115,27 +171,30 @@ public class GameOfLifeSimulation extends CellGrid implements view.GameWorld {
 	public String getSimulationName() {
 		return SIMULATION_NAME;
 	}
+	/**
+	 * This method is used for testing purposes to print grid locally
+	 */
 	
 	/**
 	 * This method is used for testing purposes to print grid locally
 	 */
-	public void printGrid(){
-		Random generator = new Random();
-		Cell[][] myGrid = getGrid();
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				if(myGrid[i][j].getCurrentstate().equals(DEAD)){
-					System.out.print(0);
-				}
-				else{
-					System.out.print(1);
-				}
-			}
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println();
-	}
+//	public void printGrid(){
+//		Random generator = new Random();
+//		Cell[][] myGrid = getGrid();
+//		for (int i = 0; i < getNumRows(); i++) {
+//			for (int j = 0; j < getNumCols(); j++) {
+//				if(myGrid[i][j].getCurrentstate().equals(DEAD)){
+//					System.out.print(0);
+//				}
+//				else{
+//					System.out.print(1);
+//				}
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
+//		System.out.println();
+//	}
 	
 	/**
 	 * Uncomment this method to test simulation locally

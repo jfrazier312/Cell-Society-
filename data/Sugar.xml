@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<simulation name="Sugar" author="team19">
+	<grid width="20" height="20"/>
+	<neighborhood size="5">
+		<edge type="constant" value="agent">
+		</edge>
+	</neighborhood>
+	<states>
+		<state color="#ff6600">agent</state>
+		<state color="#ffe0cc">no_agent</state>
+	</states>
+	<init mode="param">
+	</init>
+	<animation framesPerSec="1"></animation>
+	<param name="sugarGrowBackInterval" value="1"></param>
+	<param name="maxVision" value="4"></param>
+	<param name="percentAgent" value="0.2"></param>
+</simulation>

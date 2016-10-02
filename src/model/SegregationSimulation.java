@@ -1,71 +1,95 @@
 package model;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-import config.ConfigurationLoader;
+import config.Configuration;
+import view.Simulations;
 
-//Should we do getting neighbors in each simulation since the definition can vary?
-public class SegregationSimulation extends CellGrid implements view.GameWorld{
+/**
+ * @author austingartside
+ *
+ */
+public class SegregationSimulation extends CellGrid {
 	
-	private static final String EMPTY = "empty";
-	public static final String SIMULATION_NAME = SEGREGATION_SIMULATION;
-	private static final String typeA = "typeA";
-	private static final String typeB = "typeB";
+	private static final String SIMULATION_NAME = Simulations.SEGREGATION.getName();
+	public static final int VISION = 1;
 	private double myProbability;
-	ArrayList<Cell> myMovingCells;
+	
+	private static final int[] ROW_DELTAS = {-1, -1, 0, 1, 1, 1, 0, -1};
+	private static final int[] COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
+	
+	private String EMPTY;
+	private String TYPEA;
+	private String TYPEB;
+
+	List<Cell> myMovingCells;
+	List<Cell> cellsToMakeEmpty;
+	List<Cell> emptyCells;
 	Random generator;
 	
-	public SegregationSimulation() {
-		super();
+	public SegregationSimulation(Configuration config) {
+		super(config);
+		EMPTY = myResources.getString("Empty");
+		TYPEA = myResources.getString("TypeA");
+		TYPEB = myResources.getString("TypeB");
 	}
 	
 	public void initSimulation() {
-		myProbability  = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
+		setDeltas(ROW_DELTAS, COL_DELTAS);
+		myProbability  = Double.parseDouble(getConfig().getCustomParam("probability"));
 		myMovingCells = new ArrayList<Cell>();
-		double percentEmptyCells = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentEmpty"));
-		double percenttypeA = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("percentTypeA"));
+		double percentEmptyCells = Double.parseDouble(getConfig().getCustomParam("percentEmpty"));
+		double percenttypeA = Double.parseDouble(getConfig().getCustomParam("percentTypeA"));
 		createGrid(percentEmptyCells, percenttypeA);
 	}
 	
 	private void createGrid(double percentEmpty, double percenttypeA) {
 		generator = new Random();
 		int size = getNumRows()*getNumCols();
+		List<String> initialization = getStartingStateList(percentEmpty, percenttypeA, size);
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				createCell(initialization, i, j);
+			}
+		}
+	}
+
+	private void createCell(List<String> initialization, int i, int j) {
+		setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
+		if(initialization.size() == 0){
+			getGridCell(i, j).setCurrentstate(EMPTY);
+		}
+		else{
+			int cellChoice = generator.nextInt(initialization.size());
+			getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
+			initialization.remove(cellChoice);
+		}
+	}
+
+	private List<String> getStartingStateList(double percentEmpty, double percenttypeA, int size) {
 		double numEmpty = percentEmpty*size;
 		double numtypeA = percenttypeA*(size-numEmpty);
 		double numtypeB = size-numEmpty-numtypeA;
-		ArrayList<String> initialization = new ArrayList<String>();
+		List<String> initialization = new ArrayList<String>();
 		for(int i = 0; i<numEmpty; i++){
 			initialization.add(EMPTY);
 		}
 		for(int i = 0; i<numtypeA; i++){
-			initialization.add(typeA);
+			initialization.add(TYPEA);
 		}
 		for(int i = 0; i<numtypeB; i++){
-			initialization.add(typeB);
+			initialization.add(TYPEB);
 		}
-		Cell[][] myGrid = getGrid();
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				myGrid[i][j] = new RectangleWithDiagonals(i, j);
-				if(initialization.size() == 0){
-					myGrid[i][j].setCurrentstate(EMPTY);
-				}
-				else{
-					int cellChoice = generator.nextInt(initialization.size());
-					myGrid[i][j].setCurrentstate(initialization.get(cellChoice));
-					initialization.remove(cellChoice);
-				}
-			}
-		}
+		return initialization;
 	}
 	
 	@Override
 	public void updateGrid(){
 		updateFutureStates();
-		Cell[][] myGrid = this.getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				currentCell.setCurrentstate(currentCell.getFuturestate());
 				
 			}
@@ -73,35 +97,16 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 	}
 	
 	private void updateFutureStates(){
-		Cell[][] myGrid = this.getGrid();
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
-				if(!currentCell.getCurrentstate().equals(EMPTY)){
-					updateCell(currentCell);
-				}
-			}
-		}
-		
-		ArrayList<Cell> cellsToMakeEmpty = new ArrayList<Cell>();
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
-				if(currentCell.getCurrentstate().equals(EMPTY)){
-					currentCell.setFuturestate(EMPTY);
-					if(myMovingCells.size()>0){
-						int whichCell = generator.nextInt(myMovingCells.size());
-						Cell changingCell = myMovingCells.get(whichCell);
-						currentCell.setFuturestate(changingCell.getCurrentstate());
-						myMovingCells.remove(whichCell);
-						cellsToMakeEmpty.add(changingCell);
-					}
-				}
-			}
-		}
+		changeCells();	
+		moveNonEmptyCells();
 		if(myMovingCells.size()>0){
-			for(Cell c: myMovingCells){
-				c.setFuturestate(c.getCurrentstate());
+			for(Cell tempCell: myMovingCells){
+				tempCell.setFuturestate(tempCell.getCurrentstate());
+			}
+		}
+		if(emptyCells.size()>0){
+			for(Cell leftoverEmptyCell: emptyCells){
+				leftoverEmptyCell.setFuturestate(EMPTY);
 			}
 		}
 		for(Cell c: cellsToMakeEmpty){
@@ -109,10 +114,42 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 		}
 		myMovingCells = new ArrayList<Cell>();
 	}
+
+	private void changeCells() {
+		emptyCells = new ArrayList<Cell>();
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				Cell currentCell = getGridCell(i, j);
+				if(!currentCell.getCurrentstate().equals(EMPTY)){
+					updateCell(currentCell);
+				}
+				else{
+					emptyCells.add(currentCell);
+				}
+			}
+		}
+	}
+
+	private void moveNonEmptyCells() {
+		cellsToMakeEmpty = new ArrayList<Cell>();
+		while(myMovingCells.size()>0 && emptyCells.size()>0){
+			int emptyCellChoice = generator.nextInt(emptyCells.size());
+			Cell currentCell = emptyCells.get(emptyCellChoice);
+			currentCell.setFuturestate(EMPTY);
+			
+			int whichCell = generator.nextInt(myMovingCells.size());
+			Cell changingCell = myMovingCells.get(whichCell);
+			currentCell.setFuturestate(changingCell.getCurrentstate());
+			
+			myMovingCells.remove(whichCell);
+			emptyCells.remove(emptyCellChoice);
+			cellsToMakeEmpty.add(changingCell);			
+		}
+	}
 	
 	@Override
 	public void updateCell(Cell myCell){
-		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
+		List<Cell> currentNeighbors = getNeighbors(myCell, VISION);
 		double matchingCellCount = 0.0;
 		double nonEmptyCellCount = 0.0;
 		for(int i = 0; i<currentNeighbors.size(); i++){
@@ -124,6 +161,10 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 				}
 			}		
 		}
+		changeState(myCell, matchingCellCount, nonEmptyCellCount);
+	}
+
+	private void changeState(Cell myCell, double matchingCellCount, double nonEmptyCellCount) {
 		if(nonEmptyCellCount == 0){
 			myCell.setFuturestate(myCell.getCurrentstate());
 		}

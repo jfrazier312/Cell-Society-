@@ -1,32 +1,41 @@
 package model;
 
-import config.ConfigurationLoader;
-import javafx.scene.Node;
-import javafx.scene.paint.Color;
+import org.w3c.dom.Element;
 
-public class Rectangle extends Cell implements view.GameWorld {
+import config.Configuration;
+import config.XMLParser;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
+import view.SceneConstant;
+
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ *
+ */
+public class Rectangle extends Cell {
 
 	// included diagonals
 	private int[] rowDeltas = { -1, 0, 1, 0, 1, 1, -1, -1 };
 	private int[] colDeltas = { 0, -1, 0, 1, 1, -1, 1, -1 };
+	private Configuration myConfig;
 
-	public Rectangle(int row, int col) {
+	public Rectangle(int row, int col, Configuration config) {
 		super(row, col);
-
+		myConfig = config;
 	}
 
 	@Override
-	public Node render() {
-		
-		double rows = ConfigurationLoader.getConfig().getNumRows();
-		double cols = ConfigurationLoader.getConfig().getNumCols();
-		
-		double width = calculateSize(GRID_WIDTH, cols);
-		double height = calculateSize(GRID_HEIGHT, rows);
+	public Shape render() {
+		double rows = myConfig.getNumRows();
+		double cols = myConfig.getNumCols();
+		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
+		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
 
 		javafx.scene.shape.Rectangle rect = new javafx.scene.shape.Rectangle(width, height);
-		
-		String color = ConfigurationLoader.getConfig().getAllStates().getStateByName(getCurrentstate()).getAttributes().get("color");
+
+		String color = myConfig.getAllStates().getStateByName(getCurrentstate()).getAttributes()
+				.get("color");
 		rect.setFill(Color.web(color));
 		return rect;
 	}

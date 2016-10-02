@@ -3,6 +3,9 @@ package config;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author CharlesXu
+ */
 public class State {
 	
 	private String value;

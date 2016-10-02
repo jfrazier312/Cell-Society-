@@ -1,78 +1,144 @@
 package config;
 
 import java.io.File;
-import java.util.ResourceBundle;
+import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import exceptions.MalformedXMLSourceException;
+import exceptions.QueryExpressionException;
+import exceptions.XMLParserException;
 import exceptions.UnrecognizedQueryMethodException;
 
-public class XMLParser {
+/**
+ * @author CharlesXu
+ */
+public abstract class XMLParser {
 	
-	public static final String RESRC_PREFIX = "recourses/";
-	private static XPath XPATH_ENGINE = XPathFactory.newInstance().newXPath();
+	public static final String RESRC_PREFIX = "resources/";
 	
-	private String queryMethod;
-	private ResourceBundle queries;
-	private Document doc;
+	protected Document doc;
 	
-	
-	public XMLParser(String queryMethod, Document doc) {
-		this. queryMethod = queryMethod;
-		queries = ResourceBundle.getBundle(RESRC_PREFIX + queryMethod);
-		this.doc = doc;
+	public XMLParser(String scrPath)
+			throws XMLParserException {
+		parse(scrPath);
 	}
 	
-	public String getItem(String itemName)
-			throws UnrecognizedQueryMethodException, XPathExpressionException {
-		if (queryMethod.equals("Xpath")) {
-			return XPATH_ENGINE.compile(queries.getString(itemName)).evaluate(doc);
-		}
-		throw new UnrecognizedQueryMethodException();
-	}
+	/**
+	 * Update the value of the element identified by itemName with String
+	 * value passed in
+	 * @param itemName
+	 * @param value
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws MalformedXMLSourceException
+	 * @throws QueryExpressionException
+	 */
+	public abstract void updateDoc(String itemName, String value)
+			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
+			QueryExpressionException;
 	
-	public int getItemAsInteger(String itemName)
-			throws NumberFormatException, XPathExpressionException, UnrecognizedQueryMethodException {
-		return Integer.parseInt(getItem(itemName));
-	}
+	/**
+	 * Update the value of the element identified by itemName with int
+	 * value passed in
+	 * @param itemName
+	 * @param value
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws MalformedXMLSourceException
+	 * @throws QueryExpressionException
+	 */
+	public abstract void updateDoc(String itemName, int value)
+			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
+			QueryExpressionException;
 	
-	public NodeList getNodeList(String itemName)
-			throws UnrecognizedQueryMethodException, XPathExpressionException {
-		if (queryMethod.equals("Xpath")) {
-			return (NodeList) XPATH_ENGINE
-					.compile(queries.getString(itemName))
-					.evaluate(doc, XPathConstants.NODESET);
-		}
-		throw new UnrecognizedQueryMethodException();
-	}
+	/**
+	 * Return the String value of element identified by itemName in doc
+	 * @param itemName
+	 * @return
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws QueryExpressionException
+	 * @throws MalformedXMLSourceException
+	 */
+	public abstract String getItem(String itemName)
+			throws UnrecognizedQueryMethodException,
+					QueryExpressionException, MalformedXMLSourceException;
 	
-	public static Document parse(String sourcePath) throws Exception {
-		if (sourcePath == null)
-			throw new Exception("sourcePath not initialized");
+	/**
+	 * Return the String value of element identified by itemName in doc
+	 * item allowed to be empty
+	 * @param itemName
+	 * @return
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws QueryExpressionException
+	 * @throws MalformedXMLSourceException
+	 */
+	public abstract NodeList getNodeListAllowEmpty(String itemName)
+			throws UnrecognizedQueryMethodException,
+					QueryExpressionException, MalformedXMLSourceException;
+	
+	/**
+	 * Return the int value of element identified by itemName in doc
+	 * @param itemName
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws QueryExpressionException
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws MalformedXMLSourceException
+	 */
+	public abstract int getItemAsInteger(String itemName)
+			throws NumberFormatException, QueryExpressionException,
+				   UnrecognizedQueryMethodException, MalformedXMLSourceException;
+	
+	/**
+	 * 
+	 * @param itemName
+	 * @return
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws QueryExpressionException
+	 * @throws MalformedXMLSourceException
+	 */
+	public abstract NodeList getNodeList(String itemName)
+			throws UnrecognizedQueryMethodException, QueryExpressionException,
+				   MalformedXMLSourceException;
+	
+	/**
+	 * Parse the XML file specified at sourcePath to create a Document
+	 * used to initialize this.doc
+	 * @param sourcePath
+	 * @throws XMLParserException
+	 */
+	private void parse(String sourcePath)
+				throws XMLParserException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		Document doc = null;
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			doc = builder.parse(new File(sourcePath));
-			doc.getDocumentElement().normalize();
-		} catch (Exception e) {
-			e.printStackTrace();
+			this.doc = builder.parse(new File(sourcePath));
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			throw new XMLParserException();
 		}
-		if (doc == null)
-			throw new Exception("sourcePath provided unfound");
+		this.doc.getDocumentElement().normalize();
+	}
+	
+	public Document getDoc() {
 		return doc;
 	}
-
-	// TODO (cx15) validate an XML, exception to front end if xml invalid
-	public static boolean validate(Document doc) throws Exception {
-		return true;
+	
+	/**
+	 * The if tree is necessary since String and NodeList has different interface
+	 * to check if its content is empty.
+	 * @param o
+	 * @return
+	 */
+	protected boolean isEmpty(Object o) {
+		if (o instanceof String) 
+			return ((String) o).isEmpty();
+		else if (o instanceof NodeList)
+			return ((NodeList) o).getLength() == 0;
+		else return false;
 	}
 }

@@ -1,9 +1,29 @@
 package model;
 import java.util.ArrayList;
 
-import javafx.scene.Node;
+import config.State;
+import javafx.scene.shape.Shape;
 
-public class Cell {
+/**
+ * 
+ * @author Jordan Frazier (jrf30)
+ * @author Charles Xu (cx15)
+ *
+ */
+
+//put all row deltas here nad have the get row delta methods be here
+public abstract class Cell extends Shape {
+	
+	//make getters and setters for all of these and put them in the classes?
+//	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };
+//	private int[] noDiagonalColDeltas = { 0, -1, 0, 1 };
+//	
+//	private int[] diagonalRowDeltas = {-1, 0, 1, 0, 1, 1, -1, -1};
+//	private int[] diagonalColDeltas = {0, -1, 0, 1, 1, -1, 1, -1};
+//	
+//	private int[] rowDeltas = { -1, 0, 1 };
+//	private int[] evenColDeltas = { 0, 1, 0 };
+//	private int[] oddColDeltas = { 0, -1, 0 };
 	
 	private int rowPos;
 	private int colPos;
@@ -11,10 +31,12 @@ public class Cell {
 	
 	private String futurestate;
 	private String currentstate;
-	
+	//private String myShape;
+	//public Cell(int row, int col, String shape){
 	public Cell(int row, int col){
 		rowPos = row;
 		colPos = col;
+		//myShape = shape;
 	}
 	
 	public int getRowPos() {
@@ -57,13 +79,28 @@ public class Cell {
 		this.neighbors = neighbors;
 	}
 	
-//	public Node render(String a) {
-//		return null;
-//	}
+	public Shape render() { return null; }
 	
-	public Node render() { return null; }
+	public abstract int[] getRowDeltas();
 	
-	public int[] getRowDeltas() { return null; }
+	public abstract int[] getColDeltas();
 	
-	public int[] getColDeltas() { return null; }
+	/**
+	 * Serialize to an element in XML
+	 * @param parser
+	 */
+	public State serialize() {
+		State s = new State();
+		s.getAttributes().put("row", rowPos + "");
+		s.getAttributes().put("col", colPos + "");
+		s.getAttributes().put("currentState", currentstate);
+		s.getAttributes().put("futureState",  futurestate);
+		return s;
+	}
+
+	@Override
+	public com.sun.javafx.geom.Shape impl_configShape() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<simulation name="Fire_Simulation" author="team19">
+<simulation name="Fire" author="team19">
 	<grid width="20" height="20"/>
 	<neighborhood size="5">
 		<edge type="constant" value="empty">
@@ -10,8 +10,8 @@
 		<state color="#ff0000">burning</state>
 		<state color="#000011">empty</state>
 	</states>
-	<init default="tree">
-		<cell state="burning" row="10" col="10"></cell>
+	<init mode="enum" default="tree">
+		<cell state="burning" row="1" col="1"></cell>
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="probability" value="1"></param>

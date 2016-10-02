@@ -1,49 +1,84 @@
 package model;
 import java.util.ArrayList;
-
+import java.util.List;
 import java.util.Random;
 
-import config.ConfigurationLoader;
+import config.Configuration;
+import config.State;
+import view.Simulations;
 
-/*
- * Should I be setting the future state to be the same as the current state, 
- * or will the front end do that by default?
- * 
- */ 
-
-public class FireSimulation extends CellGrid implements view.GameWorld {
-	public static final String SIMULATION_NAME = FIRE_SIMULATION ;
-	private static final String EMPTY = "empty";
-	private static final String TREE = "tree";
-	private static final String BURNING = "burning";
+/**
+ * @author austingartside
+ *
+ */
+public class FireSimulation extends CellGrid {
+	public static final String SIMULATION_NAME = Simulations.FIRE.getName();
+	private String EMPTY;
+	private String TREE;
+	private String BURNING;
+	private static final int VISION = 1;
 	private double probOfBurning;
+	private boolean isToroidal;
 	Random generator;
-
-	public FireSimulation() {
-		super();
-
+	
+	public FireSimulation(Configuration config) {
+		super(config);
+		EMPTY = myResources.getString("Empty");
+		TREE = myResources.getString("Tree");
+		BURNING = myResources.getString("Burning");
+		//gonna have to change this
+		generator = new Random();
+		isToroidal = false;
+	}
+	
+	@Override
+	public void load() {
+		for (State s :getConfig().getInitialCells()) {
+			int row = Integer.parseInt(s.getAttributes().get("row"));
+			int col = Integer.parseInt(s.getAttributes().get("col"));
+			Cell r = new RectangleNoDiagonals(row, col, getConfig());
+			r.setCurrentstate(s.getAttributes().get("currentState"));
+			r.setFuturestate(s.getAttributes().get("futureState"));
+			setGridCell(row, col, r);
+		}
 	}
 	
 	public void initSimulation() {
-		createGrid();
-//		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
-		//probOfBurning = .5;
+		if(isToroidal){
+			createToroidalGrid();
+		}
+		else{
+			createGrid();
+//		load(); // if initial cells are empty, will not overwrite cell
+		}
 	}
 	
 	public void createGrid() {
-		Cell[][] myGrid = getGrid();
-		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				myGrid[i][j] = new RectangleNoDiagonals(i, j);
+				setGridCell(i, j, new RectangleNoDiagonals(i, j, getConfig()));
 				if(i==0 || j==0 || i==getNumRows()-1 || j == getNumCols()-1){
-					myGrid[i][j].setCurrentstate(EMPTY);
+					getGridCell(i, j).setCurrentstate(EMPTY);
 				}
 				else if(i == getNumRows()/2 && j == getNumCols()/2){
-					myGrid[i][j].setCurrentstate(BURNING);
+					getGridCell(i, j).setCurrentstate(BURNING);
 				}
 				else{
-					myGrid[i][j].setCurrentstate(TREE);
+					getGridCell(i, j).setCurrentstate(TREE);
+				}
+			}
+		}
+	}
+	
+	public void createToroidalGrid() {
+		for (int i = 0; i < getNumRows(); i++) {
+			for (int j = 0; j < getNumCols(); j++) {
+				setGridCell(i, j, new RectangleNoDiagonals(i, j, getConfig()));
+				if(i == 1 && j == 1){
+					getGridCell(i, j).setCurrentstate(BURNING);
+				}
+				else{
+					getGridCell(i, j).setCurrentstate(TREE);
 				}
 			}
 		}
@@ -51,49 +86,51 @@ public class FireSimulation extends CellGrid implements view.GameWorld {
 	
 	@Override
 	public void updateGrid() {
-		probOfBurning = Double.parseDouble(ConfigurationLoader.getConfig().getCustomParam("probability"));
-		Cell[][] myGrid = getGrid();
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = myGrid[i][j];
+				Cell currentCell = getGridCell(i, j);
 				currentCell.setCurrentstate(currentCell.getFuturestate());
 			}
 		}
 	}
 	
 	private void updateFutureStates(){
-		Cell[][] myGrid = getGrid();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				updateCell(myGrid[i][j]);
+				updateCell(getGridCell(i, j));
 			}
 		}
 	}
 	
 	@Override
 	public void updateCell(Cell myCell){
+		probOfBurning = Double.parseDouble(getConfig().getCustomParam("probability"));
 		String myState = myCell.getCurrentstate();
-		ArrayList<Cell> currentNeighbors = getNeighbors(myCell);
+		List<Cell> currentNeighbors = getNeighbors(myCell, VISION);
 		if(myState.equals(BURNING)){
 			myCell.setFuturestate(EMPTY);
 		}
 		else if(myState.equals(TREE)){
-			for(Cell neighbor: currentNeighbors){
-				if(neighbor.getCurrentstate() == BURNING){
-					int seeIfBurn = generator.nextInt(100);
-					if(seeIfBurn<(probOfBurning*100)){
-						myCell.setFuturestate(BURNING);
-						return;
-					}
-				}
-			}
-			myCell.setFuturestate(TREE);
+			treeUpdate(myCell, currentNeighbors);
 		}
 		else{
 			myCell.setFuturestate(EMPTY);
 		}
 		
+	}
+
+	private void treeUpdate(Cell myCell, List<Cell> currentNeighbors) {
+		myCell.setFuturestate(TREE);
+		for(Cell neighbor: currentNeighbors){
+			if(neighbor.getCurrentstate().equals(BURNING)){
+				int seeIfBurn = generator.nextInt(100);
+				if(seeIfBurn<(probOfBurning*100)){
+					myCell.setFuturestate(BURNING);
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
