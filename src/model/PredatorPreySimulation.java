@@ -41,7 +41,7 @@ public class PredatorPreySimulation extends CellGrid {
 		ArrayList<String> initialization = getStartingStateList(percentEmptyCells, percentShark);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath, getConfig()));
+				setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath));
 				if(initialization.size() == 0){
 					getGridCell(i, j).setCurrentstate(EMPTY);
 				}

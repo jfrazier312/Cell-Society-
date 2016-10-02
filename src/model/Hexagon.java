@@ -8,8 +8,8 @@
 //public class Hexagon extends Cell implements view.GameWorld {
 //
 //	private double HEX_WIDTH;
-//	private int[] rowDeltas = { -1, 0, 1, 0, 1, 1, -1, -1 };
-//	private int[] colDeltas = { 0, -1, 0, 1, 1, -1, 1, -1 };
+//	private int[] rowDeltas = { -1, -1, 0, 1, 1, 0};
+//	private int[] colDeltas = { 0, -1, -1, 0, 1, 1};
 //
 //	public final static boolean orFLAT = true;
 //	public final static boolean orPOINT = false;

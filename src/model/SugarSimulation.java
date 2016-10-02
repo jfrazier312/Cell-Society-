@@ -18,38 +18,45 @@ public class SugarSimulation extends CellGrid{
 	public static final String SIMULATION_NAME = "SUGAR_SIMULATION";
 	private static final String AGENT = "agent";
 	private static final String NOAGENT = "no_agent";
+	private int sugarGrowBackCount;
 	private int sugarGrowBackRate;
-	Configuration myConfig;
+	private int sugarGrowBackInterval;
 	Random generator;
 	
-	public SugarSimulation(int row, int col, Configuration config) {
-		super(row, col);
-		myConfig = config;
-		//change this for second model
+	public SugarSimulation(Configuration config) {
+		super(config);
 		sugarGrowBackRate = 1;
+		sugarGrowBackCount = 0;
+		//change this for second model
+		sugarGrowBackInterval = 1;
+	}
+	
+	@Override
+	public void initSimulation() {
+		//get from xml
+		double percentAgent = .2;
+		createGrid(percentAgent);
 	}
 	
 	public void createGrid(double percentAgent){
 		List<Boolean> agentOrNot = getSugarStartingStates(percentAgent);
-		int patchSugar = 10;
-		//need to get patchSugar from the xml
 		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				int patchCheck = generator.nextInt(agentOrNot.size());
 				boolean patch = agentOrNot.get(patchCheck);
 				agentOrNot.remove(patchCheck);
-				//change vision for second model
+				//change vision for second model (aka get from xml)
 				int vision = generator.nextInt(6)+1;
 				int metabolism = generator.nextInt(4)+1;
-				int myPatchSugar = generator.nextInt(patchSugar)+1;
+				int myPatchSugar = generator.nextInt(5)+1;
 				if(patch){
 					int sugarVal = generator.nextInt(21)+5;
-					setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar, myConfig));
+					setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar, getConfig()));
 					getGridCell(i, j).setCurrentstate(AGENT);
 				}
 				else{
-					setGridCell(i, j, new SugarAgent(i, j, 0, metabolism, vision, myPatchSugar, myConfig));
+					setGridCell(i, j, new SugarAgent(i, j, 0, metabolism, vision, myPatchSugar, getConfig()));
 					getGridCell(i, j).setCurrentstate(NOAGENT);
 				}
 				getGridCell(i, j).setFuturestate("");
@@ -76,11 +83,6 @@ public class SugarSimulation extends CellGrid{
 		// TODO Auto-generated method stub
 		return SIMULATION_NAME;
 	}
-
-	@Override
-	public void initSimulation() {
-		createGrid(.2);
-	}
 	
 	//add check to see if a cell has a future state
 	@Override
@@ -100,6 +102,7 @@ public class SugarSimulation extends CellGrid{
 	
 	//do agent rules in random order
 	public void updateFutureStates(){
+		sugarGrowBackCount++;
 		ArrayList<Cell> randomOrder = new ArrayList<Cell>();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -114,10 +117,13 @@ public class SugarSimulation extends CellGrid{
 			updateCell(cellToUpdate);
 			randomOrder.remove(cellChoice);
 		}
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				((SugarAgent) getGridCell(i, j)).getPatch().addSugar(sugarGrowBackRate);
+		if(sugarGrowBackCount == sugarGrowBackInterval){
+			for (int i = 0; i < getNumRows(); i++) {
+				for (int j = 0; j < getNumCols(); j++) {
+					((SugarAgent) getGridCell(i, j)).getPatch().addSugar(sugarGrowBackRate);
+				}
 			}
+			sugarGrowBackCount = 0;
 		}
 	}
 	

@@ -24,11 +24,22 @@ public abstract class CellGrid extends GridPane {
 	protected ResourceBundle myResources;
 	public static final String RESRC_PATH = "resources/SimulationResources";	
 	
-	private Cell[][] grid;
+	private static final int[] HEX_ROW_DELTAS = {-1, -1, 0, 1, 1, 0};
+	private static final int[] HEX_COL_DELTAS = {0, -1, -1, 0, 1, 1};
 	
+	private static final int[] TRI_ROW_DELTAS = {-1, -1, 0, 1,  1, 1, 0, -1};
+	private static final int[] TRI_COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
+	
+	private static final int[] RECT_ROW_DELTAS = {0, 1, 0, -1};
+	private static final int[] RECT_COL_DELTAS = {1, 0, -1, 0};
+	
+	private Cell[][] grid;	
 	private String simulationName;
-	
 	private Configuration myConfig;
+	
+	private int[] rowDeltas;
+	private int[] colDeltas;
+	private String myShape;
 	
 	public CellGrid(Configuration config) {
 		myResources = ResourceBundle.getBundle(RESRC_PATH);
@@ -36,6 +47,9 @@ public abstract class CellGrid extends GridPane {
 		if (config.getNumRows() <= 0 || config.getNumCols() <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
+		//gonna have to change this
+		myShape = "rectangle";
+		chooseRowDeltas();
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
@@ -94,8 +108,10 @@ public abstract class CellGrid extends GridPane {
 		//int vision = 5;
 		for(int i = 0; i<cell.getRowDeltas().length; i++){
 			for(int j = 1; j<=vision; j++){
-				int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
-				int newColPos = colPos + cell.getColDeltas()[i]*j;
+				//int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
+				//int newColPos = colPos + cell.getColDeltas()[i]*j;
+				int newRowPos = rowPos + getRowDeltas()[i]*j;
+				int newColPos = colPos + getColDeltas()[i]*j;
 				if (isValidLocation(newRowPos, newColPos)) {
 					neighbors.add(grid[newRowPos][newColPos]);
 				}
@@ -146,8 +162,32 @@ public abstract class CellGrid extends GridPane {
 		return initialCells;
 	}
 	
-	public Cell[][] getGrid() {
-		return grid;
+	private void chooseRowDeltas(){
+		if(myShape.equals("hexagon")){
+			rowDeltas = HEX_ROW_DELTAS;
+			colDeltas = HEX_COL_DELTAS;
+		}
+		else if(myShape.equals("triangle")){
+			rowDeltas = TRI_ROW_DELTAS;
+			colDeltas = TRI_COL_DELTAS;
+		}
+		else{
+			rowDeltas = RECT_ROW_DELTAS;
+			colDeltas = RECT_COL_DELTAS;
+		}
+	}
+	
+	public void setDeltas(int[] newRowDeltas, int[] newColDeltas){
+		rowDeltas = newRowDeltas;
+		colDeltas = newColDeltas;
+	}
+	
+	private int[] getRowDeltas(){
+		return rowDeltas;
+	}
+	
+	private int[] getColDeltas(){
+		return colDeltas;
 	}
 
 	public int getNumRows() {

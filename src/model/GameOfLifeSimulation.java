@@ -16,6 +16,9 @@ public class GameOfLifeSimulation extends CellGrid {
 	private String DEAD;
 	private String ALIVE;
 	private int isEven;
+	
+	private static final int[] ROW_DELTAS = {-1, -1, 0, 1, 1, 1, 0, -1};
+	private static final int[] COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
 		
 	public GameOfLifeSimulation(Configuration config) {
 		super(config);
@@ -26,9 +29,10 @@ public class GameOfLifeSimulation extends CellGrid {
 	
 	public void initSimulation() {
 		double percentDead = Double.parseDouble(getConfig().getCustomParam("percentDead"));
-		//double percentDead = .5;
+		setDeltas(ROW_DELTAS, COL_DELTAS);
 		createGrid(percentDead);
 	}
+	
 	
 	public void createGrid(double percentDead){
 		Random generator = new Random();
