@@ -2,6 +2,8 @@ package model;
 import java.util.ArrayList;
 
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 
 /**
  * 
@@ -10,7 +12,7 @@ import javafx.scene.Node;
  */
 
 //put all row deltas here nad have the get row delta methods be here
-public class Cell {
+public class Cell extends Shape {
 	
 	//make getters and setters for all of these and put them in the classes?
 //	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };
@@ -77,9 +79,15 @@ public class Cell {
 		this.neighbors = neighbors;
 	}
 	
-	public Node render() { return null; }
+	public Shape render() { return null; }
 	
 	public int[] getRowDeltas() { return null; }
 	
 	public int[] getColDeltas() { return null; }
+
+	@Override
+	public com.sun.javafx.geom.Shape impl_configShape() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

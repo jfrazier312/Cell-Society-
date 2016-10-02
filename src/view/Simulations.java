@@ -4,6 +4,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 
+/**
+ * 
+ * @author Jordan Frazier
+ *
+ */
 public enum Simulations {
 
 	GAME_OF_LIFE("Game_Of_Life"), 
@@ -12,6 +17,7 @@ public enum Simulations {
 	SEGREGATION("Segregation"),
 	ANT("Ant"),
 	SUGAR("Sugar"),
+	
 	COMBOBOX;
 
 	String name;

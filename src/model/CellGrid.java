@@ -6,14 +6,17 @@ import java.util.ResourceBundle;
 
 import org.w3c.dom.NodeList;
 
+import com.sun.org.apache.xerces.internal.utils.XMLSecurityManager.State;
+
 import config.Configuration;
 //import config.ConfigurationLoader;
 import config.XMLParser;
 import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import utils.Utils;
 
 /**
@@ -39,23 +42,38 @@ public abstract class CellGrid extends GridPane {
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
-	public void renderGrid(GridPane cellPane) {
+	public void renderGrid(GridPane cellPane, Configuration config) {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-//				ColumnConstraints colC = new ColumnConstraints();
-//				colC.setPercentWidth(100);
-//				cellPane.getColumnConstraints().add(colC);
-//				RowConstraints rowC = new RowConstraints();
-//				rowC.setPercentHeight(100);
-//				cellPane.getRowConstraints().add(rowC);
-//				
 				Cell currentCell = grid[i][j];
-				Node updatedCell = currentCell.render();
+				Shape updatedCell = currentCell.render();	
+				allowClickableCells(config, currentCell, updatedCell);
 				cellPane.add(updatedCell, j, i);
 			}
 		}	
-		
-		
+	}
+
+	private void allowClickableCells(Configuration config, Cell currentCell, Shape updatedCell) {
+		updatedCell.setOnMouseClicked(e -> {
+//			for(config.State s : config.getAllStates()) {
+//				if (s.getValue().equals(currentCell.getCurrentstate())) {
+//					
+//				}
+//			}
+			
+//			for(int i = config.getAllStates().getList().(currentCell.getCurrentstate()); i < config.getAllStates().getLength(); i++) {
+//				if (!currentCell.getCurrentstate().equals(config.getAllStates().get(0))){
+
+//				if (!currentCell.getCurrentstate().equals(s.getValue())){
+//					currentCell.setCurrentstate(s.getValue());
+//					break;
+//				}
+//			}
+//			updatedCell = currentCell.render();
+			String color = myConfig.getAllStates().getStateByName(currentCell.getCurrentstate()).getAttributes()
+					.get("color");
+			updatedCell.setFill(Color.web(color));		
+		});
 	}
 	
 	/**

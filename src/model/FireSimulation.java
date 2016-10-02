@@ -59,6 +59,7 @@ public class FireSimulation extends CellGrid {
 	}
 	
 	private void updateFutureStates(){
+		System.out.println(getGridCell(0,0).getCurrentstate());
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				updateCell(getGridCell(i, j));
@@ -76,7 +77,7 @@ public class FireSimulation extends CellGrid {
 		}
 		else if(myState.equals(TREE)){
 			for(Cell neighbor: currentNeighbors){
-				if(neighbor.getCurrentstate() == BURNING){
+				if(neighbor.getCurrentstate().equals(BURNING)){
 					int seeIfBurn = generator.nextInt(100);
 					if(seeIfBurn<(probOfBurning*100)){
 						myCell.setFuturestate(BURNING);

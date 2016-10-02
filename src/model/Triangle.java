@@ -3,9 +3,9 @@ package model;
 import java.util.Arrays;
 
 import config.Configuration;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
 import view.SceneConstant;
 
 /** 
@@ -33,7 +33,7 @@ public class Triangle extends Cell {
 	}
 
 	@Override
-	public Node render() {
+	public Shape render() {
 		double rows = myConfig.getNumRows();
 		double cols = myConfig.getNumCols();
 

@@ -36,7 +36,6 @@
 //		double baseX = GRID_PADDING;
 //		double baseY = (SCENE_HEIGHT - GRID_HEIGHT) / 2 +  HEX_SMALL_SIDE; 
 //		
-//		// TODO: Jordan : Change numRows XML
 //		int numRows = 5;
 //		HEX_WIDTH = GRID_WIDTH / numRows;
 //		HEX_SIZE = HEX_WIDTH / Math.sqrt(3);

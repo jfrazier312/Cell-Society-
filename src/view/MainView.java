@@ -43,8 +43,8 @@ public class MainView {
 	private GridPane myCellPane;
 	private CellGrid mySimulation;
 	private Timeline myGameloop;
-	private Configuration myConfig;
 
+	private Configuration myConfig;
 	private boolean isGridLinesVisible;
 	private boolean simIsRunning;
 
@@ -125,21 +125,22 @@ public class MainView {
 	private void createSimulation() {
 		findSimulation();
 		mySimulation.initSimulation();
-		mySimulation.renderGrid(myCellPane);
+		mySimulation.renderGrid(myCellPane, myConfig);
 	}
 
 	private void findSimulation() {
-		if (myConfig.getSimulationName().equals(Simulations.FIRE.getName())) {
+		String simName = myConfig.getSimulationName();
+		if (simName.equals(Simulations.FIRE.getName())) {
 			mySimulation = new FireSimulation(myConfig);
-		} else if (myConfig.getSimulationName().equals(Simulations.GAME_OF_LIFE.getName())) {
+		} else if (simName.equals(Simulations.GAME_OF_LIFE.getName())) {
 			mySimulation = new GameOfLifeSimulation(myConfig);
-		} else if (myConfig.getSimulationName().equals(Simulations.SEGREGATION.getName())) {
+		} else if (simName.equals(Simulations.SEGREGATION.getName())) {
 			mySimulation = new SegregationSimulation(myConfig);
-		} else if (myConfig.getSimulationName().equals(Simulations.PREDATOR_PREY.getName())) {
+		} else if (simName.equals(Simulations.PREDATOR_PREY.getName())) {
 			mySimulation = new PredatorPreySimulation(myConfig);
-		} else if (myConfig.getSimulationName().equals(Simulations.ANT.getName())) {
+		} else if (simName.equals(Simulations.ANT.getName())) {
 			mySimulation = new AntSimulation(myConfig);
-		} else if (myConfig.getSimulationName().equals(Simulations.SUGAR.getName())) {
+		} else if (simName.equals(Simulations.SUGAR.getName())) {
 			mySimulation = new SugarSimulation(myConfig);
 
 		}
@@ -155,7 +156,7 @@ public class MainView {
 	private void updateGrid() {
 		myCellPane.getChildren().removeAll(myCellPane.getChildren());
 		mySimulation.updateGrid();
-		mySimulation.renderGrid(myCellPane);
+		mySimulation.renderGrid(myCellPane, myConfig);
 	}
 	
 	private void setTitleName() {
@@ -172,7 +173,9 @@ public class MainView {
 
 		HBox hbox1 = new HBox(SceneConstant.PADDING.getValue());
 		HBox hbox2 = new HBox(SceneConstant.PADDING.getValue());
-		VBox vbox3 = new VBox(SceneConstant.PADDING.getValue());
+		HBox hbox3 = new HBox(SceneConstant.PADDING.getValue());
+		VBox vbox = new VBox(SceneConstant.PADDING.getValue());
+		
 
 		SimulationButton playBtn = makeButton("Play", new EventHandler<ActionEvent>() {
 			@Override
@@ -201,6 +204,19 @@ public class MainView {
 				stepButtonHandler();
 			}
 		});
+		
+		SimulationButton saveBtn = makeButton("Save", new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					saveButtonHandler();
+				} catch (NumberFormatException | QueryExpressionException | MalformedXMLSourceException
+						| XMLParserException | UnrecognizedQueryMethodException e) {
+					// TODO Exceptions
+					e.printStackTrace();
+				}
+			}
+		});
 
 		SimulationSlider rowsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM,
 				myConfig.getNumRows(), myResources.getString("Rows"), false, myConfig);
@@ -220,11 +236,12 @@ public class MainView {
 
 		hbox1.getChildren().addAll(playBtn, pauseBtn);
 		hbox2.getChildren().addAll(stepBtn, resetBtn);
-		vbox3.getChildren().addAll(rowsSlider.getGenericSlider(), colsSlider.getGenericSlider());
+		hbox3.getChildren().addAll(gridVisible, saveBtn);
+		vbox.getChildren().addAll(rowsSlider.getGenericSlider(), colsSlider.getGenericSlider());
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
-		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(), hbox1, hbox2, vbox3,
-				fpsSlider.getGenericSlider(), gridVisible);
+		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(), hbox1, hbox2, vbox,
+				fpsSlider.getGenericSlider(), hbox3);
 		basicBtnBox.setMinWidth(300);
 		buttonContainer.getChildren().add(basicBtnBox);
 
@@ -271,6 +288,16 @@ public class MainView {
 			throw new NullPointerException("Unable to init simulation");
 		}
 		pauseGrid();
+	}
+	
+	private void saveButtonHandler() throws QueryExpressionException, NumberFormatException, MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException {
+		// save to xml,
+		// put new simulation + restore in combobox
+		String newXMLFile = mySimulation.getSimulationName() + "-RESTORE";
+		myConfig.serializeTo(newXMLFile + ".xml");
+		myConfig = new Configuration(newXMLFile + ".xml");
+		Simulations.COMBOBOX.getSimulationComboBox().getItems().add(newXMLFile);
+		initSimulation();
 	}
 
 	private void pauseGrid() {
