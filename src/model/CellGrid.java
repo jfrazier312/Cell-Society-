@@ -146,7 +146,7 @@ public abstract class CellGrid extends GridPane {
 	/**
 	 * Load cellgrid from config
 	 */
-	public abstract void load();
+	public void load() {}
 	
 	// TODO (cx15) deserialize grid. each cell does not need a deserialize
 	
