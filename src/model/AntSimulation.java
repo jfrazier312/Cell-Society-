@@ -29,12 +29,6 @@ public class AntSimulation extends CellGrid{
 	private static final String FOOD_ANT = "food_ant";
 	
 	
-	//have them set these
-//	private int foodSourceRow;
-//	private int foodSourceCol;
-//	private int homeSourceRow;
-//	private int homeSourceCol;
-	
 	private int pheromoneConstant;
 	private int pheromoneLoss;
 	private int foodRow;
@@ -62,31 +56,34 @@ public class AntSimulation extends CellGrid{
 		List<String> myStates = getStartingStates(percentObstacles);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				//have the xml set these
-				if(i == 1 && j == 1){
-					foodRow = i;
-					foodCol = j;
-					setGridCell(i, j, new AntCell(i, j, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES, 0));
-					getGridCell(i, j).setCurrentstate(HOME_SOURCE);
-				}
-				//have the xml set these
-				else if(i == getNumRows()-2 && j == getNumRows()-2){
-					homeRow = i;
-					homeCol = j;
-					setGridCell(i, j, new AntCell(i, j, 0, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES));
-					getGridCell(i, j).setCurrentstate(FOOD_SOURCE);
-				}
-				else{
-					int typeChoice = generator.nextInt(myStates.size());
-					String type = myStates.get(typeChoice);
-					myStates.remove(typeChoice);
-					createRandomCell(i, j, type);
-				}
+				makeStartingCells(myStates, i, j);
 			}
 		}
 		initMaxFoodPheromones();
 		initMaxHomePheromones();
 		initAllPheromones();
+	}
+
+	private void makeStartingCells(List<String> myStates, int i, int j) {
+		if(i == 1 && j == 1){
+			foodRow = i;
+			foodCol = j;
+			setGridCell(i, j, new AntCell(i, j, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES, 0));
+			getGridCell(i, j).setCurrentstate(HOME_SOURCE);
+		}
+		//have the xml set these
+		else if(i == getNumRows()-2 && j == getNumRows()-2){
+			homeRow = i;
+			homeCol = j;
+			setGridCell(i, j, new AntCell(i, j, 0, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES));
+			getGridCell(i, j).setCurrentstate(FOOD_SOURCE);
+		}
+		else{
+			int typeChoice = generator.nextInt(myStates.size());
+			String type = myStates.get(typeChoice);
+			myStates.remove(typeChoice);
+			createRandomCell(i, j, type);
+		}
 	}
 	
 	public void createRandomCell(int row, int col, String state){
@@ -155,19 +152,14 @@ public class AntSimulation extends CellGrid{
 			for (int j = 0; j < getNumCols(); j++) {
 				updateCell(getGridCell(i, j));
 			}
-		}
-		
+		}		
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				updatePheromones((AntCell)(getGridCell(i, j)));
 			}
 		}	
 	}
-	
-	public void takeAwayPheromones(){
-		
-	}
-	
+
 	@Override
 	public void updateCell(Cell myCell) {
 		if(!myCell.getCurrentstate().equals(OBSTACLE)){
@@ -235,7 +227,6 @@ public class AntSimulation extends CellGrid{
 		currentCell.removeAnt(movingAnt);
 		movingAnt.setRow(newCell.getRowPos());
 		movingAnt.setCol(newCell.getColPos());
-		//when do I want to update the pheromones
 		if(newCell.getCurrentstate().equals(HOME_SOURCE)){
 			movingAnt.setType(FOOD_ANT);
 		}

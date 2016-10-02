@@ -43,25 +43,29 @@ public class SugarSimulation extends CellGrid{
 		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				int patchCheck = generator.nextInt(agentOrNot.size());
-				boolean patch = agentOrNot.get(patchCheck);
-				agentOrNot.remove(patchCheck);
-				//change vision for second model (aka get from xml)
-				int vision = generator.nextInt(6)+1;
-				int metabolism = generator.nextInt(4)+1;
-				int myPatchSugar = generator.nextInt(5)+1;
-				if(patch){
-					int sugarVal = generator.nextInt(21)+5;
-					setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar));
-					getGridCell(i, j).setCurrentstate(AGENT);
-				}
-				else{
-					setGridCell(i, j, new SugarAgent(i, j, 0, metabolism, vision, myPatchSugar));
-					getGridCell(i, j).setCurrentstate(NOAGENT);
-				}
-				getGridCell(i, j).setFuturestate("");
+				createCell(agentOrNot, i, j);
 			}
 		}
+	}
+
+	private void createCell(List<Boolean> agentOrNot, int i, int j) {
+		int patchCheck = generator.nextInt(agentOrNot.size());
+		boolean patch = agentOrNot.get(patchCheck);
+		agentOrNot.remove(patchCheck);
+		//change vision for second model (aka get from xml)
+		int vision = generator.nextInt(6)+1;
+		int metabolism = generator.nextInt(4)+1;
+		int myPatchSugar = generator.nextInt(5)+1;
+		if(patch){
+			int sugarVal = generator.nextInt(21)+5;
+			setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar));
+			getGridCell(i, j).setCurrentstate(AGENT);
+		}
+		else{
+			setGridCell(i, j, new SugarAgent(i, j, 0, metabolism, vision, myPatchSugar));
+			getGridCell(i, j).setCurrentstate(NOAGENT);
+		}
+		getGridCell(i, j).setFuturestate("");
 	}
 
 	private List<Boolean> getSugarStartingStates(double percentAgents) {

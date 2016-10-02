@@ -16,6 +16,7 @@ public class GameOfLifeSimulation extends CellGrid {
 	private String DEAD;
 	private String ALIVE;
 	private int isEven;
+	//private String neighborConvention;
 	
 	private static final int[] ROW_DELTAS = {-1, -1, 0, 1, 1, 1, 0, -1};
 	private static final int[] COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
@@ -25,6 +26,7 @@ public class GameOfLifeSimulation extends CellGrid {
 		isEven = 0;
 		DEAD = myResources.getString("Dead");
 		ALIVE = myResources.getString("Alive");
+		//neighborConvention = "B3/S23";
 	}
 	
 	public void initSimulation() {
@@ -66,7 +68,7 @@ public class GameOfLifeSimulation extends CellGrid {
 		return initialization;
 	}
 	
-	public void updateFutureStates(){
+	private void updateFutureStates(){
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				//RectangleWithDiagonals currentCell = (RectangleWithDiagonals)myGrid[i][j];
@@ -87,32 +89,38 @@ public class GameOfLifeSimulation extends CellGrid {
 		}
 	}
 	
-	//public void updateCell(RectangleWithDiagonals myCell){
+	@Override
 	public void updateCell(Cell myCell){
 		String myState = myCell.getCurrentstate();
-		//ArrayList<RectangleWithDiagonals> currentNeighbors = myCell.getNeighbors(myCell, myGrid);
-		//ArrayList<RectangleWithDiagonals> currentNeighbors = getNeighbors(myCell);
 		ArrayList<Cell> currentNeighbors = getNeighbors(myCell, 1);
 		int liveCount = countCellsOfState(currentNeighbors, ALIVE);
 		if(myState.equals(DEAD)){
-			if(liveCount == 3){
-				myCell.setFuturestate(ALIVE);
-			}
-			else{
-				myCell.setFuturestate(DEAD);
-			}
-			
+			deadCellUpdate(myCell, liveCount);	
 		}
 		else{
-			if(liveCount<2){
-				myCell.setFuturestate(DEAD);
-			}
-			else if(liveCount>=2 && liveCount <=3){
-				myCell.setFuturestate(ALIVE);
-			}
-			else{
-				myCell.setFuturestate(DEAD);
-			}
+			liveCellUpdate(myCell, liveCount);
+		}
+	}
+	
+	
+	private void liveCellUpdate(Cell myCell, int liveCount) {
+		if(liveCount<2){
+			myCell.setFuturestate(DEAD);
+		}
+		else if(liveCount>=2 && liveCount <=3){
+			myCell.setFuturestate(ALIVE);
+		}
+		else{
+			myCell.setFuturestate(DEAD);
+		}
+	}
+
+	private void deadCellUpdate(Cell myCell, int liveCount) {
+		if(liveCount == 3){
+			myCell.setFuturestate(ALIVE);
+		}
+		else{
+			myCell.setFuturestate(DEAD);
 		}
 	}
 	

@@ -25,6 +25,7 @@ public class FireSimulation extends CellGrid {
 		TREE = myResources.getString("Tree");
 		BURNING = myResources.getString("Burning");
 		//gonna have to change this
+		generator = new Random();
 		isToroidal = true;
 	}
 	
@@ -36,11 +37,9 @@ public class FireSimulation extends CellGrid {
 			createGrid();
 		}
 		probOfBurning = Double.parseDouble(getConfig().getCustomParam("probability"));
-		//probOfBurning = .5;
 	}
 	
 	public void createGrid() {
-		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				setGridCell(i, j, new RectangleNoDiagonals(i, j, getConfig()));
@@ -58,7 +57,6 @@ public class FireSimulation extends CellGrid {
 	}
 	
 	public void createToroidalGrid() {
-		generator = new Random();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				setGridCell(i, j, new RectangleNoDiagonals(i, j, getConfig()));
@@ -99,21 +97,25 @@ public class FireSimulation extends CellGrid {
 			myCell.setFuturestate(EMPTY);
 		}
 		else if(myState.equals(TREE)){
-			for(Cell neighbor: currentNeighbors){
-				if(neighbor.getCurrentstate() == BURNING){
-					int seeIfBurn = generator.nextInt(100);
-					if(seeIfBurn<(probOfBurning*100)){
-						myCell.setFuturestate(BURNING);
-						return;
-					}
-				}
-			}
-			myCell.setFuturestate(TREE);
+			treeUpdate(myCell, currentNeighbors);
 		}
 		else{
 			myCell.setFuturestate(EMPTY);
 		}
 		
+	}
+
+	private void treeUpdate(Cell myCell, ArrayList<Cell> currentNeighbors) {
+		myCell.setFuturestate(TREE);
+		for(Cell neighbor: currentNeighbors){
+			if(neighbor.getCurrentstate() == BURNING){
+				int seeIfBurn = generator.nextInt(100);
+				if(seeIfBurn<(probOfBurning*100)){
+					myCell.setFuturestate(BURNING);
+					break;
+				}
+			}
+		}
 	}
 
 	@Override

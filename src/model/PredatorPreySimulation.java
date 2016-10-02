@@ -41,18 +41,22 @@ public class PredatorPreySimulation extends CellGrid {
 		ArrayList<String> initialization = getStartingStateList(percentEmptyCells, percentShark);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath, getConfig()));
-				if(initialization.size() == 0){
-					getGridCell(i, j).setCurrentstate(EMPTY);
-				}
-				else{
-					int cellChoice = generator.nextInt(initialization.size());
-					getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
-					initialization.remove(cellChoice);
-				}
-				getGridCell(i, j).setFuturestate("");
+				createCell(reproductionTime, timeToDeath, initialization, i, j);
 			}
 		}
+	}
+
+	private void createCell(int reproductionTime, int timeToDeath, ArrayList<String> initialization, int i, int j) {
+		setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath, getConfig()));
+		if(initialization.size() == 0){
+			getGridCell(i, j).setCurrentstate(EMPTY);
+		}
+		else{
+			int cellChoice = generator.nextInt(initialization.size());
+			getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
+			initialization.remove(cellChoice);
+		}
+		getGridCell(i, j).setFuturestate("");
 	}
 
 	private ArrayList<String> getStartingStateList(double percentEmptyCells, double percentShark) {
@@ -89,25 +93,20 @@ public class PredatorPreySimulation extends CellGrid {
 	}
 	
 	public void updateFutureStates() {
-		//Cell[][] myGrid = getGrid();
+		applyUpdate(SHARK);	
+		applyUpdate(FISH);
+	}
+
+	private void applyUpdate(String state) {
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = getGridCell(i, j);
-				if(currentCell.getCurrentstate().equals(SHARK)){
-					updateCell(currentCell);
-				}
-			}
-		}	
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
-				Cell currentCell = getGridCell(i, j);
-				if(!currentCell.getCurrentstate().equals(SHARK)){
+				if(!currentCell.getCurrentstate().equals(state)){
 					updateCell(currentCell);
 				}
 			}
 		}
 	}
-	
 
 	@Override
 	public void updateCell(Cell myCell) {
@@ -121,15 +120,11 @@ public class PredatorPreySimulation extends CellGrid {
 		ArrayList<Cell> myFishFriends = getFishNeighbors(myCreature);
 		if(state.equals(SHARK)){
 			if (myFishFriends.size() > 0) {
-				Cell newSharkCell = getNewCell(myFishFriends);
-				transferInformation((Fish) myCreature, (Fish) newSharkCell, true);
-				if(((Fish) myCreature).getReproductionTime()<=0){
-					giveBirth((Fish) myCreature, SHARK);
-				}
+				eatFish(myCreature, myFishFriends);
 				return;
 			}
 			//kill shark if it runs out of life
-			if(((Fish) myCreature).getTimeToDeath() == 1){
+			if(((Fish) myCreature).getTimeToDeath() <= 1){
 				myCreature.setFuturestate(EMPTY);
 				return;
 			}
@@ -150,14 +145,26 @@ public class PredatorPreySimulation extends CellGrid {
 		}
 		transferInformation((Fish) myCreature, (Fish) newCreatureCell, false);
 		if(((Fish) myCreature).getReproductionTime()<=0){
-			if(state.equals(SHARK)){
-				giveBirth((Fish) myCreature, SHARK);
-				((Fish)newCreatureCell).resetReproductionTime();
-			}
-			else{
-				giveBirth((Fish) myCreature, FISH);
-				((Fish)newCreatureCell).resetReproductionTime();
-			}		
+			reproduce(myCreature, state, newCreatureCell);		
+		}
+	}
+
+	private void reproduce(Cell myCreature, String state, Cell newCreatureCell) {
+		if(state.equals(SHARK)){
+			giveBirth((Fish) myCreature, SHARK);
+			((Fish)newCreatureCell).resetReproductionTime();
+		}
+		else{
+			giveBirth((Fish) myCreature, FISH);
+			((Fish)newCreatureCell).resetReproductionTime();
+		}
+	}
+
+	private void eatFish(Cell myCreature, ArrayList<Cell> myFishFriends) {
+		Cell newSharkCell = getNewCell(myFishFriends);
+		transferInformation((Fish) myCreature, (Fish) newSharkCell, true);
+		if(((Fish) myCreature).getReproductionTime()<=0){
+			giveBirth((Fish) myCreature, SHARK);
 		}
 	}
 	

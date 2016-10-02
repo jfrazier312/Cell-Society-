@@ -52,16 +52,20 @@ public class SegregationSimulation extends CellGrid {
 		ArrayList<String> initialization = getStartingStateList(percentEmpty, percenttypeA, size);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
-				if(initialization.size() == 0){
-					getGridCell(i, j).setCurrentstate(EMPTY);
-				}
-				else{
-					int cellChoice = generator.nextInt(initialization.size());
-					getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
-					initialization.remove(cellChoice);
-				}
+				createCell(initialization, i, j);
 			}
+		}
+	}
+
+	private void createCell(ArrayList<String> initialization, int i, int j) {
+		setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
+		if(initialization.size() == 0){
+			getGridCell(i, j).setCurrentstate(EMPTY);
+		}
+		else{
+			int cellChoice = generator.nextInt(initialization.size());
+			getGridCell(i, j).setCurrentstate(initialization.get(cellChoice));
+			initialization.remove(cellChoice);
 		}
 	}
 
@@ -159,6 +163,10 @@ public class SegregationSimulation extends CellGrid {
 				}
 			}		
 		}
+		changeState(myCell, matchingCellCount, nonEmptyCellCount);
+	}
+
+	private void changeState(Cell myCell, double matchingCellCount, double nonEmptyCellCount) {
 		if(nonEmptyCellCount == 0){
 			myCell.setFuturestate(myCell.getCurrentstate());
 		}
