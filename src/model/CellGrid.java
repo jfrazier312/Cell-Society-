@@ -222,6 +222,7 @@ public abstract class CellGrid extends GridPane {
 	
 	private int[] getColDeltas(){
 		return colDeltas;
+	}
 	/**
 	 * Load cellgrid from config
 	 */
