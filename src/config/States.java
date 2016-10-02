@@ -85,7 +85,7 @@ public class States extends CompositeData implements Iterable<State>{
 		return states.iterator();
 	}
 	
-	public int getLength() {
-		return states.size();
+	public List<State> getList() {
+		return states;
 	}
 }
