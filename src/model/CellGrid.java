@@ -40,6 +40,7 @@ public abstract class CellGrid extends GridPane {
 	private int[] rowDeltas;
 	private int[] colDeltas;
 	private String myShape;
+	private boolean isToroidal;
 	
 	public CellGrid(Configuration config) {
 		myResources = ResourceBundle.getBundle(RESRC_PATH);
@@ -49,10 +50,12 @@ public abstract class CellGrid extends GridPane {
 		}
 		//gonna have to change this
 		myShape = "rectangle";
+		isToroidal = true;
 		chooseRowDeltas();
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
+	//we have to change render so that it does not use a render method within the cell class or uses if tree
 	public void renderGrid(GridPane cellPane) {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -84,40 +87,78 @@ public abstract class CellGrid extends GridPane {
 	 * @return - ArrayList<Cell> of cell's neighbors
 	 */
 	
-	//changed to protected so that the segregation simulation could see, not sure if that's good design
-	protected ArrayList<Cell> getNeighbors(Cell cell, int vision) {
+	public ArrayList<Cell> getNeighbors(Cell cell, int vision) {
 		// could change implementation based on definition of 'neighbor'
 		ArrayList<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
 		for (int i = 0; i < cell.getRowDeltas().length; i++) {
-			int newRowPos = rowPos + cell.getRowDeltas()[i];
-			int newColPos = colPos + cell.getColDeltas()[i];
-			if (isValidLocation(newRowPos, newColPos)) {
-				neighbors.add(grid[newRowPos][newColPos]);
+			if(vision>1){
+				for(int j = 1; j<=vision; j++){
+					int newRowPos = rowPos + getRowDeltas()[i]*j;
+					int newColPos = colPos + getColDeltas()[i]*j;
+					getValidNeighbor(neighbors, newRowPos, newColPos);
+				}
+			}
+			else{
+				int newRowPos = rowPos + cell.getRowDeltas()[i];
+				int newColPos = colPos + cell.getColDeltas()[i];
+				getValidNeighbor(neighbors, newRowPos, newColPos);
 			}
 		}
 		return neighbors;
 	}
-	
-	//assuming no diagonals
-	public ArrayList<Cell>  getSugarNeighbors(Cell cell, int vision){
-		ArrayList<Cell> neighbors = new ArrayList<>();
-		int rowPos = cell.getRowPos();
-		int colPos = cell.getColPos();
-		//int vision = 5;
-		for(int i = 0; i<cell.getRowDeltas().length; i++){
-			for(int j = 1; j<=vision; j++){
-				//int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
-				//int newColPos = colPos + cell.getColDeltas()[i]*j;
-				int newRowPos = rowPos + getRowDeltas()[i]*j;
-				int newColPos = colPos + getColDeltas()[i]*j;
-				if (isValidLocation(newRowPos, newColPos)) {
-					neighbors.add(grid[newRowPos][newColPos]);
-				}
-			}
+
+	private void getValidNeighbor(ArrayList<Cell> neighbors, int newRowPos, int newColPos) {
+		if (!rowOutOfBounds(newRowPos) && !colOutOfBounds(newColPos)) {
+			neighbors.add(grid[newRowPos][newColPos]);
 		}
-		return neighbors;
+		else if(isToroidal){
+			//System.out.println("out of bounds row pos is: " + newRowPos);
+			//System.out.println("out of bounds col pos is: " + newColPos);
+			if(rowOutOfBounds(newRowPos)){
+				newRowPos = gridRowWrap(newRowPos);
+			}
+			if(colOutOfBounds(newColPos)){
+				newColPos = gridColWrap(newColPos);
+			}
+			//System.out.println("Row Pos is: " + newRowPos);
+			//System.out.println("Col Pos is: " + newColPos);
+			neighbors.add(grid[newRowPos][newColPos]);
+		}
+	}
+	
+	public int gridRowWrap(int newRowPos){
+		int wrapRowPos;
+		if(newRowPos<0){
+			wrapRowPos = getNumRows()+newRowPos;
+		}
+		else{
+			wrapRowPos = newRowPos-getNumRows();
+		}
+		return wrapRowPos;
+	}
+	public int gridColWrap(int newColPos){
+		int wrapColPos;
+		if(newColPos<0){
+			wrapColPos = getNumCols()+newColPos;
+		}
+		else{
+			wrapColPos = newColPos-getNumCols();
+		}
+		return wrapColPos;
+	}
+	
+	public boolean rowOutOfBounds(int row){
+		return row<0 || row>=getNumRows();
+	}
+	
+	public boolean colOutOfBounds(int col){
+		return col<0 || col>=getNumCols();
+	}
+	
+	private boolean isToroidal(){
+		return isToroidal;
 	}
 
 	/* backend does this too
@@ -134,16 +175,10 @@ public abstract class CellGrid extends GridPane {
 	}
 	*/
 
-	private void setFutureState(Cell cell, String futurestate) {
-		cell.setFuturestate(futurestate);
-	}
-
-	private boolean isValidLocation(int x, int y) {
-		return 0 <= x && 0 <= y && x < getNumRows()
-				&& y < getNumCols();
-	}
+//	private void setFutureState(Cell cell, String futurestate) {
+//		cell.setFuturestate(futurestate);
+//	}
 	
-
 	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
 			throws QueryExpressionException, UnrecognizedQueryMethodException,
 				   NumberFormatException, MalformedXMLSourceException {

@@ -8,7 +8,7 @@ import config.Configuration;
  * @author austingartside
  *
  */
-public class AntCell extends RectangleWithDiagonals{
+public class AntCell extends Cell{
 
 	private static final int myMaxPheromones = 1000;
 	
@@ -22,9 +22,8 @@ public class AntCell extends RectangleWithDiagonals{
 	
 	Configuration myConfig;
 	
-	public AntCell(int row, int col, int homePheromones, int foodPheromones, int maxHomePheromones, int maxFoodPheromones,
-			Configuration config) {
-		super(row, col, config);
+	public AntCell(int row, int col, int homePheromones, int foodPheromones, int maxHomePheromones, int maxFoodPheromones) {
+		super(row, col);
 		myAnts = new ArrayList<Ant>();
 		myHomePheromones = homePheromones;
 		myFoodPheromones = foodPheromones;
@@ -65,6 +64,22 @@ public class AntCell extends RectangleWithDiagonals{
 	
 	public int getFoodPheromones(){
 		return myFoodPheromones;
+	}
+	
+	public int getMaxHomePheromones(){
+		return myMaxHomePheromones;
+	}
+	
+	public int getMaxFoodPheromones(){
+		return myMaxFoodPheromones;
+	}
+	
+	public void setMaxHomePheromones(int value){
+		myMaxHomePheromones = value;
+	}
+	
+	public void setMaxFoodPheromones(int value){
+		myMaxFoodPheromones = value;
 	}
 	
 	public void addAnt(Ant newAnt){

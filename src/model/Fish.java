@@ -6,7 +6,7 @@ import config.Configuration;
  * @author austingartside
  *
  */
-public class Fish extends Cell{
+public class Fish extends RectangleNoDiagonals{
 //public class Fish extends Cell{
 
 	//private int[] noDiagonalRowDeltas = { -1, 0, 1, 0};
@@ -15,8 +15,8 @@ public class Fish extends Cell{
 	private int myMaxReproductionTime;
 	private int myTimeToDeath;
 
-	public Fish(int row, int col, int reproductionTime, int timeToDeath) {
-		super(row, col);
+	public Fish(int row, int col, int reproductionTime, int timeToDeath, Configuration config) {
+		super(row, col, config);
 		myReproductionTime = reproductionTime;
 		myMaxReproductionTime = reproductionTime;
 		myTimeToDeath = timeToDeath;

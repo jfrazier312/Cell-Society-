@@ -52,11 +52,11 @@ public class SugarSimulation extends CellGrid{
 				int myPatchSugar = generator.nextInt(5)+1;
 				if(patch){
 					int sugarVal = generator.nextInt(21)+5;
-					setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar, getConfig()));
+					setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar));
 					getGridCell(i, j).setCurrentstate(AGENT);
 				}
 				else{
-					setGridCell(i, j, new SugarAgent(i, j, 0, metabolism, vision, myPatchSugar, getConfig()));
+					setGridCell(i, j, new SugarAgent(i, j, 0, metabolism, vision, myPatchSugar));
 					getGridCell(i, j).setCurrentstate(NOAGENT);
 				}
 				getGridCell(i, j).setFuturestate("");
@@ -103,6 +103,23 @@ public class SugarSimulation extends CellGrid{
 	//do agent rules in random order
 	public void updateFutureStates(){
 		sugarGrowBackCount++;
+		ArrayList<Cell> randomOrder = getAgentCells();
+		updateRandomCell(randomOrder);
+		restoreSugar();
+	}
+
+	private void restoreSugar() {
+		if(sugarGrowBackCount == sugarGrowBackInterval){
+			for (int i = 0; i < getNumRows(); i++) {
+				for (int j = 0; j < getNumCols(); j++) {
+					((SugarAgent) getGridCell(i, j)).getPatch().addSugar(sugarGrowBackRate);
+				}
+			}
+			sugarGrowBackCount = 0;
+		}
+	}
+
+	private ArrayList<Cell> getAgentCells() {
 		ArrayList<Cell> randomOrder = new ArrayList<Cell>();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -111,19 +128,15 @@ public class SugarSimulation extends CellGrid{
 				}
 			}
 		}
+		return randomOrder;
+	}
+
+	private void updateRandomCell(List<Cell> randomOrder) {
 		while(randomOrder.size()!=0){
 			int cellChoice = generator.nextInt(randomOrder.size());
 			Cell cellToUpdate = randomOrder.get(cellChoice);
 			updateCell(cellToUpdate);
 			randomOrder.remove(cellChoice);
-		}
-		if(sugarGrowBackCount == sugarGrowBackInterval){
-			for (int i = 0; i < getNumRows(); i++) {
-				for (int j = 0; j < getNumCols(); j++) {
-					((SugarAgent) getGridCell(i, j)).getPatch().addSugar(sugarGrowBackRate);
-				}
-			}
-			sugarGrowBackCount = 0;
 		}
 	}
 	
