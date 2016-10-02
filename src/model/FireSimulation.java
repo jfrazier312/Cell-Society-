@@ -33,7 +33,7 @@ public class FireSimulation extends CellGrid {
 	
 	@Override
 	public void load() {
-		for (State s :getConfig().getInitialCells()) {
+		for (State s : getConfig().getInitialCells()) {
 			int row = Integer.parseInt(s.getAttributes().get("row"));
 			int col = Integer.parseInt(s.getAttributes().get("col"));
 			Cell r = new RectangleNoDiagonals(row, col, getConfig());
@@ -44,6 +44,7 @@ public class FireSimulation extends CellGrid {
 	}
 	
 	public void initSimulation() {
+		super.initSimulation();
 		if(isToroidal){
 			createToroidalGrid();
 		}

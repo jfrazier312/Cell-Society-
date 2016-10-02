@@ -29,7 +29,7 @@ public class GameOfLifeSimulation extends CellGrid {
 		isEven = 0;
 		DEAD = myResources.getString("Dead");
 		ALIVE = myResources.getString("Alive");
-		neighborConvention = "B2 S23";
+		neighborConvention = "B3 S23";
 		getNeighborConvention();
 	}
 	
@@ -52,6 +52,7 @@ public class GameOfLifeSimulation extends CellGrid {
 	}
 	
 	public void initSimulation() {
+		super.initSimulation();
 		double percentDead = Double.parseDouble(getConfig().getCustomParam("percentDead"));
 		setDeltas(ROW_DELTAS, COL_DELTAS);
 		createGrid(percentDead);

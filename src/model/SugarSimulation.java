@@ -33,8 +33,8 @@ public class SugarSimulation extends CellGrid{
 	
 	@Override
 	public void initSimulation() {
-		//get from xml
-		double percentAgent = .2;
+		super.initSimulation();
+		double percentAgent = Double.parseDouble(getConfig().getCustomParam("percentAgent"));
 		createGrid(percentAgent);
 	}
 	

@@ -41,10 +41,7 @@ public abstract class CellGrid extends GridPane {
 		if (config.getNumRows() <= 0 || config.getNumCols() <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
-		//gonna have to change this
-		myShape = "rectangle";
 		isToroidal = false;
-		chooseRowDeltas();
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
@@ -86,9 +83,9 @@ public abstract class CellGrid extends GridPane {
 	 * @return - ArrayList<Cell> of cell's neighbors
 	 */
 	
-	public ArrayList<Cell> getNeighbors(Cell cell, int vision) {
+	public List<Cell> getNeighbors(Cell cell, int vision) {
 		// could change implementation based on definition of 'neighbor'
-		ArrayList<Cell> neighbors = new ArrayList<>();
+		List<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
 		for (int i = 0; i < cell.getRowDeltas().length; i++) {
@@ -202,7 +199,7 @@ public abstract class CellGrid extends GridPane {
 			rowDeltas = TRI_ROW_DELTAS;
 			colDeltas = TRI_COL_DELTAS;
 		}
-		else{
+		else if (myShape.equals("rectangle")) {
 			rowDeltas = RECT_ROW_DELTAS;
 			colDeltas = RECT_COL_DELTAS;
 		}
@@ -249,11 +246,14 @@ public abstract class CellGrid extends GridPane {
 	}
 
 	public abstract void updateGrid();
-
+	
 	public abstract void updateCell(Cell myCell);
 	
 	public abstract String getSimulationName();
 
-	public abstract void initSimulation();
+	public void initSimulation() {
+		myShape = myConfig.getShape().toLowerCase();
+		chooseRowDeltas();
+	}
 
 }

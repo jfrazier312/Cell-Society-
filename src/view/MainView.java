@@ -17,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
@@ -73,9 +74,10 @@ public class MainView {
 
 	private void beginInitialSetup() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
 			UnrecognizedQueryMethodException, QueryExpressionException {
-		myConfig = new Configuration("Fire.xml");
-		initSimulation();
+		resetConfiguration("Fire");
 		setSimulationEventHandler();
+		setShapesEventHandler();
+		initSimulation();
 		createResetTimelineChecker();
 		createGameLoop();
 	}
@@ -238,8 +240,8 @@ public class MainView {
 		vbox.getChildren().addAll(rowsSlider.getGenericSlider(), colsSlider.getGenericSlider());
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
-		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(), hbox1, hbox2, vbox,
-				fpsSlider.getGenericSlider(), hbox3);
+		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(),
+				Simulations.COMBOBOX.getShapesComboBox(), hbox1, hbox2, vbox, fpsSlider.getGenericSlider(), hbox3);
 		basicBtnBox.setMinWidth(300);
 		buttonContainer.getChildren().add(basicBtnBox);
 
@@ -293,8 +295,14 @@ public class MainView {
 		mySimulation.save();
 		String newXMLFile = mySimulation.getSimulationName() + "-RESTORE";
 		myConfig.serializeTo(newXMLFile + ".xml");
-		myConfig = new Configuration(newXMLFile + ".xml");
+		resetConfiguration(newXMLFile);
 		Simulations.COMBOBOX.getSimulationComboBox().getItems().add(newXMLFile);
+	}
+
+	private void resetConfiguration(String newXMLFile) throws MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException {
+		myConfig = new Configuration(newXMLFile + ".xml");
+		myConfig.setShape(Simulations.COMBOBOX.getShapesComboBox().getValue());
 	}
 
 	private void pauseGrid() {
@@ -367,22 +375,44 @@ public class MainView {
 				.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 
 		Simulations.COMBOBOX.getSimulationComboBox().valueProperty().addListener(e -> {
-			myGameloop.stop();
+			myGameloop.stop(); // why am I not just pausing
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			try {
-				myConfig = new Configuration(Simulations.COMBOBOX.getSimulationComboBox().getValue() + ".xml");
+				resetConfiguration(Simulations.COMBOBOX.getSimulationComboBox().getValue());
 				updateGameLoopFPS(SceneConstant.SLIDER_MINIMUM.getValue() * 1000);
 				initSimulation();
 				// Only load if its a restored version
 				if (Simulations.COMBOBOX.getSimulationComboBox().getValue().contains("RESTORE")) {
 					mySimulation.load();
-//					initSimulation();
+					// initSimulation();
 					mySimulation.renderGrid(myCellPane, myConfig);
 				}
 
 			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
 					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
-				// TODO handle excpetions JORdan
+				// TODO handle exceptions JORdan
+				e1.printStackTrace();
+			}
+		});
+	}
+
+	private void setShapesEventHandler() {
+		ComboBox<String> shapeBox = Simulations.COMBOBOX.getShapesComboBox();
+		shapeBox.setValue(myConfig.getSimulationName());
+		shapeBox.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		shapeBox.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		shapeBox.setValue(myResources.getString("Rectangle"));
+		myConfig.setShape(shapeBox.getValue());
+		
+		shapeBox.valueProperty().addListener(e -> {
+			myGameloop.stop(); // Why am I not pausing
+			myRoot.getChildren().removeAll(myRoot.getChildren());
+			myConfig.setShape(shapeBox.getValue());
+			try {
+				initSimulation();
+			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
+					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
