@@ -60,6 +60,23 @@ public class PredatorPreySimulation extends CellGrid {
 		}
 		getGridCell(i, j).setFuturestate("");
 	}
+	
+	@Override
+	public void load() {
+		for (config.State s :getConfig().getInitialCells()) {
+			int row = Integer.parseInt(s.getAttributes().get("row"));
+			int col = Integer.parseInt(s.getAttributes().get("col"));
+			int myReproductionTime = Integer.parseInt(s.getAttributes().get("myReproductionTime"));
+			int myMaxReproductionTime = Integer.parseInt(s.getAttributes().get("myMaxReproductionTime"));
+			int myTimeToDeath = Integer.parseInt(s.getAttributes().get("myTimeToDeath"));
+			Fish r = new Fish(row, col, myReproductionTime, myTimeToDeath, getConfig());
+			r.setReproductionTime(myReproductionTime);
+			r.setMaxReproductionTime(myMaxReproductionTime);
+			r.setCurrentstate(s.getAttributes().get("currentState"));
+			r.setFuturestate(s.getAttributes().get("futureState"));
+			setGridCell(row, col, r);
+		}
+	}
 
 	private List<String> getStartingStateList(double percentEmptyCells, double percentShark) {
 		int size = getNumRows()*getNumCols();
