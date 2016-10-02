@@ -13,7 +13,7 @@ public class Neighborhood extends CompositeData {
 	
 	private int size;
 	private String edgeType;
-	private String edgeValue; //only make sense if constant edge state
+	private String edgeValue;
 	
 	@Override
 	public Neighborhood load(XMLParser parser)

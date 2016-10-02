@@ -9,7 +9,7 @@
 		<state color="#ff6600">agent</state>
 		<state color="#ffe0cc">no_agent</state>
 	</states>
-	<init mode="param">
+	<init mode="param" shape="Rectangle">
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="sugarGrowBackInterval" value=".01" max = "2"></param>
