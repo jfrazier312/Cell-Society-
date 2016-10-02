@@ -9,11 +9,14 @@ import exceptions.UnrecognizedQueryMethodException;
 import exceptions.XMLParserException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -57,14 +60,13 @@ public class MainView {
 			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
 			SceneConstant.GRID_PADDING.getValue());
 
-	
 	public Scene initScene() throws Exception {
 		myRoot = new Group();
 		myScene = new Scene(myRoot, SceneConstant.SCENE_WIDTH.getValue(), SceneConstant.SCENE_HEIGHT.getValue());
 		myResources = ResourceBundle.getBundle(RESRC_PATH);
 		// isGridLinesVisible = false;
 		beginInitialSetup();
-
+		myScene.getStylesheets().add("view/SimulationStyle.css");
 		return myScene;
 	}
 
@@ -157,9 +159,17 @@ public class MainView {
 		mySimulation.updateGrid();
 		mySimulation.renderGrid(myCellPane);
 	}
+	
+	private void setTitleName() {
+		Label title = new Label("Cellular Automata!");
+		title.getStyleClass().add("simulationTitle");
+		title.setMinWidth(SceneConstant.SCENE_WIDTH.getValue());
+//		title.setAlignment(Pos.CENTER);
+		myRoot.getChildren().add(title);
+	}
 
 	private void createAllButtons() {
-
+		setTitleName();
 		VBox buttonContainer = new VBox(SceneConstant.PADDING.getValue());
 
 		HBox hbox1 = new HBox(SceneConstant.PADDING.getValue());
@@ -215,7 +225,8 @@ public class MainView {
 		vbox3.getChildren().addAll(rowsSlider.getGenericSlider(), colsSlider.getGenericSlider());
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
-		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationCheckBox(), hbox1, hbox2, vbox3, fpsSlider.getGenericSlider(), gridVisible);
+		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationCheckBox(), hbox1, hbox2, vbox3,
+				fpsSlider.getGenericSlider(), gridVisible);
 		basicBtnBox.setMinWidth(300);
 		buttonContainer.getChildren().add(basicBtnBox);
 
@@ -286,41 +297,43 @@ public class MainView {
 		buttonContainer.getChildren().add(custom);
 	}
 
-	// private void setRowAndColEventHandler(Slider sizeSlider, boolean isRow) {
-	// sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-	// @Override
-	// public void changed(ObservableValue<? extends Number> observable, Number
-	// oldValue, Number newValue) {
-	// myGameloop.pause();
-	// int newval = (int) ((double) newValue);
-	// if (isRow) {
-	// myConfig.setNumRows(newval);
-	// } else {
-	// myConfig.setNumCols(newval);
-	// }
-	// }
-	// });
-	// }
+	@Deprecated
+	private void setRowAndColEventHandler(Slider sizeSlider, boolean isRow) {
+		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				myGameloop.pause();
+				int newval = (int) ((double) newValue);
+				if (isRow) {
+					myConfig.setNumRows(newval);
+				} else {
+					myConfig.setNumCols(newval);
+				}
+			}
+		});
+	}
 
 	private void setFPSEventHandler(Slider fpsSlider) {
 		fpsSlider.setOnMouseReleased(e -> {
-				double fpsdouble = 1000.0 / (double) fpsSlider.getValue();
-				myConfig.setFramesPerSec((int) fpsSlider.getValue());
-				myGameloop.pause();
-				myGameloop.getKeyFrames().remove(0);
-				myGameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), ev -> {
-					updateGrid();
-				}));
-				if (simIsRunning) {
-					myGameloop.playFromStart();
-				}
+			double fpsdouble = 1000.0 / (double) fpsSlider.getValue();
+			myConfig.setFramesPerSec((int) fpsSlider.getValue());
+			myGameloop.pause();
+			myGameloop.getKeyFrames().remove(0);
+			myGameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), ev -> {
+				updateGrid();
+			}));
+			if (simIsRunning) {
+				myGameloop.playFromStart();
+			}
 		});
 	}
 
 	private void setSimulationEventHandler() {
 		Simulations.COMBOBOX.getSimulationCheckBox().setValue(myConfig.getSimulationName());
-		Simulations.COMBOBOX.getSimulationCheckBox().setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		Simulations.COMBOBOX.getSimulationCheckBox().setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		Simulations.COMBOBOX.getSimulationCheckBox()
+				.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		Simulations.COMBOBOX.getSimulationCheckBox()
+				.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 		Simulations.COMBOBOX.getSimulationCheckBox().valueProperty().addListener(e -> {
 			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
@@ -363,6 +376,7 @@ public class MainView {
 
 	private void createCellPane() {
 		myCellPane = new GridPane();
+		myCellPane.setPadding(cellPanePadding);
 		myCellPane.setMaxWidth(SceneConstant.GRID_WIDTH.getValue() + SceneConstant.GRID_PADDING.getValue());
 		// cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
 		myCellPane.setMaxWidth(SceneConstant.GRID_WIDTH.getValue() + SceneConstant.GRID_PADDING.getValue());
