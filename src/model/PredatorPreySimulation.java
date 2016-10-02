@@ -125,7 +125,7 @@ public class PredatorPreySimulation extends CellGrid {
 				return;
 			}
 			//kill shark if it runs out of life
-			if(((Fish) myCreature).getTimeToDeath() <= 1){
+			if(((Fish) myCreature).getTimeToDeath() == 1){
 				myCreature.setFuturestate(EMPTY);
 				return;
 			}

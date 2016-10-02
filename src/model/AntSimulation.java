@@ -127,8 +127,25 @@ public class AntSimulation extends CellGrid{
 						AntCell highestNeighbor = (AntCell) getMaxPheromoneNeighbor(neighbors, false);
 						currentCell.setMaxHomePheromones(highestNeighbor.getMaxHomePheromones() - pheromoneConstant);
 					}
+					putAntsInCell(i, j, currentCell);
 				}
 			}
+		}
+	}
+	
+	public void putAntsInCell(int row, int col, AntCell myCell){
+		int numToAdd = generator.nextInt(3);
+		int numAdded = 0;
+		while(numAdded<numToAdd){
+			int antTypeChoice = generator.nextInt(1);
+			Ant antToAdd;
+			if(antTypeChoice == 0){
+				antToAdd = new Ant(row, col, FOOD_ANT);
+			}
+			else{
+				antToAdd = new Ant(row, col, HOME_ANT);
+			}
+			myCell.addAnt(antToAdd);
 		}
 	}
 	
