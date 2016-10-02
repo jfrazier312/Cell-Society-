@@ -84,4 +84,8 @@ public class States extends CompositeData implements Iterable<State>{
 		assert states != null;
 		return states.iterator();
 	}
+	
+	public List<State> getList() {
+		return states;
+	}
 }
