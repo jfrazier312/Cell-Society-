@@ -75,6 +75,7 @@ public class MainView {
 	private void beginInitialSetup() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
 			UnrecognizedQueryMethodException, QueryExpressionException {
 		resetConfiguration("Fire");
+		setWrappingsEventHandler();
 		setSimulationEventHandler();
 		setShapesEventHandler();
 		initSimulation();
@@ -143,7 +144,6 @@ public class MainView {
 			mySimulation = new AntSimulation(myConfig);
 		} else if (simName.equals(Simulations.SUGAR.getName())) {
 			mySimulation = new SugarSimulation(myConfig);
-
 		}
 	}
 
@@ -241,7 +241,7 @@ public class MainView {
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
 		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(),
-				Simulations.COMBOBOX.getShapesComboBox(), hbox1, hbox2, vbox, fpsSlider.getGenericSlider(), hbox3);
+				Simulations.COMBOBOX.getShapesComboBox(), Simulations.COMBOBOX.getWrappingsComboBox(), hbox1, hbox2, vbox, fpsSlider.getGenericSlider(), hbox3);
 		basicBtnBox.setMinWidth(300);
 		buttonContainer.getChildren().add(basicBtnBox);
 
@@ -408,6 +408,27 @@ public class MainView {
 			myGameloop.stop(); // Why am I not pausing
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			myConfig.setShape(shapeBox.getValue());
+			try {
+				initSimulation();
+			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
+					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+	}
+	
+	private void setWrappingsEventHandler() {
+		ComboBox<String> wrappingsBox = Simulations.COMBOBOX.getWrappingsComboBox();
+		wrappingsBox.setValue(myConfig.getSimulationName());
+		wrappingsBox.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		wrappingsBox.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		wrappingsBox.setValue(myResources.getString("Finite"));
+		
+		wrappingsBox.valueProperty().addListener(e -> {
+			myGameloop.stop(); // Why am I not pausing
+			myRoot.getChildren().removeAll(myRoot.getChildren());
+			myConfig.setWrapping(wrappingsBox.getValue());
 			try {
 				initSimulation();
 			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
