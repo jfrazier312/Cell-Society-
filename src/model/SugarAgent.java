@@ -1,14 +1,5 @@
 package model;
-/*
- * author: Austin Gartside
- */
-import java.util.ArrayList;
-
-import org.w3c.dom.Element;
-
-import config.Configuration;
 import config.State;
-import config.XMLParser;
 /**
  * @author austingartside
  *
@@ -77,5 +68,15 @@ public class SugarAgent extends Cell{
 	
 	public boolean isVacant(){
 		return getFuturestate().equals("");
+	}
+
+	@Override
+	public int[] getRowDeltas() {
+		return null;
+	}
+
+	@Override
+	public int[] getColDeltas() {
+		return null;
 	}
 }

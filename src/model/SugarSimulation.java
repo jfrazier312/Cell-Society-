@@ -107,7 +107,7 @@ public class SugarSimulation extends CellGrid{
 	//do agent rules in random order
 	public void updateFutureStates(){
 		sugarGrowBackCount++;
-		ArrayList<Cell> randomOrder = getAgentCells();
+		List<Cell> randomOrder = getAgentCells();
 		updateRandomCell(randomOrder);
 		restoreSugar();
 	}
@@ -123,8 +123,8 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 
-	private ArrayList<Cell> getAgentCells() {
-		ArrayList<Cell> randomOrder = new ArrayList<Cell>();
+	private List<Cell> getAgentCells() {
+		List<Cell> randomOrder = new ArrayList<Cell>();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				if(getGridCell(i,j).getCurrentstate().equals(AGENT)){

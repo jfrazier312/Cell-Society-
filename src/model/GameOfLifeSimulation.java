@@ -2,7 +2,6 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.ResourceBundle;
 
 import config.Configuration;
 import view.Simulations;
@@ -19,8 +18,8 @@ public class GameOfLifeSimulation extends CellGrid {
 	private int isEven;
 	
 	private String neighborConvention;
-	private ArrayList<Integer> numsToSurvive;
-	private ArrayList<Integer> numsToBeBorn;
+	private List<Integer> numsToSurvive;
+	private List<Integer> numsToBeBorn;
 	
 	private static final int[] ROW_DELTAS = {-1, -1, 0, 1, 1, 1, 0, -1};
 	private static final int[] COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
@@ -61,7 +60,7 @@ public class GameOfLifeSimulation extends CellGrid {
 	
 	public void createGrid(double percentDead){
 		Random generator = new Random();
-		ArrayList<String> initialization = getStartingStateList(percentDead);
+		List<String> initialization = getStartingStateList(percentDead);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
@@ -77,11 +76,11 @@ public class GameOfLifeSimulation extends CellGrid {
 		}
 	}
 
-	private ArrayList<String> getStartingStateList(double percentDead) {
+	private List<String> getStartingStateList(double percentDead) {
 		int size = getNumRows()*getNumCols();
 		double numDead = percentDead*size;
 		double numAlive = size-numDead;
-		ArrayList<String> initialization = new ArrayList<String>();
+		List<String> initialization = new ArrayList<String>();
 		for(int i = 0; i<numDead; i++){
 			initialization.add(DEAD);
 		}
@@ -113,7 +112,7 @@ public class GameOfLifeSimulation extends CellGrid {
 	@Override
 	public void updateCell(Cell myCell){
 		String myState = myCell.getCurrentstate();
-		ArrayList<Cell> currentNeighbors = getNeighbors(myCell, 1);
+		List<Cell> currentNeighbors = getNeighbors(myCell, 1);
 		int liveCount = countCellsOfState(currentNeighbors, ALIVE);
 		if(myState.equals(DEAD)){
 			deadCellUpdate(myCell, liveCount);	

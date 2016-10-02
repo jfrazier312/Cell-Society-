@@ -4,23 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import com.sun.org.apache.xerces.internal.utils.XMLSecurityManager.State;
-import config.Cells;
-
 import config.Configuration;
-//import config.ConfigurationLoader;
-import config.XMLParser;
-import exceptions.MalformedXMLSourceException;
-import exceptions.QueryExpressionException;
-import exceptions.UnrecognizedQueryMethodException;
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
-import utils.Utils;
 
 /**
  * author: Austin Gartside, Jordan Frazier and Charles Xu
@@ -31,7 +18,7 @@ public abstract class CellGrid extends GridPane {
 	public static final String RESRC_PATH = "resources/SimulationResources";	
 	
 	private static final int[] HEX_ROW_DELTAS = {-1, -1, 0, 1, 1, 0};
-	private static final int[] HEX_COL_DELTAS = {0, -1, -1, 0, 1, 1};
+	private static final int[] HEX_COL_DELTAS = {0, -1, -1, -1, 0, 1};
 	
 	private static final int[] TRI_ROW_DELTAS = {-1, -1, 0, 1,  1, 1, 0, -1};
 	private static final int[] TRI_COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
@@ -62,7 +49,6 @@ public abstract class CellGrid extends GridPane {
 	}
 
 	public void renderGrid(GridPane cellPane, Configuration config) {
-	//we have to change render so that it does not use a render method within the cell class or uses if tree
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				Cell currentCell = grid[i][j];

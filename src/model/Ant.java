@@ -13,7 +13,7 @@ public class Ant{
 	private int colPos;
 	private int myRowOrientation;
 	private int myColOrientation;
-	String myType;
+	private String myType;
 	
 	//there are obstacles and ant limits
 	
@@ -28,7 +28,7 @@ public class Ant{
 	
 	public List<Cell> getForwardCells(List<Cell> neighbors, Cell myOrientationCell){
 		int myCellIndex = neighbors.indexOf(myOrientationCell);
-		ArrayList<Cell> forward = new ArrayList<Cell>();
+		List<Cell> forward = new ArrayList<Cell>();
 		forward.add(neighbors.get(myCellIndex));
 		if(myCellIndex == 0){
 			forward.add(neighbors.get(neighbors.size()-1));
@@ -47,8 +47,8 @@ public class Ant{
 	
 	public List<Cell> getNonForwardCells(List<Cell> neighbors, Cell myOrientationCell){
 		int myCellIndex = neighbors.indexOf(myOrientationCell);
-		ArrayList<Cell> nonForward = new ArrayList<Cell>();
-		ArrayList<Integer> badCellIndices = new ArrayList<Integer>();
+		List<Cell> nonForward = new ArrayList<Cell>();
+		List<Integer> badCellIndices = new ArrayList<Integer>();
 		if(myCellIndex == 0){
 			badCellIndices.add(neighbors.size()-1);
 		}

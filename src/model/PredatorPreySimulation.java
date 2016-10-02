@@ -39,7 +39,7 @@ public class PredatorPreySimulation extends CellGrid {
 		int timeToDeath = Integer.parseInt(getConfig().getAllStates()
 				.getStateByName(SHARK).getAttributes().get("lifeTime"));
 		generator = new Random();
-		ArrayList<String> initialization = getStartingStateList(percentEmptyCells, percentShark);
+		List<String> initialization = getStartingStateList(percentEmptyCells, percentShark);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				createCell(reproductionTime, timeToDeath, initialization, i, j);
@@ -60,12 +60,12 @@ public class PredatorPreySimulation extends CellGrid {
 		getGridCell(i, j).setFuturestate("");
 	}
 
-	private ArrayList<String> getStartingStateList(double percentEmptyCells, double percentShark) {
+	private List<String> getStartingStateList(double percentEmptyCells, double percentShark) {
 		int size = getNumRows()*getNumCols();
 		double numEmpty = percentEmptyCells*size;
 		double numShark = percentShark*(size-numEmpty);
 		double numFish = size-numEmpty-numShark;
-		ArrayList<String> initialization = new ArrayList<String>();
+		List<String> initialization = new ArrayList<String>();
 		for(int i = 0; i<numEmpty; i++){
 			initialization.add(EMPTY);
 		}
@@ -118,7 +118,7 @@ public class PredatorPreySimulation extends CellGrid {
 
 	private void moveCell(Cell myCreature) {
 		String state = myCreature.getCurrentstate();
-		ArrayList<Cell> myFishFriends = getFishNeighbors(myCreature);
+		List<Cell> myFishFriends = getFishNeighbors(myCreature);
 		if(state.equals(SHARK)){
 			if (myFishFriends.size() > 0) {
 				eatFish(myCreature, myFishFriends);
@@ -130,7 +130,7 @@ public class PredatorPreySimulation extends CellGrid {
 				return;
 			}
 		}
-		ArrayList<Cell> availableCells = getAvailableCells(myCreature);
+		List<Cell> availableCells = getAvailableCells(myCreature);
 		if (availableCells.size() == 0) {
 			noMove((Fish) myCreature);
 			return;
@@ -189,9 +189,9 @@ public class PredatorPreySimulation extends CellGrid {
 		}
 	}
 
-	private ArrayList<Cell> getAvailableCells(Cell myCreature) {
-		ArrayList<Cell> neighbors = getNeighbors(myCreature, VISION);
-		ArrayList<Cell> availableCells = new ArrayList<Cell>();
+	private List<Cell> getAvailableCells(Cell myCreature) {
+		List<Cell> neighbors = getNeighbors(myCreature, VISION);
+		List<Cell> availableCells = new ArrayList<Cell>();
 		for (Cell neighbor : neighbors) {
 			if (neighbor.getCurrentstate().equals(EMPTY) &&
 					!neighbor.getFuturestate().equals(myCreature.getCurrentstate())){
@@ -219,9 +219,9 @@ public class PredatorPreySimulation extends CellGrid {
 		newCell.setFuturestate(prevCell.getCurrentstate());
 	}
 
-	private ArrayList<Cell> getFishNeighbors(Cell myShark) {
-		ArrayList<Cell> neighbors = getNeighbors(myShark, VISION);
-		ArrayList<Cell> myFishFriends = new ArrayList<Cell>();
+	private List<Cell> getFishNeighbors(Cell myShark) {
+		List<Cell> neighbors = getNeighbors(myShark, VISION);
+		List<Cell> myFishFriends = new ArrayList<Cell>();
 		for (Cell neighbor : neighbors) {
 			if (neighbor.getCurrentstate().equals(FISH) && neighbor.getFuturestate().equals("")) {
 				myFishFriends.add(neighbor);

@@ -1,9 +1,6 @@
 package model;
 
-import org.w3c.dom.Element;
-
 import config.Configuration;
-import config.XMLParser;
 
 public class RectangleNoDiagonals extends Rectangle {
 
