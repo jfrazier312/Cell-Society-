@@ -8,11 +8,11 @@ import config.XMLParser;
  * @author austingartside
  *
  */
-public class Fish extends RectangleNoDiagonals {
+public class Fish extends RectangleNoDiagonals{
 //public class Fish extends Cell{
 
-	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0};
-	private int[] noDiagonalColDeltas = { 0, -1, 0, 1 };
+	//private int[] noDiagonalRowDeltas = { -1, 0, 1, 0};
+	///private int[] noDiagonalColDeltas = { 0, -1, 0, 1 };
 	private int myReproductionTime;
 	private int myMaxReproductionTime;
 	private int myTimeToDeath;
@@ -61,20 +61,20 @@ public class Fish extends RectangleNoDiagonals {
 		myReproductionTime = myMaxReproductionTime;
 	}
 
-	@Override
-	public int[] getRowDeltas() {
-		return noDiagonalRowDeltas;
-	}
-
-	@Override
-	public int[] getColDeltas() {
-		return noDiagonalColDeltas;
-	}
+//	@Override
+//	public int[] getRowDeltas() {
+//		return noDiagonalRowDeltas;
+//	}
+//
+//	@Override
+//	public int[] getColDeltas() {
+//		return noDiagonalColDeltas;
+//	}
 
 	// shark stuff
 
 	public void increaseTimeToDeath() {
-		myTimeToDeath += 5;
+		myTimeToDeath += 1;
 	}
 
 	public void decrementTimeToDeath() {

@@ -13,15 +13,15 @@ import config.XMLParser;
  * @author austingartside
  *
  */
-public class SugarAgent extends RectangleNoDiagonals{
+public class SugarAgent extends Cell{
 	
 	private int mySugar;
 	private int mySugarMetabolism;
 	private int myVision;
 	SugarPatch myPatch;
 	
-	public SugarAgent(int row, int col, int initSugar, int sugarMetabolism, int vision, int patchSugar, Configuration config){
-		super(row, col, config);
+	public SugarAgent(int row, int col, int initSugar, int sugarMetabolism, int vision, int patchSugar){
+		super(row, col);
 		mySugar = initSugar;
 		mySugarMetabolism = sugarMetabolism;
 		myVision = vision;
