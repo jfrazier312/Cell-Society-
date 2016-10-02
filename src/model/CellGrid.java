@@ -33,6 +33,7 @@ public abstract class CellGrid extends GridPane {
 	private int[] rowDeltas;
 	private int[] colDeltas;
 	private String myShape;
+	private String myWrappings;
 	private boolean isToroidal;
 	
 	public CellGrid(Configuration config) {
@@ -41,7 +42,6 @@ public abstract class CellGrid extends GridPane {
 		if (config.getNumRows() <= 0 || config.getNumCols() <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
-		isToroidal = false;
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
@@ -153,28 +153,9 @@ public abstract class CellGrid extends GridPane {
 		return col<0 || col>=getNumCols();
 	}
 	
-	private boolean isToroidal(){
+	public boolean isToroidal(){
 		return isToroidal;
 	}
-
-	/* backend does this too
-	private void updateCurrentState(Cell cell) {
-		cell.setCurrentstate(cell.getFuturestate());
-	}
-	/* backend does this too
-	private void updateCurrentState(Cell cell) {
-		cell.setCurrentstate(cell.getFuturestate());
-	}
-
-	private void setFutureState(Cell cell, String futurestate) {
-		cell.setFuturestate(futurestate);
-	}
-	*/
-
-//	private void setFutureState(Cell cell, String futurestate) {
-//		cell.setFuturestate(futurestate);
-//	}
-	
 
 	/**
 	 * Save each cell to the configuration which then could be serialized 
@@ -253,6 +234,11 @@ public abstract class CellGrid extends GridPane {
 
 	public void initSimulation() {
 		myShape = myConfig.getShape().toLowerCase();
+		myWrappings = myConfig.getWrapping().toLowerCase();
+		isToroidal = true;
+		if (myWrappings.equals("finite")) {
+			isToroidal = false;
+		}	
 		chooseRowDeltas();
 	}
 

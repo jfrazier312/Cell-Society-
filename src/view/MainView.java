@@ -75,12 +75,16 @@ public class MainView {
 	private void beginInitialSetup() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
 			UnrecognizedQueryMethodException, QueryExpressionException {
 		resetConfiguration("Fire");
-		setWrappingsEventHandler();
-		setSimulationEventHandler();
-		setShapesEventHandler();
+		setInitialComboBoxHandlers();
 		initSimulation();
 		createResetTimelineChecker();
 		createGameLoop();
+	}
+
+	private void setInitialComboBoxHandlers() {
+		setWrappingsEventHandler();
+		setSimulationEventHandler();
+		setShapesEventHandler();
 	}
 
 	private void initSimulation() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
@@ -303,6 +307,7 @@ public class MainView {
 			UnrecognizedQueryMethodException, QueryExpressionException {
 		myConfig = new Configuration(newXMLFile + ".xml");
 		myConfig.setShape(Simulations.COMBOBOX.getShapesComboBox().getValue());
+		myConfig.setWrapping(Simulations.COMBOBOX.getWrappingsComboBox().getValue());
 	}
 
 	private void pauseGrid() {
@@ -424,7 +429,8 @@ public class MainView {
 		wrappingsBox.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 		wrappingsBox.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 		wrappingsBox.setValue(myResources.getString("Finite"));
-		
+		myConfig.setWrapping(wrappingsBox.getValue());
+
 		wrappingsBox.valueProperty().addListener(e -> {
 			myGameloop.stop(); // Why am I not pausing
 			myRoot.getChildren().removeAll(myRoot.getChildren());

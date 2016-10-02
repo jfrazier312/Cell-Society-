@@ -18,7 +18,6 @@ public class FireSimulation extends CellGrid {
 	private String BURNING;
 	private static final int VISION = 1;
 	private double probOfBurning;
-	private boolean isToroidal;
 	Random generator;
 	
 	public FireSimulation(Configuration config) {
@@ -28,7 +27,6 @@ public class FireSimulation extends CellGrid {
 		BURNING = myResources.getString("Burning");
 		//gonna have to change this
 		generator = new Random();
-		isToroidal = false;
 	}
 	
 	@Override
@@ -45,12 +43,11 @@ public class FireSimulation extends CellGrid {
 	
 	public void initSimulation() {
 		super.initSimulation();
-		if(isToroidal){
+		if(isToroidal()){
 			createToroidalGrid();
 		}
 		else{
 			createGrid();
-//		load(); // if initial cells are empty, will not overwrite cell
 		}
 	}
 	
