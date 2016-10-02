@@ -33,12 +33,17 @@ public class XpathXMLParser extends XMLParser {
 	
 	private Object xpathEval(String itemName, QName type)
 			throws MalformedXMLSourceException, QueryExpressionException {
+		return xpathEval(itemName, type, false);
+	}
+	
+	private Object xpathEval(String itemName, QName type, boolean allowEmpty)
+			throws MalformedXMLSourceException, QueryExpressionException {
 		Object ret = null;
 		try {
 			ret = XPATH_ENGINE
 					.compile(queries.getString(itemName))
 					.evaluate(this.doc, type);
-			if (ret == null || isEmpty(ret))
+			if (ret == null || !allowEmpty && isEmpty(ret))
 				throw new MalformedXMLSourceException();
 		} catch (XPathExpressionException e) {
 			throw new QueryExpressionException();
@@ -91,5 +96,11 @@ public class XpathXMLParser extends XMLParser {
 			throws UnrecognizedQueryMethodException, QueryExpressionException,
 				   MalformedXMLSourceException {
 		return (NodeList) getItem(itemName, XPathConstants.NODESET);
+	}
+
+	@Override
+	public NodeList getNodeListAllowEmpty(String itemName)
+			throws UnrecognizedQueryMethodException, QueryExpressionException, MalformedXMLSourceException {
+		return (NodeList) xpathEval(itemName, XPathConstants.NODESET, true);
 	}
 }

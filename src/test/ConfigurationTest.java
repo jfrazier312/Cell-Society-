@@ -18,7 +18,6 @@ import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 import exceptions.XMLParserException;
-import model.Cell;
 
 /**
  * @author CharlesXu
@@ -74,17 +73,6 @@ public class ConfigurationTest {
 	@Test
 	public void customParamsLoadedProperly() {
 		assertEquals("0.8", config.getCustomParam("probability"));
-	}
-	
-	@Test
-	public void initialCellsLoadedProperly() {
-		Cell c1 = config.getInitialCells().get(0);
-		assertEquals("state2", c1.getCurrentstate());
-		assertEquals(20, c1.getColPos());
-		assertEquals(10, c1.getRowPos());
-		Cell c2 = config.getInitialCells().get(1);
-		assertEquals("state2", c2.getCurrentstate());
-		assertEquals(11, c2.getRowPos());
 	}
 	
 	private static final String AUTHOR = "different author",

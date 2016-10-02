@@ -1,6 +1,8 @@
 package model;
 
 import config.Configuration;
+import config.State;
+import config.XMLParser;
 
 /**
  * @author austingartside
@@ -20,6 +22,15 @@ public class Fish extends RectangleNoDiagonals {
 		myReproductionTime = reproductionTime;
 		myMaxReproductionTime = reproductionTime;
 		myTimeToDeath = timeToDeath;
+	}
+	
+	@Override
+	public State serialize() {
+		State s = super.serialize();
+		s.getAttributes().put("myReproductionTime", myReproductionTime + "");
+		s.getAttributes().put("myMaxReproductionTime", myMaxReproductionTime + "");
+		s.getAttributes().put("myTimeToDeath", myTimeToDeath + "");
+		return s;
 	}
 
 	public void setReproductionTime(int reproductionTime) {
