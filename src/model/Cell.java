@@ -85,6 +85,14 @@ public abstract class Cell extends Shape {
 	
 	public abstract int[] getColDeltas();
 	
+	public boolean hasPatch(){
+		return false;
+	}
+	
+	public boolean isSugarCell(){
+		return false;
+	}
+	
 	/**
 	 * Serialize to an element in XML
 	 * @param parser

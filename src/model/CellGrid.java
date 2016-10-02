@@ -51,9 +51,12 @@ public abstract class CellGrid extends GridPane {
 				Cell currentCell = grid[i][j];
 				Render rend = new Render(myConfig);
 				Shape updatedCell = rend.chooseRender(currentCell, myShape);
-				// Shape updatedCell = currentCell.render();
-				allowClickableCells(config, currentCell, updatedCell);
 				cellPane.add(updatedCell, j, i);
+				if (currentCell.hasPatch()){
+					Shape patchCell = rend.renderPatch(currentCell);
+					cellPane.add(patchCell, j, i);
+				}
+				allowClickableCells(config, currentCell, updatedCell);
 			}
 		}
 	}
