@@ -14,6 +14,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -91,7 +92,7 @@ public class MainView {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(Double.parseDouble(myResources.getString("MaxFPS"))), e -> {
+				.add(new KeyFrame(Duration.millis(SceneConstant.MAX_FPS.getValue()), e -> {
 					if (SimulationSlider.reset) {
 						try {
 							resetGrid();
@@ -116,15 +117,12 @@ public class MainView {
 
 	private void resetGrid() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
 			UnrecognizedQueryMethodException, QueryExpressionException {
-		// myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
 		initSimulation();
 		SimulationSlider.reset = false;
 		pauseGrid();
 	}
 
 	private void createSimulation() {
-		// Configuration config = new Configuration("Fire_Simulation.xml");
-		// findSimulation(config.getSimulationName());
 		findSimulation();
 		mySimulation.initSimulation();
 		mySimulation.renderGrid(myCellPane);
@@ -164,7 +162,7 @@ public class MainView {
 		Label title = new Label("Cellular Automata!");
 		title.getStyleClass().add("simulationTitle");
 		title.setMinWidth(SceneConstant.SCENE_WIDTH.getValue());
-//		title.setAlignment(Pos.CENTER);
+		title.setAlignment(Pos.CENTER);
 		myRoot.getChildren().add(title);
 	}
 
@@ -225,7 +223,7 @@ public class MainView {
 		vbox3.getChildren().addAll(rowsSlider.getGenericSlider(), colsSlider.getGenericSlider());
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
-		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationCheckBox(), hbox1, hbox2, vbox3,
+		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(), hbox1, hbox2, vbox3,
 				fpsSlider.getGenericSlider(), gridVisible);
 		basicBtnBox.setMinWidth(300);
 		buttonContainer.getChildren().add(basicBtnBox);
@@ -269,6 +267,7 @@ public class MainView {
 		try {
 			initSimulation();
 		} catch (Exception e) {
+			//TODO: Exception
 			throw new NullPointerException("Unable to init simulation");
 		}
 		pauseGrid();
@@ -283,7 +282,7 @@ public class MainView {
 		buttonContainer.setPadding(buttonPadding);
 		buttonContainer.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
 		buttonContainer.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
-		buttonContainer.setLayoutX(Integer.parseInt(myResources.getString("SceneWidth"))
+		buttonContainer.setLayoutX(SceneConstant.SCENE_WIDTH.getValue()
 				- SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
 		myRoot.getChildren().add(buttonContainer);
 	}
@@ -315,30 +314,39 @@ public class MainView {
 
 	private void setFPSEventHandler(Slider fpsSlider) {
 		fpsSlider.setOnMouseReleased(e -> {
-			double fpsdouble = 1000.0 / (double) fpsSlider.getValue();
-			myConfig.setFramesPerSec((int) fpsSlider.getValue());
-			myGameloop.pause();
-			myGameloop.getKeyFrames().remove(0);
-			myGameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), ev -> {
-				updateGrid();
-			}));
-			if (simIsRunning) {
-				myGameloop.playFromStart();
-			}
+			resetFrameRate(fpsSlider);
 		});
 	}
 
+	private void resetFrameRate(Slider fpsSlider) {
+		double fpsdouble = 1000.0 / (double) fpsSlider.getValue();
+		myConfig.setFramesPerSec((int) fpsSlider.getValue());
+		myGameloop.pause();
+		updateGameLoopFPS(fpsdouble);
+		if (simIsRunning) {
+			myGameloop.playFromStart();
+		}
+	}
+
+	private void updateGameLoopFPS(double fpsdouble) {
+		myGameloop.getKeyFrames().remove(0);
+		myGameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), ev -> {
+			updateGrid();
+		}));
+	}
+
 	private void setSimulationEventHandler() {
-		Simulations.COMBOBOX.getSimulationCheckBox().setValue(myConfig.getSimulationName());
-		Simulations.COMBOBOX.getSimulationCheckBox()
+		Simulations.COMBOBOX.getSimulationComboBox().setValue(myConfig.getSimulationName());
+		Simulations.COMBOBOX.getSimulationComboBox()
 				.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		Simulations.COMBOBOX.getSimulationCheckBox()
+		Simulations.COMBOBOX.getSimulationComboBox()
 				.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		Simulations.COMBOBOX.getSimulationCheckBox().valueProperty().addListener(e -> {
+		Simulations.COMBOBOX.getSimulationComboBox().valueProperty().addListener(e -> {
 			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			try {
-				myConfig = new Configuration(Simulations.COMBOBOX.getSimulationCheckBox().getValue() + ".xml");
+				myConfig = new Configuration(Simulations.COMBOBOX.getSimulationComboBox().getValue() + ".xml");
+				updateGameLoopFPS(SceneConstant.SLIDER_MINIMUM.getValue() * 1000);
 				initSimulation();
 			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
 					| UnrecognizedQueryMethodException | QueryExpressionException e1) {

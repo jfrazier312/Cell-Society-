@@ -31,7 +31,7 @@ public enum Simulations {
 		return name;
 	}
 	
-	public ComboBox<String> getSimulationCheckBox() {
+	public ComboBox<String> getSimulationComboBox() {
 		return SIMULATIONS;
 	}
 }
