@@ -12,6 +12,7 @@
 	<init mode="param">
 	</init>
 	<animation framesPerSec="1"></animation>
-	<param name="sugarGrowBackRate" value="1"></param>
+	<param name="sugarGrowBackInterval" value="1"></param>
 	<param name="maxVision" value="4"></param>
+	<param name="percentAgent" value="0.2"></param>
 </simulation>

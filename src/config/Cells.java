@@ -1,6 +1,5 @@
 package config;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -8,11 +7,10 @@ import java.util.Set;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import model.*;
-import utils.Utils;
 import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
+import utils.Utils;
 
 /**
  * @author CharlesXu
@@ -37,7 +35,9 @@ public class Cells extends CompositeData implements Iterable<State>{
 	public Cells save()
 			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
 			QueryExpressionException {
-		Node parent = traverseChildren(ITEMS, true);
+		Node parent = Utils.getNode(parser.getDoc(), "init");
+		if (parser.getItem("CellsMode").equals("enum"))
+			parent = traverseChildren(ITEMS, true);
 		for (State s : cellsOnGrid) {
 			Element p = parser.getDoc().createElement("cell"); 
 			for (String attr : s.getAttributes().keySet()) {
@@ -50,12 +50,12 @@ public class Cells extends CompositeData implements Iterable<State>{
 
 	@Override
 	public void populate(Node n) {
+		State s = new State();
 		for (int i = 0 ; i < n.getAttributes().getLength(); i++) {
 			Node attr = n.getAttributes().item(i);
-			State s = new State();
 			s.getAttributes().put(attr.getNodeName(), attr.getNodeValue());
-			add(s);
 		}
+		add(s);
 	}
 	
 	public void add(State s) {

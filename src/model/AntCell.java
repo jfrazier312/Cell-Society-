@@ -2,9 +2,6 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import config.Configuration;
-import config.State;
 /**
  * @author austingartside
  *
@@ -20,9 +17,7 @@ public class AntCell extends Cell{
 	private int myMaxFoodPheromones;
 	private boolean gainedHomeAnts;
 	private boolean gainedFoodAnts;
-	
-	Configuration myConfig;
-	
+		
 	public AntCell(int row, int col, int homePheromones, int foodPheromones, int maxHomePheromones, int maxFoodPheromones) {
 		super(row, col);
 		myAnts = new ArrayList<Ant>();
@@ -118,6 +113,15 @@ public class AntCell extends Cell{
 	
 	public boolean hasAnts(){
 		return myAnts.size()>0;
+	}
+	@Override
+	public int[] getRowDeltas() {
+		return null;
+	}
+	
+	@Override
+	public int[] getColDeltas() {
+		return null;
 	}
 
 }

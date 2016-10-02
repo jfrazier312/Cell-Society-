@@ -1,11 +1,9 @@
 package model;
 import java.util.ArrayList;
-
+import java.util.List;
 import java.util.Random;
-import java.util.ResourceBundle;
 
 import config.Configuration;
-import config.ConfigurationLoader;
 import view.Simulations;
 
 /**
@@ -14,7 +12,7 @@ import view.Simulations;
  */
 public class SegregationSimulation extends CellGrid {
 	
-	public static final String SIMULATION_NAME = Simulations.SEGREGATION.getName();
+	private static final String SIMULATION_NAME = Simulations.SEGREGATION.getName();
 	public static final int VISION = 1;
 	private double myProbability;
 	
@@ -25,9 +23,9 @@ public class SegregationSimulation extends CellGrid {
 	private String TYPEA;
 	private String TYPEB;
 
-	ArrayList<Cell> myMovingCells;
-	ArrayList<Cell> cellsToMakeEmpty;
-	ArrayList<Cell> emptyCells;
+	List<Cell> myMovingCells;
+	List<Cell> cellsToMakeEmpty;
+	List<Cell> emptyCells;
 	Random generator;
 	
 	public SegregationSimulation(Configuration config) {
@@ -49,7 +47,7 @@ public class SegregationSimulation extends CellGrid {
 	private void createGrid(double percentEmpty, double percenttypeA) {
 		generator = new Random();
 		int size = getNumRows()*getNumCols();
-		ArrayList<String> initialization = getStartingStateList(percentEmpty, percenttypeA, size);
+		List<String> initialization = getStartingStateList(percentEmpty, percenttypeA, size);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				createCell(initialization, i, j);
@@ -57,7 +55,7 @@ public class SegregationSimulation extends CellGrid {
 		}
 	}
 
-	private void createCell(ArrayList<String> initialization, int i, int j) {
+	private void createCell(List<String> initialization, int i, int j) {
 		setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
 		if(initialization.size() == 0){
 			getGridCell(i, j).setCurrentstate(EMPTY);
@@ -69,11 +67,11 @@ public class SegregationSimulation extends CellGrid {
 		}
 	}
 
-	private ArrayList<String> getStartingStateList(double percentEmpty, double percenttypeA, int size) {
+	private List<String> getStartingStateList(double percentEmpty, double percenttypeA, int size) {
 		double numEmpty = percentEmpty*size;
 		double numtypeA = percenttypeA*(size-numEmpty);
 		double numtypeB = size-numEmpty-numtypeA;
-		ArrayList<String> initialization = new ArrayList<String>();
+		List<String> initialization = new ArrayList<String>();
 		for(int i = 0; i<numEmpty; i++){
 			initialization.add(EMPTY);
 		}
@@ -151,7 +149,7 @@ public class SegregationSimulation extends CellGrid {
 	
 	@Override
 	public void updateCell(Cell myCell){
-		ArrayList<Cell> currentNeighbors = getNeighbors(myCell, VISION);
+		List<Cell> currentNeighbors = getNeighbors(myCell, VISION);
 		double matchingCellCount = 0.0;
 		double nonEmptyCellCount = 0.0;
 		for(int i = 0; i<currentNeighbors.size(); i++){

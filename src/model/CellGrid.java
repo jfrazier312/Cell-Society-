@@ -4,19 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import config.Cells;
 import config.Configuration;
-//import config.ConfigurationLoader;
-import config.XMLParser;
-import exceptions.MalformedXMLSourceException;
-import exceptions.QueryExpressionException;
-import exceptions.UnrecognizedQueryMethodException;
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
-import utils.Utils;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 
 /**
  * author: Austin Gartside, Jordan Frazier and Charles Xu
@@ -27,7 +18,7 @@ public abstract class CellGrid extends GridPane {
 	public static final String RESRC_PATH = "resources/SimulationResources";	
 	
 	private static final int[] HEX_ROW_DELTAS = {-1, -1, 0, 1, 1, 0};
-	private static final int[] HEX_COL_DELTAS = {0, -1, -1, 0, 1, 1};
+	private static final int[] HEX_COL_DELTAS = {0, -1, -1, -1, 0, 1};
 	
 	private static final int[] TRI_ROW_DELTAS = {-1, -1, 0, 1,  1, 1, 0, -1};
 	private static final int[] TRI_COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
@@ -52,29 +43,35 @@ public abstract class CellGrid extends GridPane {
 		}
 		//gonna have to change this
 		myShape = "rectangle";
-		isToroidal = true;
+		isToroidal = false;
 		chooseRowDeltas();
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
-	//we have to change render so that it does not use a render method within the cell class or uses if tree
-	public void renderGrid(GridPane cellPane) {
+	public void renderGrid(GridPane cellPane, Configuration config) {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-//				ColumnConstraints colC = new ColumnConstraints();
-//				colC.setPercentWidth(100);
-//				cellPane.getColumnConstraints().add(colC);
-//				RowConstraints rowC = new RowConstraints();
-//				rowC.setPercentHeight(100);
-//				cellPane.getRowConstraints().add(rowC);
-//				
 				Cell currentCell = grid[i][j];
-				Node updatedCell = currentCell.render();
+				Shape updatedCell = currentCell.render();	
+				allowClickableCells(config, currentCell, updatedCell);
 				cellPane.add(updatedCell, j, i);
 			}
 		}	
-		
-		
+	}
+
+	private void allowClickableCells(Configuration config, Cell currentCell, Shape updatedCell) {
+		updatedCell.setOnMouseClicked(e -> {
+			int len = config.getAllStates().getList().size();
+			for ( int i = 0; i < len; i++) {
+				if (config.getAllStates().getList().get(i).getValue().equals(currentCell.getCurrentstate())) {
+					currentCell.setCurrentstate(config.getAllStates().getList().get((i + 1) % len).getValue());
+				}
+			}
+			
+			String color = myConfig.getAllStates().getStateByName(currentCell.getCurrentstate()).getAttributes()
+					.get("color");
+			updatedCell.setFill(Color.web(color));		
+		});
 	}
 	
 	/**
@@ -223,13 +220,21 @@ public abstract class CellGrid extends GridPane {
 	private int[] getColDeltas(){
 		return colDeltas;
 	}
+
 	/**
 	 * Load cellgrid from config
 	 */
-	public void load() {}
+	public void load() {
+		for (config.State s :getConfig().getInitialCells()) {
+			int row = Integer.parseInt(s.getAttributes().get("row"));
+			int col = Integer.parseInt(s.getAttributes().get("col"));
+			Cell r = new RectangleNoDiagonals(row, col, getConfig());
+			r.setCurrentstate(s.getAttributes().get("currentState"));
+			r.setFuturestate(s.getAttributes().get("futureState"));
+			setGridCell(row, col, r);
+		}
+	}
 	
-	// TODO (cx15) deserialize grid. each cell does not need a deserialize
-
 	public int getNumRows() {
 		return grid.length;
 	}

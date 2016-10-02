@@ -3,10 +3,9 @@ package model;
 import org.w3c.dom.Element;
 
 import config.Configuration;
-import config.ConfigurationLoader;
 import config.XMLParser;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import view.SceneConstant;
 
 /**
@@ -27,16 +26,13 @@ public class Rectangle extends Cell {
 	}
 
 	@Override
-	public Node render() {
+	public Shape render() {
 		double rows = myConfig.getNumRows();
 		double cols = myConfig.getNumCols();
-
 		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
 		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
 
 		javafx.scene.shape.Rectangle rect = new javafx.scene.shape.Rectangle(width, height);
-		
-		
 
 		String color = myConfig.getAllStates().getStateByName(getCurrentstate()).getAttributes()
 				.get("color");

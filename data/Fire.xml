@@ -11,7 +11,7 @@
 		<state color="#000011">empty</state>
 	</states>
 	<init mode="enum" default="tree">
-		<cell state="burning" row="10" col="10"></cell>
+		<cell state="burning" row="1" col="1"></cell>
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="probability" value="1"></param>

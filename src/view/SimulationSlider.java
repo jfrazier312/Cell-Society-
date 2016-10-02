@@ -52,7 +52,7 @@ public class SimulationSlider {
 		});
 	}
 
-	public SimulationSlider(SceneConstant min, SceneConstant max, double defaultVal, String displayName, boolean set) {
+	public SimulationSlider(SceneConstant min, SceneConstant max, double defaultVal, String displayName, boolean set, Configuration config) {
 		myResources = ResourceBundle.getBundle(RESRC_PATH);
 		Label lbl = new Label(String.valueOf(defaultVal));
 		Label display = new Label(displayName);
@@ -68,9 +68,12 @@ public class SimulationSlider {
 				|| displayName.contains(myResources.getString("Rows"))) {
 			slider.setOnMouseReleased(e -> {
 				Double newValue = (double) Math.round(slider.getValue() * 10.0) / 10.0;
-				if (displayName.toLowerCase().contains(myResources.getString("Rows")) || displayName.toLowerCase().contains(myResources.getString("Columns"))) {
-					int i = newValue.intValue();
-					lbl.textProperty().setValue(String.valueOf(i));
+				int i = newValue.intValue();
+				lbl.textProperty().setValue(String.valueOf(i));
+				if (displayName.contains(myResources.getString("Rows"))) {
+					config.setNumRows(i);
+				} else if (displayName.contains(myResources.getString("Columns"))) {
+					config.setNumCols(i);
 				} else {
 					lbl.textProperty().setValue(String.valueOf(newValue));
 				}

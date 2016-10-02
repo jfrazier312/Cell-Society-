@@ -3,17 +3,17 @@ package model;
 import java.util.Arrays;
 
 import config.Configuration;
-import config.ConfigurationLoader;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
+import view.SceneConstant;
 
 /** 
  * 
  * @author Jordan Frazier (jrf30)
  *
  */
-public class Triangle extends Cell implements view.GameWorld {
+public class Triangle extends Cell {
 
 	private int isEven;
 	private int[] rowDeltas = { -1, 0, 1 };
@@ -22,9 +22,9 @@ public class Triangle extends Cell implements view.GameWorld {
 	
 	Configuration myConfig;
 
-	private static final double TRIANGLE_WIDTH = 20;
-	private Double[] normalTrianglePoints = { TRIANGLE_WIDTH / 2, 0.0, 0.0, 20.0, TRIANGLE_WIDTH, 20.0 };
-	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_WIDTH, 0.0, TRIANGLE_WIDTH / 2, 20.0 };
+	private static final double TRIANGLE_WIDTH = 20.0;
+	private Double[] normalTrianglePoints = { TRIANGLE_WIDTH / 2, 0.0, 0.0, TRIANGLE_WIDTH, TRIANGLE_WIDTH, TRIANGLE_WIDTH };
+	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_WIDTH, 0.0, TRIANGLE_WIDTH / 2, TRIANGLE_WIDTH};
 
 	public Triangle(int row, int col, int isEven, Configuration config) {
 		super(row, col);
@@ -33,8 +33,7 @@ public class Triangle extends Cell implements view.GameWorld {
 	}
 
 	@Override
-	public Node render() {
-		// TODO: Configuration area
+	public Shape render() {
 		double rows = myConfig.getNumRows();
 		double cols = myConfig.getNumCols();
 
@@ -58,12 +57,12 @@ public class Triangle extends Cell implements view.GameWorld {
 		Double[] adjusted = new Double[normalTrianglePoints.length];
 		if (normal) {
 			adjusted = Arrays.copyOf(normalTrianglePoints, normalTrianglePoints.length);
-			adjusted[4] = normalTrianglePoints[4] / (20 / ((GRID_WIDTH - cols) / cols));
-			adjusted[0] = normalTrianglePoints[0] / (20 / ((GRID_WIDTH - cols) / cols));
+			adjusted[4] = normalTrianglePoints[4] / (TRIANGLE_WIDTH / ((SceneConstant.GRID_WIDTH.getValue() - cols) / cols));
+			adjusted[0] = normalTrianglePoints[0] / (TRIANGLE_WIDTH / ((SceneConstant.GRID_WIDTH.getValue() - cols) / cols));
 		} else {
 			adjusted = Arrays.copyOf(upsideDownTrianglePoints, upsideDownTrianglePoints.length);
-			adjusted[4] = upsideDownTrianglePoints[4] / (20 / ((GRID_WIDTH - cols) / cols));
-			adjusted[2] = upsideDownTrianglePoints[2] / (20 / ((GRID_WIDTH - cols) / cols));
+			adjusted[4] = upsideDownTrianglePoints[4] / (TRIANGLE_WIDTH / ((SceneConstant.GRID_WIDTH.getValue() - cols) / cols));
+			adjusted[2] = upsideDownTrianglePoints[2] / (TRIANGLE_WIDTH / ((SceneConstant.GRID_WIDTH.getValue() - cols) / cols));
 		}
 		return adjusted;
 	}

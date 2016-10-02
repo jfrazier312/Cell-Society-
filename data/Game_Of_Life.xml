@@ -13,4 +13,5 @@
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="percentDead" value="0.5"></param>
+	<!-- <param name="neighborDef" value="B2 S23"></param>-->
 </simulation>

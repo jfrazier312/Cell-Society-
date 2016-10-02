@@ -1,7 +1,5 @@
 package view;
-import config.ConfigurationLoader;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
@@ -10,7 +8,7 @@ import javafx.stage.Stage;
  *
  */
 
-public class Main extends Application implements GameWorld {
+public class Main extends Application {
 
 	public static void main(String[] args) {
 		launch(args);

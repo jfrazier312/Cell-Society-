@@ -12,7 +12,11 @@ import org.w3c.dom.NodeList;
 public class Utils {
 	
 	public static String getAttrFromFirstMatch(Document doc, String tag, String attr) {
-		return doc.getElementsByTagName(tag).item(0).getAttributes().getNamedItem(attr).getTextContent();
+		return getNode(doc, tag).getAttributes().getNamedItem(attr).getTextContent();
+	}
+	
+	public static Node getNode(Document doc, String tag) {
+		return doc.getElementsByTagName(tag).item(0);
 	}
 	
 	public static String getAttrFromNode(Node n, String attr) {
