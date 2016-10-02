@@ -1,16 +1,20 @@
 package model;
 import java.util.ArrayList;
 
+import config.XMLParser;
 import javafx.scene.Node;
+
+import config.State;
 
 /**
  * 
  * @author Jordan Frazier (jrf30)
+ * @author Charles Xu (cx15)
  *
  */
 
 //put all row deltas here nad have the get row delta methods be here
-public class Cell {
+public abstract class Cell {
 	
 	//make getters and setters for all of these and put them in the classes?
 //	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };
@@ -77,9 +81,21 @@ public class Cell {
 		this.neighbors = neighbors;
 	}
 	
-	public Node render() { return null; }
+	public abstract Node render();
 	
-	public int[] getRowDeltas() { return null; }
+	public abstract int[] getRowDeltas();
 	
-	public int[] getColDeltas() { return null; }
+	public abstract int[] getColDeltas();
+	
+	/**
+	 * Serialize to an element in XML
+	 * @param parser
+	 */
+	public State serialize() {
+		State s = new State();
+		s.getAttributes().put("row", rowPos + "");
+		s.getAttributes().put("col", colPos + "");
+		s.getAttributes().put("currentState", currentstate);
+		return s;
+	}
 }

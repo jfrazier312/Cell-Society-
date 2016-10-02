@@ -1,7 +1,10 @@
 package model;
 
+import org.w3c.dom.Element;
+
 import config.Configuration;
 import config.ConfigurationLoader;
+import config.XMLParser;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import view.SceneConstant;

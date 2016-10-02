@@ -1,7 +1,6 @@
 package config;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.transform.Transformer;
@@ -16,8 +15,6 @@ import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 import exceptions.XMLParserException;
-import model.Cell;
-import model.CellGrid;
 
 /**
     ,____________________________________________________________.
@@ -45,7 +42,7 @@ public class Configuration {
 	private States allStates;
 	private Neighborhood neighborhood;
 	private Params customizedParams;
-	private List<Cell> initialCells;
+	private Cells initialCells;
 	private State defaultInitState;
 	private boolean isRunning;
 	private int framesPerSec;
@@ -77,6 +74,7 @@ public class Configuration {
 		allStates = new States().load(parser);
 		neighborhood = new Neighborhood().load(parser);
 		customizedParams = new Params().load(parser);
+		initialCells = new Cells().load(parser);
 		defaultInitState = allStates.getDefaultState();
 		isRunning = false;
 		return this;
@@ -100,7 +98,7 @@ public class Configuration {
 			allStates.save();
 			neighborhood.save();
 			customizedParams.save();
-			// TODO (cx15): FINISH SERIALIZATION ON LIST OF CELLS
+			initialCells.save();
 			Transformer xformer = TransformerFactory.newInstance().newTransformer();
 			xformer.transform(
 					new DOMSource(parser.getDoc()),
@@ -154,7 +152,7 @@ public class Configuration {
 		return neighborhood;
 	}
 	
-	public synchronized List<Cell> getInitialCells() {
+	public synchronized Cells getInitialCells() {
 		return initialCells;
 	}
 	
@@ -165,6 +163,10 @@ public class Configuration {
 	public synchronized int getNumRows() {
 		return numRows;
 	}
+	
+	public synchronized XMLParser getParser() {
+		return parser;
+	}
 
 	// -------- MUTATORS ---------
 	public synchronized Configuration setDefaultInitState(String defaultInitState)
@@ -174,11 +176,6 @@ public class Configuration {
 			throw new InconsistentCrossReferenceInXMLException();
 		}
 		this.defaultInitState = s;
-		return this;
-	}
-	
-	public synchronized Configuration setInitialCells(List<Cell> initialCells) {
-		this.initialCells = initialCells;
 		return this;
 	}
 	
@@ -194,11 +191,6 @@ public class Configuration {
 	
 	public synchronized Configuration setRunning(boolean isRunning) {
 		this.isRunning = isRunning;
-		return this;
-	}
-
-	public synchronized Configuration setParser(XMLParser parser) {
-		this.parser = parser;
 		return this;
 	}
 

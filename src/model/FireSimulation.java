@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import config.Configuration;
+import config.State;
 import view.Simulations;
 
 /**
@@ -25,8 +26,20 @@ public class FireSimulation extends CellGrid {
 		BURNING = myResources.getString("Burning");
 	}
 	
+	@Override
+	public void load() {
+		for (State s :getConfig().getInitialCells()) {
+			int row = Integer.parseInt(s.getAttributes().get("row"));
+			int col = Integer.parseInt(s.getAttributes().get("col"));
+			RectangleNoDiagonals r = new RectangleNoDiagonals(row, col, getConfig());
+			r.setCurrentstate(s.getAttributes().get("currentState"));
+			setGridCell(row, col, r);
+		}
+	}
+	
 	public void initSimulation() {
 		createGrid();
+		load(); // if initial cells are empty, will not overwrite cell
 		probOfBurning = Double.parseDouble(getConfig().getCustomParam("probability"));
 		//probOfBurning = .5;
 	}
