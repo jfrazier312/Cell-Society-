@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -46,7 +47,7 @@ public class PredatorPreySimulation extends CellGrid {
 		}
 	}
 
-	private void createCell(int reproductionTime, int timeToDeath, ArrayList<String> initialization, int i, int j) {
+	private void createCell(int reproductionTime, int timeToDeath, List<String> initialization, int i, int j) {
 		setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath, getConfig()));
 		if(initialization.size() == 0){
 			getGridCell(i, j).setCurrentstate(EMPTY);
@@ -160,7 +161,7 @@ public class PredatorPreySimulation extends CellGrid {
 		}
 	}
 
-	private void eatFish(Cell myCreature, ArrayList<Cell> myFishFriends) {
+	private void eatFish(Cell myCreature, List<Cell> myFishFriends) {
 		Cell newSharkCell = getNewCell(myFishFriends);
 		transferInformation((Fish) myCreature, (Fish) newSharkCell, true);
 		if(((Fish) myCreature).getReproductionTime()<=0){
@@ -174,7 +175,7 @@ public class PredatorPreySimulation extends CellGrid {
 		 myCell.resetTimeToDeath(); 
 	}
 
-	private Cell getNewCell(ArrayList<Cell> availableCells) {
+	private Cell getNewCell(List<Cell> availableCells) {
 		int cellChoice = generator.nextInt(availableCells.size());
 		Cell newCell = availableCells.get(cellChoice);
 		return newCell;

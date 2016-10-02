@@ -109,7 +109,7 @@ public abstract class CellGrid extends GridPane {
 		return neighbors;
 	}
 
-	private void getValidNeighbor(ArrayList<Cell> neighbors, int newRowPos, int newColPos) {
+	private void getValidNeighbor(List<Cell> neighbors, int newRowPos, int newColPos) {
 		if (!rowOutOfBounds(newRowPos) && !colOutOfBounds(newColPos)) {
 			neighbors.add(grid[newRowPos][newColPos]);
 		}

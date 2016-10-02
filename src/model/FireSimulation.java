@@ -1,5 +1,6 @@
 package model;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import config.Configuration;
@@ -105,7 +106,7 @@ public class FireSimulation extends CellGrid {
 		
 	}
 
-	private void treeUpdate(Cell myCell, ArrayList<Cell> currentNeighbors) {
+	private void treeUpdate(Cell myCell, List<Cell> currentNeighbors) {
 		myCell.setFuturestate(TREE);
 		for(Cell neighbor: currentNeighbors){
 			if(neighbor.getCurrentstate() == BURNING){

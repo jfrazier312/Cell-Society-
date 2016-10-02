@@ -1,5 +1,6 @@
 package model;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -157,7 +158,7 @@ public class GameOfLifeSimulation extends CellGrid {
 //		}
 //	}
 	
-	public int countCellsOfState(ArrayList<Cell> currentNeighbors, String state){
+	public int countCellsOfState(List<Cell> currentNeighbors, String state){
 		int stateCount = 0;
 		for(Cell neighborCell: currentNeighbors){
 			if(neighborCell.getCurrentstate().equals(state)){
