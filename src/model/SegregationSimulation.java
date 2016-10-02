@@ -2,36 +2,41 @@ package model;
 import java.util.ArrayList;
 
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import config.Configuration;
 import config.ConfigurationLoader;
+import view.Simulations;
 
 /**
  * @author austingartside
  *
  */
-public class SegregationSimulation extends CellGrid implements view.GameWorld{
+public class SegregationSimulation extends CellGrid {
 	
-	private static final String EMPTY = "empty";
-	public static final String SIMULATION_NAME = SEGREGATION_SIMULATION;
-	private static final String typeA = "typeA";
-	private static final String typeB = "typeB";
+	public static final String SIMULATION_NAME = Simulations.SEGREGATION.getName();
 	public static final int VISION = 1;
 	private double myProbability;
-	private Configuration myConfig;
+	
+	private String EMPTY;
+	private String TYPEA;
+	private String TYPEB;
+
 	ArrayList<Cell> myMovingCells;
 	Random generator;
 	
-	public SegregationSimulation(int row, int col, Configuration config) {
-		super(row, col);
-		myConfig = config;
+	public SegregationSimulation(Configuration config) {
+		super(config);
+		EMPTY = myResources.getString("Empty");
+		TYPEA = myResources.getString("TypeA");
+		TYPEB = myResources.getString("TypeB");
 	}
 	
 	public void initSimulation() {
-		myProbability  = Double.parseDouble(myConfig.getCustomParam("probability"));
+		myProbability  = Double.parseDouble(getConfig().getCustomParam("probability"));
 		myMovingCells = new ArrayList<Cell>();
-		double percentEmptyCells = Double.parseDouble(myConfig.getCustomParam("percentEmpty"));
-		double percenttypeA = Double.parseDouble(myConfig.getCustomParam("percentTypeA"));
+		double percentEmptyCells = Double.parseDouble(getConfig().getCustomParam("percentEmpty"));
+		double percenttypeA = Double.parseDouble(getConfig().getCustomParam("percentTypeA"));
 		createGrid(percentEmptyCells, percenttypeA);
 	}
 	
@@ -41,7 +46,7 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 		ArrayList<String> initialization = getStartingStateList(percentEmpty, percenttypeA, size);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleWithDiagonals(i, j, myConfig));
+				setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
 				if(initialization.size() == 0){
 					getGridCell(i, j).setCurrentstate(EMPTY);
 				}
@@ -63,10 +68,10 @@ public class SegregationSimulation extends CellGrid implements view.GameWorld{
 			initialization.add(EMPTY);
 		}
 		for(int i = 0; i<numtypeA; i++){
-			initialization.add(typeA);
+			initialization.add(TYPEA);
 		}
 		for(int i = 0; i<numtypeB; i++){
-			initialization.add(typeB);
+			initialization.add(TYPEB);
 		}
 		return initialization;
 	}

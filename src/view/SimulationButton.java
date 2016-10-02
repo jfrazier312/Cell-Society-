@@ -11,9 +11,9 @@ public class SimulationButton extends Button {
 	
 	private String displayName;
 	
-	public SimulationButton(GenericButton displayName) {
+	public SimulationButton(String displayName) {
 		
-		this.displayName = displayName.toString();
+		this.displayName = displayName;
 		setDisplayName(this.displayName);	
 		
 	}

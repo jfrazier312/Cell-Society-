@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<simulation name="Segregation_Simulation" author="team19">
+<simulation name="Segregation" author="team19">
 	<grid width="20" height="20"/>
 	<neighborhood size="5">
 		<edge type="constant" value="alive">
@@ -10,7 +10,7 @@
 		<state color="#333333">typeB</state>
 		<state color="#d9d9d9">empty</state>
 	</states>
-	<init default="empty">
+	<init mode="enum" default="empty">
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="percentEmpty" value="0.3"></param>

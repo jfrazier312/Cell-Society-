@@ -1,41 +1,44 @@
 package model;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.w3c.dom.NodeList;
 
-import config.ConfigurationLoader;
+import config.Configuration;
 //import config.ConfigurationLoader;
 import config.XMLParser;
 import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 import javafx.scene.Node;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import utils.Utils;
+
 /**
- * @author austingartside and Jordan Frazier
- *
+ * author: Austin Gartside and Jordan Frazier
  */
 public abstract class CellGrid extends GridPane {
 
+	protected ResourceBundle myResources;
+	public static final String RESRC_PATH = "resources/SimulationResources";	
+	
 	private Cell[][] grid;
 	
 	private String simulationName;
 	
-	//public CellGrid() {
-	public CellGrid(int rows, int cols) {
-		//int rows = ConfigurationLoader.getConfig().getNumRows();
-		//int cols = ConfigurationLoader.getConfig().getNumCols();
-		if (rows <= 0 || cols <= 0) {
+	private Configuration myConfig;
+	
+	public CellGrid(Configuration config) {
+		myResources = ResourceBundle.getBundle(RESRC_PATH);
+		myConfig = config;
+		if (config.getNumRows() <= 0 || config.getNumCols() <= 0) {
 			throw new IllegalArgumentException("Cannot have 0 or less rows/cols");
 		}
-		grid = new Cell[rows][cols];
+		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
-	// Need to change spacing in gridpane? if shape is different than rectangle?
 	public void renderGrid(GridPane cellPane) {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -74,18 +77,25 @@ public abstract class CellGrid extends GridPane {
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
 		for (int i = 0; i < cell.getRowDeltas().length; i++) {
-			if(vision>1){
-				for(int j = 1; j<=vision; j++){
-					int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
-					int newColPos = colPos + cell.getColDeltas()[i]*j;
-					if (isValidLocation(newRowPos, newColPos)) {
-						neighbors.add(grid[newRowPos][newColPos]);
-					}
-				}
+			int newRowPos = rowPos + cell.getRowDeltas()[i];
+			int newColPos = colPos + cell.getColDeltas()[i];
+			if (isValidLocation(newRowPos, newColPos)) {
+				neighbors.add(grid[newRowPos][newColPos]);
 			}
-			else{
-				int newRowPos = rowPos + cell.getRowDeltas()[i];
-				int newColPos = colPos + cell.getColDeltas()[i];
+		}
+		return neighbors;
+	}
+	
+	//assuming no diagonals
+	public ArrayList<Cell>  getSugarNeighbors(Cell cell, int vision){
+		ArrayList<Cell> neighbors = new ArrayList<>();
+		int rowPos = cell.getRowPos();
+		int colPos = cell.getColPos();
+		//int vision = 5;
+		for(int i = 0; i<cell.getRowDeltas().length; i++){
+			for(int j = 1; j<=vision; j++){
+				int newRowPos = rowPos + cell.getRowDeltas()[i]*j;
+				int newColPos = colPos + cell.getColDeltas()[i]*j;
 				if (isValidLocation(newRowPos, newColPos)) {
 					neighbors.add(grid[newRowPos][newColPos]);
 				}
@@ -117,6 +127,25 @@ public abstract class CellGrid extends GridPane {
 				&& y < getNumCols();
 	}
 	
+
+	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
+			throws QueryExpressionException, UnrecognizedQueryMethodException,
+				   NumberFormatException, MalformedXMLSourceException {
+		List<Cell> initialCells = new ArrayList<Cell>();
+		if (parser.getItem("CellsMode").equals("enum")) {
+			NodeList nl = parser.getNodeList("Cells");
+			for (int i = 0; i < nl.getLength(); i++) {
+				String state = Utils.getAttrFromNode(nl.item(i), "state");
+				int row = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "row"));
+				int col = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "col"));
+				Cell c = new Cell(row, col);
+				c.setCurrentstate(state);
+				initialCells.add(c);
+		    }
+		}
+		return initialCells;
+	}
+	
 	public Cell[][] getGrid() {
 		return grid;
 	}
@@ -136,30 +165,17 @@ public abstract class CellGrid extends GridPane {
 	public Cell getGridCell(int row, int col){
 		return grid[row][col];
 	}
+	
+	public Configuration getConfig() {
+		return myConfig;
+	}
 
 	public abstract void updateGrid();
 
 	public abstract void updateCell(Cell myCell);
 	
 	public abstract String getSimulationName();
-	
+
 	public abstract void initSimulation();
-	
-	public static List<Cell> buildNonDefaultInitialCells(XMLParser parser)
-			throws QueryExpressionException, UnrecognizedQueryMethodException,
-				   NumberFormatException, MalformedXMLSourceException {
-		List<Cell> initialCells = new ArrayList<Cell>();
-		if (parser.getItem("CellsMode").equals("enum")) {
-			NodeList nl = parser.getNodeList("Cells");
-			for (int i = 0; i < nl.getLength(); i++) {
-				String state = Utils.getAttrFromNode(nl.item(i), "state");
-				int row = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "row"));
-				int col = Integer.parseInt(Utils.getAttrFromNode(nl.item(i), "col"));
-				Cell c = new Cell(row, col);
-				c.setCurrentstate(state);
-				initialCells.add(c);
-		    }
-		}
-		return initialCells;
-	}
+
 }
