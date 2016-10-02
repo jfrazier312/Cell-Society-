@@ -27,8 +27,6 @@ public class FireSimulation extends CellGrid {
 	
 	public void initSimulation() {
 		createGrid();
-		probOfBurning = Double.parseDouble(getConfig().getCustomParam("probability"));
-		//probOfBurning = .5;
 	}
 	
 	public void createGrid() {
@@ -70,6 +68,7 @@ public class FireSimulation extends CellGrid {
 	
 	@Override
 	public void updateCell(Cell myCell){
+		probOfBurning = Double.parseDouble(getConfig().getCustomParam("probability"));
 		String myState = myCell.getCurrentstate();
 		ArrayList<Cell> currentNeighbors = getNeighbors(myCell, VISION);
 		if(myState.equals(BURNING)){

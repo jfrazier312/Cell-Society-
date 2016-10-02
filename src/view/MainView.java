@@ -50,17 +50,19 @@ public class MainView {
 	private ResourceBundle myResources;
 	public static final String RESRC_PATH = "resources/GridResources";
 
-	private Insets buttonPadding = new Insets((SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2, SceneConstant.GRID_PADDING.getValue(),
-			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2, -1 * SceneConstant.GRID_PADDING.getValue());
-	private Insets cellPanePadding = new Insets((SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2, 0, (SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
+	private Insets buttonPadding = new Insets(
+			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
+			SceneConstant.GRID_PADDING.getValue(),
+			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
+			-1 * SceneConstant.GRID_PADDING.getValue());
+	private Insets cellPanePadding = new Insets(
+			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2, 0,
+			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
 			SceneConstant.GRID_PADDING.getValue());
-	
+
 	// TODO: Move these
-	private static final ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList(
-			"Game_Of_Life",
-			"Predator_Prey",
-			"Fire",
-			"Segregation");
+	private static final ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList("Game_Of_Life",
+			"Predator_Prey", "Fire", "Segregation");
 
 	public static final ComboBox<String> SIMULATIONS = new ComboBox<>(SIMULATION_OPTIONS);
 
@@ -70,11 +72,12 @@ public class MainView {
 		myResources = ResourceBundle.getBundle(RESRC_PATH);
 		// isGridLinesVisible = false;
 		beginInitialSetup();
-  
+
 		return myScene;
 	}
 
-	private void beginInitialSetup() throws NumberFormatException, MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException, QueryExpressionException {
+	private void beginInitialSetup() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException {
 		myConfig = new Configuration("Fire.xml");
 		initSimulation();
 		setSimulationEventHandler();
@@ -82,7 +85,8 @@ public class MainView {
 		createGameLoop();
 	}
 
-	private void initSimulation() throws NumberFormatException, MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException, QueryExpressionException {
+	private void initSimulation() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException {
 		myRoot.getChildren().removeAll(myRoot.getChildren());
 		createCellPane();
 		createSimulation();
@@ -105,7 +109,8 @@ public class MainView {
 						} catch (XMLParserException e1) {
 							e1.printStackTrace();
 						} catch (UnrecognizedQueryMethodException e1) {
-							// when user tries to parse with a different query method
+							// when user tries to parse with a different query
+							// method
 							e1.printStackTrace();
 						} catch (QueryExpressionException e1) {
 							e1.printStackTrace();
@@ -115,16 +120,16 @@ public class MainView {
 		timeline.play();
 	}
 
-	private void resetGrid() throws NumberFormatException, MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException, QueryExpressionException {
-//		myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
+	private void resetGrid() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
+			UnrecognizedQueryMethodException, QueryExpressionException {
+		// myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
 		initSimulation();
 		SimulationSlider.reset = false;
-		myGameloop.pause();
-		simIsRunning = false;
+		pauseGrid();
 	}
 
 	private void createSimulation() {
-//		Configuration config = new Configuration("Fire_Simulation.xml");
+		// Configuration config = new Configuration("Fire_Simulation.xml");
 		// findSimulation(config.getSimulationName());
 		findSimulation();
 		mySimulation.initSimulation();
@@ -157,7 +162,7 @@ public class MainView {
 	}
 
 	private void createAllButtons() {
-		
+
 		VBox buttonContainer = new VBox(SceneConstant.PADDING.getValue());
 
 		HBox hbox1 = new HBox(SceneConstant.PADDING.getValue());
@@ -178,7 +183,7 @@ public class MainView {
 			}
 		});
 
-		SimulationButton resetBtn = makeButton("Reset", new  EventHandler<ActionEvent>() {
+		SimulationButton resetBtn = makeButton("Reset", new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				resetButtonHandler();
@@ -191,17 +196,17 @@ public class MainView {
 				stepButtonHandler();
 			}
 		});
-		
-		SimulationSlider rowsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM, myConfig.getNumRows(),
-				myResources.getString("Rows"), false);
-		setRowAndColEventHandler(rowsSlider.getSlider(), true);
 
-		SimulationSlider colsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM, myConfig.getNumCols(),
-				myResources.getString("Columns"), false);
-		setRowAndColEventHandler(colsSlider.getSlider(), false);
+		SimulationSlider rowsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM,
+				myConfig.getNumRows(), myResources.getString("Rows"), false, myConfig);
+		// setRowAndColEventHandler(rowsSlider.getSlider(), true);
 
-		SimulationSlider fpsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM, myConfig.getFramesPerSec(),
-				myResources.getString("FPS"), false);
+		SimulationSlider colsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM,
+				myConfig.getNumCols(), myResources.getString("Columns"), false, myConfig);
+		// setRowAndColEventHandler(colsSlider.getSlider(), false);
+
+		SimulationSlider fpsSlider = new SimulationSlider(SceneConstant.SLIDER_MINIMUM, SceneConstant.SLIDER_MAXIMUM,
+				myConfig.getFramesPerSec(), myResources.getString("FPS"), false, myConfig);
 		setFPSEventHandler(fpsSlider.getSlider());
 
 		// TODO: Grid lines
@@ -224,8 +229,10 @@ public class MainView {
 	/**
 	 * Creates button and sets an event handler
 	 * 
-	 * @param name - name of the button
-	 * @param handler - the event handler of the button
+	 * @param name
+	 *            - name of the button
+	 * @param handler
+	 *            - the event handler of the button
 	 * @return
 	 */
 	private SimulationButton makeButton(String name, EventHandler<ActionEvent> handler) {
@@ -234,7 +241,7 @@ public class MainView {
 		button.setOnAction(handler);
 		return button;
 	}
-	
+
 	private void playButtonHandler() {
 		simIsRunning = true;
 		myGameloop.setCycleCount(Timeline.INDEFINITE);
@@ -258,60 +265,58 @@ public class MainView {
 		}
 		pauseGrid();
 	}
-	
+
 	private void pauseGrid() {
 		myGameloop.pause();
 		simIsRunning = false;
 	}
 
-
 	private void setButtonContainerParameters(VBox buttonContainer) {
 		buttonContainer.setPadding(buttonPadding);
 		buttonContainer.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
 		buttonContainer.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
-		buttonContainer.setLayoutX(Integer.parseInt(myResources.getString("SceneWidth")) - SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
+		buttonContainer.setLayoutX(Integer.parseInt(myResources.getString("SceneWidth"))
+				- SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
 		myRoot.getChildren().add(buttonContainer);
 	}
 
 	private void createCustomButtons(VBox buttonContainer) {
 		VBox custom = new VBox(SceneConstant.PADDING.getValue());
-		 for (String str : myConfig.getAllCustomParamNames()) {
+		for (String str : myConfig.getAllCustomParamNames()) {
 			SimulationSlider slider = new SimulationSlider(str, myConfig);
 			custom.getChildren().add(slider.getCustomSlider());
 		}
 		buttonContainer.getChildren().add(custom);
 	}
 
-	private void setRowAndColEventHandler(Slider sizeSlider, boolean isRow) {
-		sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				myGameloop.pause();
-				int newval = (int) ((double) newValue);
-				if (isRow) {
-					myConfig.setNumRows(newval);
-				} else {
-					myConfig.setNumCols(newval);
-				}
-			}
-		});
-	}
+	// private void setRowAndColEventHandler(Slider sizeSlider, boolean isRow) {
+	// sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+	// @Override
+	// public void changed(ObservableValue<? extends Number> observable, Number
+	// oldValue, Number newValue) {
+	// myGameloop.pause();
+	// int newval = (int) ((double) newValue);
+	// if (isRow) {
+	// myConfig.setNumRows(newval);
+	// } else {
+	// myConfig.setNumCols(newval);
+	// }
+	// }
+	// });
+	// }
 
 	private void setFPSEventHandler(Slider fpsSlider) {
-		fpsSlider.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				double fpsdouble = 1000.0 / (double) newValue;
-				myConfig.setFramesPerSec((int) fpsdouble);
+		fpsSlider.setOnMouseReleased(e -> {
+				double fpsdouble = 1000.0 / (double) fpsSlider.getValue();
+				myConfig.setFramesPerSec((int) fpsSlider.getValue());
 				myGameloop.pause();
 				myGameloop.getKeyFrames().remove(0);
-				myGameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), e -> {
+				myGameloop.getKeyFrames().add(new KeyFrame(Duration.millis(fpsdouble), ev -> {
 					updateGrid();
 				}));
 				if (simIsRunning) {
 					myGameloop.playFromStart();
 				}
-			}
 		});
 	}
 
@@ -322,21 +327,16 @@ public class MainView {
 		SIMULATIONS.valueProperty().addListener(e -> {
 			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
-//			try {
-				try {
-					myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
-					initSimulation();
-				} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
-						| UnrecognizedQueryMethodException | QueryExpressionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-//			} catch (Exception e1) {
-//				throw new NullPointerException("Unable to load simulation");
-//			}
+			try {
+				myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
+				initSimulation();
+			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
+					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
+				// TODO handle excpetions JORdan
+				e1.printStackTrace();
+			}
 		});
 	}
-
 
 	// private void setGridLinesVisible(SimulationButton btn) {
 	// setDimensions(btn);
@@ -364,9 +364,6 @@ public class MainView {
 		btn.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() / 2);
 	}
 
-	/**
-	 * Creates a new GridPane for your simulation and adds it to the root
-	 */
 	private void createCellPane() {
 		myCellPane = new GridPane();
 		myCellPane.setMaxWidth(SceneConstant.GRID_WIDTH.getValue() + SceneConstant.GRID_PADDING.getValue());
@@ -376,7 +373,7 @@ public class MainView {
 
 		myCellPane.setMaxHeight(SceneConstant.GRID_HEIGHT.getValue());
 		myCellPane.setMinHeight(SceneConstant.GRID_HEIGHT.getValue());
-		
+
 		myRoot.getChildren().add(myCellPane);
 		// cellPane.setPrefWrapLength(50);
 		// cellPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
