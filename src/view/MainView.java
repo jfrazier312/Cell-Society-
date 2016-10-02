@@ -295,7 +295,6 @@ public class MainView {
 		myConfig.serializeTo(newXMLFile + ".xml");
 		myConfig = new Configuration(newXMLFile + ".xml");
 		Simulations.COMBOBOX.getSimulationComboBox().getItems().add(newXMLFile);
-		initSimulation();
 	}
 
 	private void pauseGrid() {
