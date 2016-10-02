@@ -10,7 +10,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import exceptions.InconsistentCrossReferenceInXMLException;
 import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
@@ -43,11 +42,9 @@ public class Configuration {
 	private Neighborhood neighborhood;
 	private Params customizedParams;
 	private Cells initialCells;
-//	private State defaultInitState;
 	private boolean isRunning;
 	private int framesPerSec;
 	private String shape;
-	private String wrapping;
 	
 	public Configuration(String src)
 			throws MalformedXMLSourceException, XMLParserException,
@@ -73,11 +70,11 @@ public class Configuration {
 		numCols = parser.getItemAsInteger("GridWidth");
 		numRows = parser.getItemAsInteger("GridHeight");
 		framesPerSec = parser.getItemAsInteger("FramesPerSec");
+		shape = parser.getItem("Shape");
 		allStates = new States().load(parser);
 		neighborhood = new Neighborhood().load(parser);
 		customizedParams = new Params().load(parser);
 		initialCells = new Cells().load(parser);
-//		defaultInitState = allStates.getDefaultState();
 		isRunning = false;
 		return this;
 	}
@@ -96,7 +93,7 @@ public class Configuration {
 			parser.updateDoc("GridWidth", numCols);
 			parser.updateDoc("GridHeight", numRows);
 			parser.updateDoc("FramesPerSec", framesPerSec);
-//			parser.updateDoc("DefaultInitState", defaultInitState.getValue());
+			parser.updateDoc("Shape", shape);
 			allStates.save();
 			neighborhood.save();
 			customizedParams.save();
@@ -121,10 +118,6 @@ public class Configuration {
 	public synchronized boolean isRunning() {
 		return isRunning;
 	}
-	
-//	public synchronized State getDefaultInitState() {
-//		return defaultInitState;
-//	}
 	
 	public synchronized int getFramesPerSec() {
 		return framesPerSec;
@@ -175,20 +168,10 @@ public class Configuration {
 	}
 	
 	public synchronized String getWrapping() {
-		return wrapping;
+		return neighborhood.getEdgeType();
 	}
 
 	// -------- MUTATORS ---------
-//	public synchronized Configuration setDefaultInitState(String defaultInitState)
-//			throws InconsistentCrossReferenceInXMLException {
-//		State s = allStates.getStateByName(defaultInitState);
-//		if (s == null) {
-//			throw new InconsistentCrossReferenceInXMLException();
-//		}
-//		this.defaultInitState = s;
-//		return this;
-//	}
-	
 	public synchronized Configuration setCustomParam(String paramName, String value) {
 		customizedParams.setCustomParam(paramName, value);
 		return this;
@@ -230,7 +213,7 @@ public class Configuration {
 	}
 	
 	public synchronized Configuration setWrapping(String wrapping) {
-		this.wrapping = wrapping;
+		neighborhood.setEdgeType(wrapping);
 		return this;
 	}
 }

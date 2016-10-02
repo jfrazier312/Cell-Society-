@@ -18,17 +18,21 @@ public class SugarSimulation extends CellGrid{
 	public static final String SIMULATION_NAME = "SUGAR_SIMULATION";
 	private static final String AGENT = "agent";
 	private static final String NOAGENT = "no_agent";
+	private static final int MAX_METABOLISM = 4;
+	private static final int MAX_PATCH_SUGAR = 6;
+	
 	private int sugarGrowBackCount;
 	private int sugarGrowBackRate;
-	private int sugarGrowBackInterval;
+	private double sugarGrowBackInterval;
+	private int maxVision;
 	Random generator;
 	
 	public SugarSimulation(Configuration config) {
 		super(config);
 		sugarGrowBackRate = 1;
 		sugarGrowBackCount = 0;
-		//change this for second model
-		sugarGrowBackInterval = 1;
+		sugarGrowBackInterval = 1.0;
+		maxVision = (int) ((int) 100*Double.parseDouble(getConfig().getCustomParam("sugarGrowBackInterval")));
 	}
 	
 	@Override
@@ -52,10 +56,9 @@ public class SugarSimulation extends CellGrid{
 		int patchCheck = generator.nextInt(agentOrNot.size());
 		boolean patch = agentOrNot.get(patchCheck);
 		agentOrNot.remove(patchCheck);
-		//change vision for second model (aka get from xml)
-		int vision = generator.nextInt(6)+1;
-		int metabolism = generator.nextInt(4)+1;
-		int myPatchSugar = generator.nextInt(5)+1;
+		int vision = generator.nextInt(maxVision)+1;
+		int metabolism = generator.nextInt(MAX_METABOLISM)+1;
+		int myPatchSugar = generator.nextInt(MAX_PATCH_SUGAR)+1;
 		if(patch){
 			int sugarVal = generator.nextInt(21)+5;
 			setGridCell(i, j, new SugarAgent(i, j, sugarVal, metabolism, vision, myPatchSugar));
@@ -91,6 +94,7 @@ public class SugarSimulation extends CellGrid{
 	//add check to see if a cell has a future state
 	@Override
 	public void updateGrid() {
+		sugarGrowBackInterval = 100*Double.parseDouble(getConfig().getCustomParam("sugarGrowBackInterval"))+1;
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -113,7 +117,7 @@ public class SugarSimulation extends CellGrid{
 	}
 
 	private void restoreSugar() {
-		if(sugarGrowBackCount == sugarGrowBackInterval){
+		if(sugarGrowBackCount >= sugarGrowBackInterval){
 			for (int i = 0; i < getNumRows(); i++) {
 				for (int j = 0; j < getNumCols(); j++) {
 					((SugarAgent) getGridCell(i, j)).getPatch().addSugar(sugarGrowBackRate);

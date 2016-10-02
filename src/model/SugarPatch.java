@@ -20,7 +20,7 @@ public class SugarPatch{
 	}
 	
 	public void decreaseSugar(){
-		mySugar = 0;
+		mySugar = 1;
 	}
 	
 	public void addSugar(int amount){

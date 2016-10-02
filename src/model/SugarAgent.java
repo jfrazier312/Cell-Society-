@@ -1,24 +1,26 @@
 package model;
+
 import config.State;
+
 /**
  * @author austingartside
  *
  */
-public class SugarAgent extends Cell{
-	
+public class SugarAgent extends Cell {
+
 	private int mySugar;
 	private int mySugarMetabolism;
 	private int myVision;
 	SugarPatch myPatch;
-	
-	public SugarAgent(int row, int col, int initSugar, int sugarMetabolism, int vision, int patchSugar){
+
+	public SugarAgent(int row, int col, int initSugar, int sugarMetabolism, int vision, int patchSugar) {
 		super(row, col);
 		mySugar = initSugar;
 		mySugarMetabolism = sugarMetabolism;
 		myVision = vision;
 		myPatch = new SugarPatch(patchSugar);
 	}
-	
+
 	public State serialize() {
 		State s = new State();
 		s.getAttributes().put("mySugar", mySugar + "");
@@ -28,45 +30,55 @@ public class SugarAgent extends Cell{
 		s.getAttributes().put("myPatchMaxSugar", myPatch.getMaxSugar() + "");
 		return s;
 	}
-	
-	public SugarPatch getPatch(){
+
+	@Override
+	public boolean hasPatch() {
+		return mySugar > 0;
+	}
+
+	public SugarPatch getPatch() {
 		return myPatch;
 	}
 	
-	public int getSugar(){
+	@Override
+	public boolean isSugarCell() {
+		return true;
+	}
+
+	public int getSugar() {
 		return mySugar;
 	}
-	
-	public void setSugar(int sugar){
+
+	public void setSugar(int sugar) {
 		mySugar = sugar;
 	}
-	
-	public int getSugarMetabolism(){
+
+	public int getSugarMetabolism() {
 		return mySugarMetabolism;
 	}
-	
-	public void setSugarMetabolism(int newMetabolism){
+
+	public void setSugarMetabolism(int newMetabolism) {
 		mySugarMetabolism = newMetabolism;
 	}
-	
-	public int getVision(){
+
+	public int getVision() {
 		return myVision;
 	}
-	
-	public void updateSugar(int amount){
-		mySugar+=amount;
-		mySugar-=mySugarMetabolism;
+
+	public void updateSugar(int amount) {
+		mySugar += amount;
+		mySugar -= mySugarMetabolism;
 	}
-	
-	public void killAgent(){
+
+	public void killAgent() {
 		mySugar = 0;
 	}
-	
-	public boolean isDead(){
-		return mySugar<=0;
+
+	public boolean isDead() {
+		return mySugar <= 0;
 	}
-	
-	public boolean isVacant(){
+
+	public boolean isVacant() {
 		return getFuturestate().equals("");
 	}
 

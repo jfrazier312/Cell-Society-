@@ -32,6 +32,11 @@ public class AntCell extends Cell{
 		return myAnts;
 	}
 	
+	@Override
+	public boolean hasPatch(){
+		return myAnts.size()>0;
+	}
+	
 	public void loseFoodPheromones(int lostFood){
 		myFoodPheromones-=lostFood;
 		if(myFoodPheromones<0){

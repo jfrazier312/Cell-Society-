@@ -13,7 +13,6 @@ import config.Configuration;
 import config.ConfigurationLoader;
 import config.State;
 import config.States;
-import exceptions.InconsistentCrossReferenceInXMLException;
 import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
@@ -60,7 +59,6 @@ public class ConfigurationTest {
 			}
 		}
 		assertNotNull(config.getAllStates().getStateByName("state2"));
-		assertEquals("state1", config.getDefaultInitState().getValue());
 	}
 	
 	@Test
@@ -77,11 +75,11 @@ public class ConfigurationTest {
 	
 	private static final String AUTHOR = "different author",
 							  SIMULATION = "different simulation",
-							  DEFAULT_STATE_NAME = "state2",
 							  STATE_CHOSEN = "state1",
 							  STATE_ATTR = "color",
 							  STATE_ATTR_VALUE = "new color",
 							  EDGE_TYPE = "random",
+							  SHAPE = "Triangle",
 							  PARAM = "probability",
 							  PARAM_VALUE = "0.2";
 	private static final int GRID_WIDTH = 100,
@@ -125,14 +123,14 @@ public class ConfigurationTest {
 				  .setNumRows(GRID_HEIGHT)
 				  .setNumCols(GRID_WIDTH)
 				  .setFramesPerSec(FPS)
-				  .setDefaultInitState(DEFAULT_STATE_NAME)
-				  .setCustomParam(PARAM, PARAM_VALUE);
+				  .setCustomParam(PARAM, PARAM_VALUE)
+				  .setShape(SHAPE);
 			config.getAllStates().getStateByName(STATE_CHOSEN)
 				  .getAttributes().put(STATE_ATTR,  STATE_ATTR_VALUE);
 			config.getNeighborhood().setSize(NEIGHBORHOOD_SIZE).setEdgeType(EDGE_TYPE);
 			config.serializeTo(OUTPUT_SOURCE);
 			assertTrue(file.exists());
-		} catch (InconsistentCrossReferenceInXMLException | QueryExpressionException e) {
+		} catch (QueryExpressionException e) {
 			assertNull(e); // should not have exceptions
 		}
 		try {
@@ -141,13 +139,13 @@ public class ConfigurationTest {
 			assertEquals(newConfig.getAuthor(), AUTHOR);
 			assertEquals(newConfig.getNumCols(), GRID_WIDTH);
 			assertEquals(newConfig.getNumRows(), GRID_HEIGHT);
-			assertEquals(newConfig.getDefaultInitState().getValue(), DEFAULT_STATE_NAME);
 			assertEquals(newConfig.getFramesPerSec(), FPS);
 			assertEquals(newConfig.getAllStates().getStateByName(STATE_CHOSEN).getAttributes()
 					.get(STATE_ATTR), STATE_ATTR_VALUE);
 			assertEquals(newConfig.getNeighborhood().getSize(), NEIGHBORHOOD_SIZE);
 			assertEquals(newConfig.getNeighborhood().getEdgeType(), EDGE_TYPE);
 			assertEquals(newConfig.getCustomParam(PARAM), PARAM_VALUE);
+			assertEquals(newConfig.getShape(), SHAPE);
 		} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
 				| UnrecognizedQueryMethodException | QueryExpressionException e) {
 			assertNull(e); // should not have exceptions
