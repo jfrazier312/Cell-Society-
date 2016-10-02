@@ -1,10 +1,8 @@
 package model;
 import java.util.ArrayList;
 
-import config.XMLParser;
-import javafx.scene.Node;
-
 import config.State;
+import javafx.scene.shape.Shape;
 
 /**
  * 
@@ -14,7 +12,7 @@ import config.State;
  */
 
 //put all row deltas here nad have the get row delta methods be here
-public abstract class Cell {
+public abstract class Cell extends Shape {
 	
 	//make getters and setters for all of these and put them in the classes?
 //	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };
@@ -81,7 +79,7 @@ public abstract class Cell {
 		this.neighbors = neighbors;
 	}
 	
-	public abstract Node render();
+	public Shape render() { return null; }
 	
 	public abstract int[] getRowDeltas();
 	
@@ -96,6 +94,13 @@ public abstract class Cell {
 		s.getAttributes().put("row", rowPos + "");
 		s.getAttributes().put("col", colPos + "");
 		s.getAttributes().put("currentState", currentstate);
+		s.getAttributes().put("futureState",  futurestate);
 		return s;
+	}
+
+	@Override
+	public com.sun.javafx.geom.Shape impl_configShape() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -18,7 +18,9 @@ public enum SceneConstant {
 	BUTTON_CONTAINER_WIDTH(250),
 	
 	SLIDER_MINIMUM(1.0),
-	SLIDER_MAXIMUM(50.0);
+	SLIDER_MAXIMUM(50.0),
+	
+	MAX_FPS(17.0);
 	
 	double myVal;
 	

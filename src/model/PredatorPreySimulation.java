@@ -16,7 +16,7 @@ public class PredatorPreySimulation extends CellGrid {
 	private String EMPTY;
 	private String FISH;
 	private String SHARK;
-	public static final String SIMULATION_NAME = Simulations.PREDATOR_PREY.getName();
+	private static final String SIMULATION_NAME = Simulations.PREDATOR_PREY.getName();
 	public static final int VISION = 1;
 	private Random generator;
 

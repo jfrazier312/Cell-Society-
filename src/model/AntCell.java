@@ -119,5 +119,15 @@ public class AntCell extends Cell{
 	public boolean hasAnts(){
 		return myAnts.size()>0;
 	}
+	@Override
+	public int[] getRowDeltas() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int[] getColDeltas() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

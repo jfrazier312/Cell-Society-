@@ -14,7 +14,7 @@ import view.Simulations;
  */
 public class SegregationSimulation extends CellGrid {
 	
-	public static final String SIMULATION_NAME = Simulations.SEGREGATION.getName();
+	private static final String SIMULATION_NAME = Simulations.SEGREGATION.getName();
 	public static final int VISION = 1;
 	private double myProbability;
 	

@@ -7,7 +7,9 @@ import java.util.ResourceBundle;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.sun.org.apache.xerces.internal.utils.XMLSecurityManager.State;
 import config.Cells;
+
 import config.Configuration;
 //import config.ConfigurationLoader;
 import config.XMLParser;
@@ -16,6 +18,8 @@ import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import utils.Utils;
 
 /**
@@ -52,29 +56,36 @@ public abstract class CellGrid extends GridPane {
 		}
 		//gonna have to change this
 		myShape = "rectangle";
-		isToroidal = true;
+		isToroidal = false;
 		chooseRowDeltas();
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
+	public void renderGrid(GridPane cellPane, Configuration config) {
 	//we have to change render so that it does not use a render method within the cell class or uses if tree
-	public void renderGrid(GridPane cellPane) {
 		for(int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-//				ColumnConstraints colC = new ColumnConstraints();
-//				colC.setPercentWidth(100);
-//				cellPane.getColumnConstraints().add(colC);
-//				RowConstraints rowC = new RowConstraints();
-//				rowC.setPercentHeight(100);
-//				cellPane.getRowConstraints().add(rowC);
-//				
 				Cell currentCell = grid[i][j];
-				Node updatedCell = currentCell.render();
+				Shape updatedCell = currentCell.render();	
+				allowClickableCells(config, currentCell, updatedCell);
 				cellPane.add(updatedCell, j, i);
 			}
 		}	
-		
-		
+	}
+
+	private void allowClickableCells(Configuration config, Cell currentCell, Shape updatedCell) {
+		updatedCell.setOnMouseClicked(e -> {
+			int len = config.getAllStates().getList().size();
+			for ( int i = 0; i < len; i++) {
+				if (config.getAllStates().getList().get(i).getValue().equals(currentCell.getCurrentstate())) {
+					currentCell.setCurrentstate(config.getAllStates().getList().get((i + 1) % len).getValue());
+				}
+			}
+			
+			String color = myConfig.getAllStates().getStateByName(currentCell.getCurrentstate()).getAttributes()
+					.get("color");
+			updatedCell.setFill(Color.web(color));		
+		});
 	}
 	
 	/**
@@ -222,6 +233,8 @@ public abstract class CellGrid extends GridPane {
 	
 	private int[] getColDeltas(){
 		return colDeltas;
+	}
+	
 	/**
 	 * Load cellgrid from config
 	 */

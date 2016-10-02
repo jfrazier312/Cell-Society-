@@ -13,7 +13,7 @@ import view.Simulations;
  */
 public class GameOfLifeSimulation extends CellGrid {
 	
-	public static final String SIMULATION_NAME = Simulations.GAME_OF_LIFE.getName();
+	private static final String SIMULATION_NAME = Simulations.GAME_OF_LIFE.getName();
 	private String DEAD;
 	private String ALIVE;
 	private int isEven;
