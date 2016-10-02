@@ -373,13 +373,12 @@ public class MainView {
 	}
 
 	private void setSimulationEventHandler() {
-		Simulations.COMBOBOX.getSimulationComboBox().setValue(myConfig.getSimulationName());
-		Simulations.COMBOBOX.getSimulationComboBox()
-				.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		Simulations.COMBOBOX.getSimulationComboBox()
-				.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		ComboBox<String> simulationBox = Simulations.COMBOBOX.getSimulationComboBox();
+		simulationBox.setValue(myConfig.getSimulationName());
+		simulationBox.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		simulationBox.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 
-		Simulations.COMBOBOX.getSimulationComboBox().valueProperty().addListener(e -> {
+		simulationBox.valueProperty().addListener(e -> {
 			myGameloop.stop(); // why am I not just pausing
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			try {
@@ -407,7 +406,6 @@ public class MainView {
 		shapeBox.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 		shapeBox.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 		shapeBox.setValue(myResources.getString("Rectangle"));
-		myConfig.setShape(shapeBox.getValue());
 		
 		shapeBox.valueProperty().addListener(e -> {
 			myGameloop.stop(); // Why am I not pausing
