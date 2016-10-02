@@ -94,6 +94,7 @@ public abstract class Cell extends Shape {
 		s.getAttributes().put("row", rowPos + "");
 		s.getAttributes().put("col", colPos + "");
 		s.getAttributes().put("currentState", currentstate);
+		s.getAttributes().put("futureState",  futurestate);
 		return s;
 	}
 

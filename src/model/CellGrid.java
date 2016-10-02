@@ -75,21 +75,13 @@ public abstract class CellGrid extends GridPane {
 
 	private void allowClickableCells(Configuration config, Cell currentCell, Shape updatedCell) {
 		updatedCell.setOnMouseClicked(e -> {
-//			for(config.State s : config.getAllStates()) {
-//				if (s.getValue().equals(currentCell.getCurrentstate())) {
-//					
-//				}
-//			}
+			int len = config.getAllStates().getList().size();
+			for ( int i = 0; i < len; i++) {
+				if (config.getAllStates().getList().get(i).getValue().equals(currentCell.getCurrentstate())) {
+					currentCell.setCurrentstate(config.getAllStates().getList().get((i + 1) % len).getValue());
+				}
+			}
 			
-//			for(int i = config.getAllStates().getList().(currentCell.getCurrentstate()); i < config.getAllStates().getLength(); i++) {
-//				if (!currentCell.getCurrentstate().equals(config.getAllStates().get(0))){
-
-//				if (!currentCell.getCurrentstate().equals(s.getValue())){
-//					currentCell.setCurrentstate(s.getValue());
-//					break;
-//				}
-//			}
-//			updatedCell = currentCell.render();
 			String color = myConfig.getAllStates().getStateByName(currentCell.getCurrentstate()).getAttributes()
 					.get("color");
 			updatedCell.setFill(Color.web(color));		

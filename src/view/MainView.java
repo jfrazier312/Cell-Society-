@@ -91,27 +91,26 @@ public class MainView {
 	private void createResetTimelineChecker() {
 		Timeline timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.getKeyFrames()
-				.add(new KeyFrame(Duration.millis(SceneConstant.MAX_FPS.getValue()), e -> {
-					if (SimulationSlider.reset) {
-						try {
-							resetGrid();
-							// TODO: Handle each error based on exception type
-						} catch (NumberFormatException e1) {
-							e1.printStackTrace();
-						} catch (MalformedXMLSourceException e1) {
-							e1.printStackTrace();
-						} catch (XMLParserException e1) {
-							e1.printStackTrace();
-						} catch (UnrecognizedQueryMethodException e1) {
-							// when user tries to parse with a different query
-							// method
-							e1.printStackTrace();
-						} catch (QueryExpressionException e1) {
-							e1.printStackTrace();
-						}
-					}
-				}));
+		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(SceneConstant.MAX_FPS.getValue()), e -> {
+			if (SimulationSlider.reset) {
+				try {
+					resetGrid();
+					// TODO: Handle each error based on exception type
+				} catch (NumberFormatException e1) {
+					e1.printStackTrace();
+				} catch (MalformedXMLSourceException e1) {
+					e1.printStackTrace();
+				} catch (XMLParserException e1) {
+					e1.printStackTrace();
+				} catch (UnrecognizedQueryMethodException e1) {
+					// when user tries to parse with a different query
+					// method
+					e1.printStackTrace();
+				} catch (QueryExpressionException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}));
 		timeline.play();
 	}
 
@@ -158,7 +157,7 @@ public class MainView {
 		mySimulation.updateGrid();
 		mySimulation.renderGrid(myCellPane, myConfig);
 	}
-	
+
 	private void setTitleName() {
 		Label title = new Label("Cellular Automata!");
 		title.getStyleClass().add("simulationTitle");
@@ -175,7 +174,6 @@ public class MainView {
 		HBox hbox2 = new HBox(SceneConstant.PADDING.getValue());
 		HBox hbox3 = new HBox(SceneConstant.PADDING.getValue());
 		VBox vbox = new VBox(SceneConstant.PADDING.getValue());
-		
 
 		SimulationButton playBtn = makeButton("Play", new EventHandler<ActionEvent>() {
 			@Override
@@ -204,7 +202,7 @@ public class MainView {
 				stepButtonHandler();
 			}
 		});
-		
+
 		SimulationButton saveBtn = makeButton("Save", new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -284,15 +282,15 @@ public class MainView {
 		try {
 			initSimulation();
 		} catch (Exception e) {
-			//TODO: Exception
+			// TODO: Exception
 			throw new NullPointerException("Unable to init simulation");
 		}
 		pauseGrid();
 	}
-	
-	private void saveButtonHandler() throws QueryExpressionException, NumberFormatException, MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException {
-		// save to xml,
-		// put new simulation + restore in combobox
+
+	private void saveButtonHandler() throws QueryExpressionException, NumberFormatException,
+			MalformedXMLSourceException, XMLParserException, UnrecognizedQueryMethodException {
+		mySimulation.save();
 		String newXMLFile = mySimulation.getSimulationName() + "-RESTORE";
 		myConfig.serializeTo(newXMLFile + ".xml");
 		myConfig = new Configuration(newXMLFile + ".xml");
@@ -309,8 +307,8 @@ public class MainView {
 		buttonContainer.setPadding(buttonPadding);
 		buttonContainer.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
 		buttonContainer.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
-		buttonContainer.setLayoutX(SceneConstant.SCENE_WIDTH.getValue()
-				- SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
+		buttonContainer
+				.setLayoutX(SceneConstant.SCENE_WIDTH.getValue() - SceneConstant.BUTTON_CONTAINER_WIDTH.getValue());
 		myRoot.getChildren().add(buttonContainer);
 	}
 
@@ -368,6 +366,7 @@ public class MainView {
 				.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 		Simulations.COMBOBOX.getSimulationComboBox()
 				.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+
 		Simulations.COMBOBOX.getSimulationComboBox().valueProperty().addListener(e -> {
 			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
@@ -375,6 +374,13 @@ public class MainView {
 				myConfig = new Configuration(Simulations.COMBOBOX.getSimulationComboBox().getValue() + ".xml");
 				updateGameLoopFPS(SceneConstant.SLIDER_MINIMUM.getValue() * 1000);
 				initSimulation();
+				// Only load if its a restored version
+				if (Simulations.COMBOBOX.getSimulationComboBox().getValue().contains("RESTORE")) {
+					mySimulation.load();
+//					initSimulation();
+					mySimulation.renderGrid(myCellPane, myConfig);
+				}
+
 			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
 					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
 				// TODO handle excpetions JORdan
