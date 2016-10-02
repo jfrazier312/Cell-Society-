@@ -10,7 +10,7 @@
 		<state color="#333333" reproductionTime="20" lifeTime="2">shark</state>
 		<state color="#d9d9d9">empty</state>
 	</states>
-	<init default="empty" mode="enum">
+	<init default="empty" mode="param">
 	</init>
 	<animation framesPerSec="1"></animation>
 	<param name="percentEmpty" value="0.1"></param>
