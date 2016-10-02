@@ -9,26 +9,23 @@ import exceptions.UnrecognizedQueryMethodException;
 import exceptions.XMLParserException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import model.AntSimulation;
 import model.CellGrid;
 import model.FireSimulation;
 import model.GameOfLifeSimulation;
 import model.PredatorPreySimulation;
 import model.SegregationSimulation;
+import model.SugarSimulation;
 
 /**
  * 
@@ -60,12 +57,7 @@ public class MainView {
 			(SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2,
 			SceneConstant.GRID_PADDING.getValue());
 
-	// TODO: Move these
-	private static final ObservableList<String> SIMULATION_OPTIONS = FXCollections.observableArrayList("Game_Of_Life",
-			"Predator_Prey", "Fire", "Segregation");
-
-	public static final ComboBox<String> SIMULATIONS = new ComboBox<>(SIMULATION_OPTIONS);
-
+	
 	public Scene initScene() throws Exception {
 		myRoot = new Group();
 		myScene = new Scene(myRoot, SceneConstant.SCENE_WIDTH.getValue(), SceneConstant.SCENE_HEIGHT.getValue());
@@ -145,6 +137,11 @@ public class MainView {
 			mySimulation = new SegregationSimulation(myConfig);
 		} else if (myConfig.getSimulationName().equals(Simulations.PREDATOR_PREY.getName())) {
 			mySimulation = new PredatorPreySimulation(myConfig);
+		} else if (myConfig.getSimulationName().equals(Simulations.ANT.getName())) {
+			mySimulation = new AntSimulation(myConfig);
+		} else if (myConfig.getSimulationName().equals(Simulations.SUGAR.getName())) {
+			mySimulation = new SugarSimulation(myConfig);
+
 		}
 	}
 
@@ -218,7 +215,7 @@ public class MainView {
 		vbox3.getChildren().addAll(rowsSlider.getGenericSlider(), colsSlider.getGenericSlider());
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
-		basicBtnBox.getChildren().addAll(SIMULATIONS, hbox1, hbox2, vbox3, fpsSlider.getGenericSlider(), gridVisible);
+		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationCheckBox(), hbox1, hbox2, vbox3, fpsSlider.getGenericSlider(), gridVisible);
 		basicBtnBox.setMinWidth(300);
 		buttonContainer.getChildren().add(basicBtnBox);
 
@@ -321,14 +318,14 @@ public class MainView {
 	}
 
 	private void setSimulationEventHandler() {
-		SIMULATIONS.setValue(myConfig.getSimulationName());
-		SIMULATIONS.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		SIMULATIONS.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		SIMULATIONS.valueProperty().addListener(e -> {
+		Simulations.COMBOBOX.getSimulationCheckBox().setValue(myConfig.getSimulationName());
+		Simulations.COMBOBOX.getSimulationCheckBox().setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		Simulations.COMBOBOX.getSimulationCheckBox().setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		Simulations.COMBOBOX.getSimulationCheckBox().valueProperty().addListener(e -> {
 			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			try {
-				myConfig = new Configuration(SIMULATIONS.getValue() + ".xml");
+				myConfig = new Configuration(Simulations.COMBOBOX.getSimulationCheckBox().getValue() + ".xml");
 				initSimulation();
 			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
 					| UnrecognizedQueryMethodException | QueryExpressionException e1) {

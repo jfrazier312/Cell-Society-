@@ -22,8 +22,8 @@ public class SugarSimulation extends CellGrid{
 	Configuration myConfig;
 	Random generator;
 	
-	public SugarSimulation(int row, int col, Configuration config) {
-		super(row, col);
+	public SugarSimulation(Configuration config) {
+		super(config);
 		myConfig = config;
 		//change this for second model
 		sugarGrowBackRate = 1;
