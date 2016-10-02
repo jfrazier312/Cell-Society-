@@ -1,18 +1,18 @@
 package model;
 import java.util.ArrayList;
 
-import javafx.scene.Node;
-import javafx.scene.paint.Color;
+import config.State;
 import javafx.scene.shape.Shape;
 
 /**
  * 
  * @author Jordan Frazier (jrf30)
+ * @author Charles Xu (cx15)
  *
  */
 
 //put all row deltas here nad have the get row delta methods be here
-public class Cell extends Shape {
+public abstract class Cell extends Shape {
 	
 	//make getters and setters for all of these and put them in the classes?
 //	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };
@@ -81,9 +81,21 @@ public class Cell extends Shape {
 	
 	public Shape render() { return null; }
 	
-	public int[] getRowDeltas() { return null; }
+	public abstract int[] getRowDeltas();
 	
-	public int[] getColDeltas() { return null; }
+	public abstract int[] getColDeltas();
+	
+	/**
+	 * Serialize to an element in XML
+	 * @param parser
+	 */
+	public State serialize() {
+		State s = new State();
+		s.getAttributes().put("row", rowPos + "");
+		s.getAttributes().put("col", colPos + "");
+		s.getAttributes().put("currentState", currentstate);
+		return s;
+	}
 
 	@Override
 	public com.sun.javafx.geom.Shape impl_configShape() {

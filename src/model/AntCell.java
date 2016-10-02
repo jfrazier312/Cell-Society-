@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import config.Configuration;
+import config.State;
 /**
  * @author austingartside
  *
  */
-public class AntCell extends RectangleWithDiagonals{
+public class AntCell extends Cell{
 
 	private static final int myMaxPheromones = 1000;
 	
@@ -22,9 +23,8 @@ public class AntCell extends RectangleWithDiagonals{
 	
 	Configuration myConfig;
 	
-	public AntCell(int row, int col, int homePheromones, int foodPheromones, int maxHomePheromones, int maxFoodPheromones,
-			Configuration config) {
-		super(row, col, config);
+	public AntCell(int row, int col, int homePheromones, int foodPheromones, int maxHomePheromones, int maxFoodPheromones) {
+		super(row, col);
 		myAnts = new ArrayList<Ant>();
 		myHomePheromones = homePheromones;
 		myFoodPheromones = foodPheromones;
@@ -67,6 +67,22 @@ public class AntCell extends RectangleWithDiagonals{
 		return myFoodPheromones;
 	}
 	
+	public int getMaxHomePheromones(){
+		return myMaxHomePheromones;
+	}
+	
+	public int getMaxFoodPheromones(){
+		return myMaxFoodPheromones;
+	}
+	
+	public void setMaxHomePheromones(int value){
+		myMaxHomePheromones = value;
+	}
+	
+	public void setMaxFoodPheromones(int value){
+		myMaxFoodPheromones = value;
+	}
+	
 	public void addAnt(Ant newAnt){
 		myAnts.add(newAnt);
 	}
@@ -102,6 +118,16 @@ public class AntCell extends RectangleWithDiagonals{
 	
 	public boolean hasAnts(){
 		return myAnts.size()>0;
+	}
+	@Override
+	public int[] getRowDeltas() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int[] getColDeltas() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

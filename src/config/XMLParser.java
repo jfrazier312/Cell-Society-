@@ -69,6 +69,19 @@ public abstract class XMLParser {
 					QueryExpressionException, MalformedXMLSourceException;
 	
 	/**
+	 * Return the String value of element identified by itemName in doc
+	 * item allowed to be empty
+	 * @param itemName
+	 * @return
+	 * @throws UnrecognizedQueryMethodException
+	 * @throws QueryExpressionException
+	 * @throws MalformedXMLSourceException
+	 */
+	public abstract NodeList getNodeListAllowEmpty(String itemName)
+			throws UnrecognizedQueryMethodException,
+					QueryExpressionException, MalformedXMLSourceException;
+	
+	/**
 	 * Return the int value of element identified by itemName in doc
 	 * @param itemName
 	 * @return
@@ -111,7 +124,7 @@ public abstract class XMLParser {
 		this.doc.getDocumentElement().normalize();
 	}
 	
-	protected Document getDoc() {
+	public Document getDoc() {
 		return doc;
 	}
 	
