@@ -43,7 +43,7 @@ public class Configuration {
 	private Neighborhood neighborhood;
 	private Params customizedParams;
 	private Cells initialCells;
-	private State defaultInitState;
+//	private State defaultInitState;
 	private boolean isRunning;
 	private int framesPerSec;
 	
@@ -75,7 +75,7 @@ public class Configuration {
 		neighborhood = new Neighborhood().load(parser);
 		customizedParams = new Params().load(parser);
 		initialCells = new Cells().load(parser);
-		defaultInitState = allStates.getDefaultState();
+//		defaultInitState = allStates.getDefaultState();
 		isRunning = false;
 		return this;
 	}
@@ -94,7 +94,7 @@ public class Configuration {
 			parser.updateDoc("GridWidth", numCols);
 			parser.updateDoc("GridHeight", numRows);
 			parser.updateDoc("FramesPerSec", framesPerSec);
-			parser.updateDoc("DefaultInitState", defaultInitState.getValue());
+//			parser.updateDoc("DefaultInitState", defaultInitState.getValue());
 			allStates.save();
 			neighborhood.save();
 			customizedParams.save();
@@ -120,9 +120,9 @@ public class Configuration {
 		return isRunning;
 	}
 	
-	public synchronized State getDefaultInitState() {
-		return defaultInitState;
-	}
+//	public synchronized State getDefaultInitState() {
+//		return defaultInitState;
+//	}
 	
 	public synchronized int getFramesPerSec() {
 		return framesPerSec;
@@ -169,15 +169,15 @@ public class Configuration {
 	}
 
 	// -------- MUTATORS ---------
-	public synchronized Configuration setDefaultInitState(String defaultInitState)
-			throws InconsistentCrossReferenceInXMLException {
-		State s = allStates.getStateByName(defaultInitState);
-		if (s == null) {
-			throw new InconsistentCrossReferenceInXMLException();
-		}
-		this.defaultInitState = s;
-		return this;
-	}
+//	public synchronized Configuration setDefaultInitState(String defaultInitState)
+//			throws InconsistentCrossReferenceInXMLException {
+//		State s = allStates.getStateByName(defaultInitState);
+//		if (s == null) {
+//			throw new InconsistentCrossReferenceInXMLException();
+//		}
+//		this.defaultInitState = s;
+//		return this;
+//	}
 	
 	public synchronized Configuration setCustomParam(String paramName, String value) {
 		customizedParams.setCustomParam(paramName, value);

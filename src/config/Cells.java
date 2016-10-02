@@ -10,6 +10,7 @@ import org.w3c.dom.Node;
 import exceptions.MalformedXMLSourceException;
 import exceptions.QueryExpressionException;
 import exceptions.UnrecognizedQueryMethodException;
+import utils.Utils;
 
 /**
  * @author CharlesXu
@@ -34,7 +35,9 @@ public class Cells extends CompositeData implements Iterable<State>{
 	public Cells save()
 			throws UnrecognizedQueryMethodException, MalformedXMLSourceException,
 			QueryExpressionException {
-		Node parent = traverseChildren(ITEMS, true);
+		Node parent = Utils.getNode(parser.getDoc(), "init");
+		if (parser.getItem("CellsMode").equals("enum"))
+			parent = traverseChildren(ITEMS, true);
 		for (State s : cellsOnGrid) {
 			Element p = parser.getDoc().createElement("cell"); 
 			for (String attr : s.getAttributes().keySet()) {

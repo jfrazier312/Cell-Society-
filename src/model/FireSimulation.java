@@ -31,25 +31,12 @@ public class FireSimulation extends CellGrid {
 		isToroidal = false;
 	}
 	
-	@Override
-	public void load() {
-		for (State s :getConfig().getInitialCells()) {
-			int row = Integer.parseInt(s.getAttributes().get("row"));
-			int col = Integer.parseInt(s.getAttributes().get("col"));
-			Cell r = new RectangleNoDiagonals(row, col, getConfig());
-			r.setCurrentstate(s.getAttributes().get("currentState"));
-			r.setFuturestate(s.getAttributes().get("futureState"));
-			setGridCell(row, col, r);
-		}
-	}
-	
 	public void initSimulation() {
 		if(isToroidal){
 			createToroidalGrid();
 		}
 		else{
 			createGrid();
-//		load(); // if initial cells are empty, will not overwrite cell
 		}
 	}
 	
