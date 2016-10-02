@@ -10,7 +10,7 @@
 		<state color="#ff0000">burning</state>
 		<state color="#000011">empty</state>
 	</states>
-	<init mode="enum" default="tree">
+	<init mode="enum" default="tree" shape="Rectangle">
 		<cell state="burning" row="1" col="1"></cell>
 	</init>
 	<animation framesPerSec="1"></animation>
