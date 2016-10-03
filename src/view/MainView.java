@@ -9,6 +9,7 @@ import exceptions.UnrecognizedQueryMethodException;
 import exceptions.XMLParserException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -17,11 +18,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.AntSimulation;
@@ -41,7 +44,7 @@ public class MainView {
 
 	private Scene myScene;
 	private Group myRoot;
-	private GridPane myCellPane;
+	private Pane myCellPane;
 	private CellGrid mySimulation;
 	private Timeline myGameloop;
 
@@ -74,7 +77,7 @@ public class MainView {
 
 	private void beginInitialSetup() throws NumberFormatException, MalformedXMLSourceException, XMLParserException,
 			UnrecognizedQueryMethodException, QueryExpressionException {
-		resetConfiguration("Fire");
+		resetConfiguration("Predator_Prey");
 		setInitialComboBoxHandlers();
 		initSimulation();
 		createResetTimelineChecker();
@@ -102,19 +105,10 @@ public class MainView {
 			if (SimulationSlider.reset) {
 				try {
 					resetGrid();
-					// TODO: Handle each error based on exception type
-				} catch (NumberFormatException e1) {
+				} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
+						| UnrecognizedQueryMethodException | QueryExpressionException e1) {
 					e1.printStackTrace();
-				} catch (MalformedXMLSourceException e1) {
-					e1.printStackTrace();
-				} catch (XMLParserException e1) {
-					e1.printStackTrace();
-				} catch (UnrecognizedQueryMethodException e1) {
-					// when user tries to parse with a different query
-					// method
-					e1.printStackTrace();
-				} catch (QueryExpressionException e1) {
-					e1.printStackTrace();
+					handleExceptionDialog();
 				}
 			}
 		}));
@@ -216,8 +210,8 @@ public class MainView {
 					saveButtonHandler();
 				} catch (NumberFormatException | QueryExpressionException | MalformedXMLSourceException
 						| XMLParserException | UnrecognizedQueryMethodException e) {
-					// TODO Exceptions
 					e.printStackTrace();
+					handleExceptionDialog();
 				}
 			}
 		});
@@ -245,7 +239,8 @@ public class MainView {
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
 		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(),
-				Simulations.COMBOBOX.getShapesComboBox(), Simulations.COMBOBOX.getWrappingsComboBox(), hbox1, hbox2, vbox, fpsSlider.getGenericSlider(), hbox3);
+				Simulations.COMBOBOX.getShapesComboBox(), Simulations.COMBOBOX.getWrappingsComboBox(), hbox1, hbox2,
+				vbox, fpsSlider.getGenericSlider(), hbox3);
 		basicBtnBox.setMinWidth(300);
 		buttonContainer.getChildren().add(basicBtnBox);
 
@@ -288,7 +283,7 @@ public class MainView {
 		try {
 			initSimulation();
 		} catch (Exception e) {
-			// TODO: Exception
+			handleExceptionDialog();
 			throw new NullPointerException("Unable to init simulation");
 		}
 		pauseGrid();
@@ -374,12 +369,10 @@ public class MainView {
 
 	private void setSimulationEventHandler() {
 		ComboBox<String> simulationBox = Simulations.COMBOBOX.getSimulationComboBox();
-		simulationBox.setValue(myConfig.getSimulationName());
-		simulationBox.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		simulationBox.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		setComboBoxProperties(simulationBox, myConfig.getSimulationName());
 
 		simulationBox.valueProperty().addListener(e -> {
-			myGameloop.stop(); // why am I not just pausing
+			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			try {
 				resetConfiguration(Simulations.COMBOBOX.getSimulationComboBox().getValue());
@@ -388,81 +381,92 @@ public class MainView {
 				// Only load if its a restored version
 				if (Simulations.COMBOBOX.getSimulationComboBox().getValue().contains("RESTORE")) {
 					mySimulation.load();
-					// initSimulation();
 					mySimulation.renderGrid(myCellPane, myConfig);
 				}
 
 			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
 					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
-				// TODO handle exceptions JORdan
 				e1.printStackTrace();
+				handleExceptionDialog();
 			}
+		});
+	}
+
+	private void handleExceptionDialog() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Exception");
+		alert.setHeaderText("Bad Input");
+		alert.setContentText("Format XML file correctly");
+		alert.showAndWait();
+		alert.setOnCloseRequest(e -> {
+			Platform.exit();
 		});
 	}
 
 	private void setShapesEventHandler() {
 		ComboBox<String> shapeBox = Simulations.COMBOBOX.getShapesComboBox();
-		shapeBox.setValue(myConfig.getSimulationName());
-		shapeBox.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		shapeBox.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		shapeBox.setValue(myResources.getString("Rectangle"));
-		
+		setComboBoxProperties(shapeBox, "Rectangle");
+
 		shapeBox.valueProperty().addListener(e -> {
-			myGameloop.stop(); // Why am I not pausing
+			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			myConfig.setShape(shapeBox.getValue());
 			try {
 				initSimulation();
 			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
 					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				handleExceptionDialog();
 			}
 		});
 	}
-	
+
 	private void setWrappingsEventHandler() {
 		ComboBox<String> wrappingsBox = Simulations.COMBOBOX.getWrappingsComboBox();
-		wrappingsBox.setValue(myConfig.getSimulationName());
-		wrappingsBox.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		wrappingsBox.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
-		wrappingsBox.setValue(myResources.getString("Finite"));
+		setComboBoxProperties(wrappingsBox, "Finite");
 		myConfig.setWrapping(wrappingsBox.getValue());
 
 		wrappingsBox.valueProperty().addListener(e -> {
-			myGameloop.stop(); // Why am I not pausing
+			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			myConfig.setWrapping(wrappingsBox.getValue());
 			try {
 				initSimulation();
 			} catch (NumberFormatException | MalformedXMLSourceException | XMLParserException
 					| UnrecognizedQueryMethodException | QueryExpressionException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				handleExceptionDialog();
 			}
 		});
 	}
 
-	// private void setGridLinesVisible(SimulationButton btn) {
-	// setDimensions(btn);
-	// btn.setOnAction(e -> {
-	// if (!gridLinesVisible) {
-	// setGridLines(true);
-	// } else {
-	// setGridLines(false);
-	// }
-	// });
-	// }
-	//
-	// private void setGridLines(boolean isVisible) {
-	// if (isVisible) {
-	// cellPane.setGridLinesVisible(true);
-	// gridLinesVisible = true;
-	// } else {
-	// cellPane.setGridLinesVisible(false);
-	// gridLinesVisible = false;
-	// }
-	// }c
+	private void setComboBoxProperties(ComboBox<String> box, String resourceName) {
+		box.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		box.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
+		box.setValue(myResources.getString(resourceName));
+	}
+/*
+	private void setGridLinesVisible(SimulationButton btn) {
+		setDimensions(btn);
+		btn.setOnAction(e -> {
+			if (!gridLinesVisible) {
+				setGridLines(true);
+			} else {
+				setGridLines(false);
+			}
+		});
+	}
+
+	private void setGridLines(boolean isVisible) {
+		if (isVisible) {
+			cellPane.setGridLinesVisible(true);
+			gridLinesVisible = true;
+		} else {
+			cellPane.setGridLinesVisible(false);
+			gridLinesVisible = false;
+		}
+	}
+*/
 
 	private void setDimensions(SimulationButton btn) {
 		btn.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() / 2);
@@ -470,7 +474,7 @@ public class MainView {
 	}
 
 	private void createCellPane() {
-		myCellPane = new GridPane();
+		myCellPane = new Pane();
 		myCellPane.setPadding(cellPanePadding);
 		myCellPane.setMaxWidth(SceneConstant.GRID_WIDTH.getValue() + SceneConstant.GRID_PADDING.getValue());
 		// cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);

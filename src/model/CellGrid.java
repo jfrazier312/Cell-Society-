@@ -5,20 +5,21 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import config.Configuration;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
+import view.SceneConstant;
 
 /**
  * author: Austin Gartside, Jordan Frazier and Charles Xu
  */
-public abstract class CellGrid extends GridPane {
+public abstract class CellGrid {
 
 	protected ResourceBundle myResources;
 	public static final String RESRC_PATH = "resources/SimulationResources";
 
-	private static final int[] HEX_ROW_DELTAS = { -1, -1, 0, 1, 1, 0 };
-	private static final int[] HEX_COL_DELTAS = { 0, -1, -1, -1, 0, 1 };
+	private static final int[] HEX_ROW_DELTAS = { -1, -1, 0, 1, 1, 0};
+	private static final int[] HEX_COL_DELTAS = { 0, -1, -1, -1, 0, 1};
 
 	private static final int[] TRI_ROW_DELTAS = { -1, -1, 0, 1, 1, 1, 0, -1 };
 	private static final int[] TRI_COL_DELTAS = { 0, -1, -1, -1, 0, 1, 1, 1 };
@@ -27,8 +28,9 @@ public abstract class CellGrid extends GridPane {
 	private static final int[] RECT_COL_DELTAS = { 1, 0, -1, 0 };
 
 	private Cell[][] grid;
-	private String simulationName;
 	private Configuration myConfig;
+	private double xPos;
+	private double yPos;
 
 	private int[] rowDeltas;
 	private int[] colDeltas;
@@ -46,22 +48,29 @@ public abstract class CellGrid extends GridPane {
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
-	public void renderGrid(GridPane cellPane, Configuration config) {
+	public void renderGrid(Pane cellPane, Configuration config) {
+		yPos = (SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2;
+		xPos = SceneConstant.GRID_PADDING.getValue();
+
 		for (int i = 0; i < myConfig.getNumRows(); i++) {
 			for (int j = 0; j < myConfig.getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
 				Render rend = new Render(myConfig);
-				Shape updatedCell = rend.chooseRender(currentCell, myShape, isEven++);
-				cellPane.add(updatedCell, j, i);
-				if (currentCell.hasPatch()){
-					Shape patchCell = rend.renderPatch(currentCell);
-					cellPane.add(patchCell, j, i);
-				}
+				Shape updatedCell = rend.chooseRender(currentCell, myShape, isEven++, xPos, yPos, i, j);
+				cellPane.getChildren().add(updatedCell);
+				checkifPatchCell(cellPane, i, j, currentCell, rend);
 				allowClickableCells(config, currentCell, updatedCell);
 			}
 		}
 	}
 
+	private void checkifPatchCell(Pane cellPane, int i, int j, Cell currentCell, Render rend) {
+		if (currentCell.hasPatch()){
+			Shape patchCell = rend.renderPatch(currentCell, xPos, yPos, i, j);
+			cellPane.getChildren().add(patchCell);
+		}
+	}
+	
 	private void allowClickableCells(Configuration config, Cell currentCell, Shape updatedCell) {
 		updatedCell.setOnMouseClicked(e -> {
 			int len = config.getAllStates().getList().size();
