@@ -20,10 +20,11 @@ public class Render {
 	private static final double TRIANGLE_DIMENSION = 20.0;
 	private Double[] normalTrianglePoints = { TRIANGLE_DIMENSION / 2, 0.0, 0.0, TRIANGLE_DIMENSION, TRIANGLE_DIMENSION,
 			TRIANGLE_DIMENSION };
-	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_DIMENSION, 0.0, TRIANGLE_DIMENSION / 2, TRIANGLE_DIMENSION };
+	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_DIMENSION, 0.0, TRIANGLE_DIMENSION / 2,
+			TRIANGLE_DIMENSION };
 
 	private String[] colorList = { "#f6edd6", "#f4e5c0", "#f4dea9", "#f4d790", "#e7c675", "#ceaa55", "#b8943d",
-			"#a58026", "#967013", "#7e5900", "#9c5f00"};
+			"#a58026", "#967013", "#7e5900", "#9c5f00" };
 
 	public Render(Configuration config) {
 		myConfig = config;
@@ -37,7 +38,7 @@ public class Render {
 		} else if (shape.equals("triangle")) {
 			renderedShape = renderTriangle(cell, x, y, i, j);
 		} else if (shape.equals("hexagon")) {
-			renderedShape = renderHexagon(cell);
+			renderedShape = renderHexagon(cell, x, y, i, j);
 		} else {
 			// fuck = new Polygon();
 		}
@@ -50,24 +51,24 @@ public class Render {
 		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
 		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
 
-		Shape rect = new javafx.scene.shape.Rectangle(x + (width*i), y + (width*j), width, height);
+		Shape rect = new javafx.scene.shape.Rectangle(x + (width * i), y + (width * j), width, height);
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		if (cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
 		}
-		if(cell.isAntCell() && !isSource(cell)){
+		if (cell.isAntCell() && !isSource(cell)) {
 			color = setAntColor(cell, color);
 		}
 		rect.setFill(Color.web(color));
 		return rect;
 	}
-	
+
 	private Shape renderTriangle(Cell cell, double x, double y, int i, int j) {
 		int rows = myConfig.getNumRows();
 		int cols = myConfig.getNumCols();
 		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
 		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
-		
+
 		Polygon triangle = new Polygon();
 
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
@@ -75,8 +76,10 @@ public class Render {
 			color = setSugarColor(cell, color);
 		}
 		triangle.setFill(Color.web(color));
-		Double[] adjustedNormalTrianglePoints = {(x + width*j), (y + height*i), (x + width*j) + width, (y + height*i), (x + width*j) + width/2, (y + height*i) + height};
-		Double[] adjustedUpsideDownTrianglePoints = {(x + width*j) + (width/2), (y + height*(i+1)), (x+width*(j + 1)), (y + height*i), (x + width*(j+1)) + width/2, (y + height*(i+1))};
+		Double[] adjustedNormalTrianglePoints = { (x + width * j), (y + height * i), (x + width * j) + width,
+				(y + height * i), (x + width * j) + width / 2, (y + height * i) + height };
+		Double[] adjustedUpsideDownTrianglePoints = { (x + width * j) + (width / 2), (y + height * (i + 1)),
+				(x + width * (j + 1)), (y + height * i), (x + width * (j + 1)) + width / 2, (y + height * (i + 1)) };
 
 		if (isEven % 2 == 0) {
 			triangle.getPoints().addAll(adjustedNormalTrianglePoints);
@@ -85,9 +88,6 @@ public class Render {
 		}
 		return triangle;
 	}
-	
-	
-	
 
 	@Deprecated
 	private Shape renderTriangle(Cell cell) {
@@ -114,24 +114,36 @@ public class Render {
 		}
 		return triangle;
 	}
-	
-	public Shape renderHexagon(Cell cell) {
+
+	public Shape renderHexagon(Cell cell, double x, double y, int i, int j) {
 		double rows = myConfig.getNumRows();
 		double cols = myConfig.getNumCols();
 		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
-		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);		
+		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
 
 		Polygon hexagon = new Polygon();
-		double[] center = {0.0, 0.0};
-
-		if (isEven % cols == cols - 1 || (isEven != 0 && isEven % cols == 0)) {
-			return renderOffset(width/2);
+		double[] center = new double[2];
+		if (isEven % 2 == 0) {
+			center[0] = x + width * j;
+			center[1] = y + height * i;
 		} else {
-			for (int i = 0; i < 6; i++) {
-				Double[] a = getPoint(center, width/2, i);
-				hexagon.getPoints().addAll(a[0], a[1]);
-			}
+			center[0] = x + width * j;
+			center[1] = (y + height * i) + height/2;
 		}
+
+		for (int k = 0; k < 6; k++) {
+			Double[] a = getPoint(center, width / 2, k);
+			hexagon.getPoints().addAll(a[0], a[1]);
+		}
+		
+//		if (isEven % cols == cols - 1 || (isEven != 0 && isEven % cols == 0)) {
+//			return renderOffset(width / 2);
+//		} else {
+//			for (int k = 0; k < 6; k++) {
+//				Double[] a = getPoint(center, width / 2, k);
+//				hexagon.getPoints().addAll(a[0], a[1]);
+//			}
+//		}
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		if (cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
@@ -160,16 +172,16 @@ public class Render {
 		color = colorList[sugarLevel - 1];
 		return color;
 	}
-	
-	private String setAntColor(Cell cell, String color){
+
+	private String setAntColor(Cell cell, String color) {
 		int antLevel = ((AntCell) cell).getAnts().size();
 		color = colorList[antLevel];
 		return color;
 	}
-	
-	private boolean isSource(Cell cell){
-		return cell.getCurrentstate().equals("home") || cell.getCurrentstate().equals("food") ||
-				cell.getCurrentstate().equals("obstacle");
+
+	private boolean isSource(Cell cell) {
+		return cell.getCurrentstate().equals("home") || cell.getCurrentstate().equals("food")
+				|| cell.getCurrentstate().equals("obstacle");
 	}
 
 	public Shape renderPatch(Cell cell) {
@@ -202,15 +214,16 @@ public class Render {
 		return adjusted;
 	}
 
-	private Double[] adjustTriangle(int rows, int cols, Double[] adjusted, Double[] original, int xpoint1, int xpoint2, int ypoint1, int ypoint2) {
+	private Double[] adjustTriangle(int rows, int cols, Double[] adjusted, Double[] original, int xpoint1, int xpoint2,
+			int ypoint1, int ypoint2) {
 		adjusted[xpoint1] = original[xpoint1]
 				/ (TRIANGLE_DIMENSION / ((SceneConstant.GRID_WIDTH.getValue() - cols) / cols));
 		adjusted[xpoint2] = original[xpoint2]
 				/ (TRIANGLE_DIMENSION / ((SceneConstant.GRID_WIDTH.getValue() - cols) / cols));
-		adjusted[ypoint1] = original[ypoint1] / 
-				(TRIANGLE_DIMENSION / ((SceneConstant.GRID_HEIGHT.getValue() - rows) / rows));
-		adjusted[ypoint2] = original[ypoint2] / 
-				(TRIANGLE_DIMENSION / ((SceneConstant.GRID_HEIGHT.getValue() - rows) / rows));
+		adjusted[ypoint1] = original[ypoint1]
+				/ (TRIANGLE_DIMENSION / ((SceneConstant.GRID_HEIGHT.getValue() - rows) / rows));
+		adjusted[ypoint2] = original[ypoint2]
+				/ (TRIANGLE_DIMENSION / ((SceneConstant.GRID_HEIGHT.getValue() - rows) / rows));
 		return adjusted;
 	}
 
