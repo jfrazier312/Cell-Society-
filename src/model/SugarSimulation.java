@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import config.Configuration;
+import view.Simulations;
 
 /**
  * @author austingartside
@@ -12,7 +13,7 @@ import config.Configuration;
  */
 public class SugarSimulation extends CellGrid{
 
-	public static final String SIMULATION_NAME = "SUGAR_SIMULATION";
+	public static final String SIMULATION_NAME = Simulations.SUGAR.getName();
 	private static final int MAX_METABOLISM = 4;
 	private static final int MAX_PATCH_SUGAR = 6;
 	
