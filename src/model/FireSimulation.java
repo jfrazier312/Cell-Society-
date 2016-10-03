@@ -18,6 +18,8 @@ public class FireSimulation extends CellGrid {
 	private String BURNING;
 	private static final int VISION = 1;
 	private double probOfBurning;
+	private int initBurningRow;
+	private int initBurningCol;
 	Random generator;
 	
 	public FireSimulation(Configuration config) {
@@ -41,9 +43,17 @@ public class FireSimulation extends CellGrid {
 //		}
 //	}
 	
+	public void getBurningTreePos(){
+		for (State s : getConfig().getInitialCells()) {
+			initBurningRow = Integer.parseInt(s.getAttributes().get("row"));
+			initBurningCol = Integer.parseInt(s.getAttributes().get("col"));
+		}
+	}
+	
 	public void initSimulation() {
 		super.initSimulation();
 		if(isToroidal()){
+			getBurningTreePos();
 			createToroidalGrid();
 		}
 		else{
@@ -72,7 +82,9 @@ public class FireSimulation extends CellGrid {
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
 				setGridCell(i, j, new RectangleNoDiagonals(i, j, getConfig()));
-				if(i == 1 && j == 1){
+				if(i == initBurningRow && j == initBurningCol){
+					System.out.println(initBurningRow);
+					System.out.println(initBurningCol);
 					getGridCell(i, j).setCurrentstate(BURNING);
 				}
 				else{
