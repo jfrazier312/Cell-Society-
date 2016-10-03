@@ -13,6 +13,7 @@ import view.SceneConstant;
  * @author Jordan Frazier (jrf30)
  *
  */
+@Deprecated
 public class Triangle extends Cell {
 
 	private int isEven;
@@ -32,6 +33,7 @@ public class Triangle extends Cell {
 		myConfig = config;
 	}
 
+	@Deprecated
 	@Override
 	public Shape render() {
 		double rows = myConfig.getNumRows();

@@ -2,6 +2,7 @@ package model;
 
 import config.Configuration;
 
+@Deprecated
 public class RectangleWithDiagonals extends Rectangle {
 
 	private int[] rowDeltas = {-1, -1, 0, 1, 1, 1, 0, -1};

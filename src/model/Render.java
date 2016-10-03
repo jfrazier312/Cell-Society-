@@ -3,9 +3,11 @@ package model;
 import java.util.Arrays;
 
 import config.Configuration;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import view.SceneConstant;
@@ -27,14 +29,15 @@ public class Render {
 		myConfig = config;
 	}
 
-	public Shape chooseRender(Cell cell, String shape) {
+	public Shape chooseRender(Cell cell, String shape, int isEven) {
+		this.isEven = isEven;
 		Shape renderedShape = null;
 		if (shape.equals("rectangle")) {
 			renderedShape = renderRectangle(cell);
 		} else if (shape.equals("triangle")) {
 			renderedShape = renderTriangle(cell);
 		} else if (shape.equals("hexagon")) {
-			// fuck = //fuck;
+			renderedShape = renderHexagon(cell);
 		} else {
 			// fuck = new Polygon();
 		}
@@ -57,10 +60,14 @@ public class Render {
 	}
 
 	private Shape renderTriangle(Cell cell) {
-		double rows = myConfig.getNumRows();
-		double cols = myConfig.getNumCols();
-		Double[] adjustedNormalTrianglePoints = getAdjustedPoints(true, (int) rows, (int) cols);
-		Double[] adjustedUpsideDownTrianglePoints = getAdjustedPoints(false, (int) rows, (int) cols);
+		int rows = myConfig.getNumRows();
+		int cols = myConfig.getNumCols();
+		if (cols % 2 == 0) {
+			cols--;
+			myConfig.setNumCols(cols);
+		}
+		Double[] adjustedNormalTrianglePoints = getAdjustedPoints(true, rows, cols);
+		Double[] adjustedUpsideDownTrianglePoints = getAdjustedPoints(false, rows, cols);
 
 		Polygon triangle = new Polygon();
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
@@ -75,6 +82,46 @@ public class Render {
 			triangle.getPoints().addAll(adjustedUpsideDownTrianglePoints);
 		}
 		return triangle;
+	}
+	
+	public Shape renderHexagon(Cell cell) {
+		double rows = myConfig.getNumRows();
+		double cols = myConfig.getNumCols();
+		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
+		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);		
+
+		Polygon hexagon = new Polygon();
+		double[] center = {0.0, 0.0};
+
+		if (isEven % cols == cols - 1 || (isEven != 0 && isEven % cols == 0)) {
+			return renderOffset(width/2);
+		} else {
+			for (int i = 0; i < 6; i++) {
+				Double[] a = getPoint(center, width/2, i);
+				hexagon.getPoints().addAll(a[0], a[1]);
+			}
+		}
+		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
+		if (cell.isSugarCell()) {
+			color = setSugarColor(cell, color);
+		}
+		hexagon.setFill(Color.web(color));
+		return hexagon;
+	}
+
+	private Double[] getPoint(double[] center, double size, double i) {
+		Double[] a = new Double[2];
+		double angle_deg = 60 * i;
+		double angle_rad = Math.PI / 180 * angle_deg;
+		a[0] = center[0] + size * Math.cos(angle_rad);
+		a[1] = center[1] + size * Math.sin(angle_rad);
+		return a;
+	}
+
+	private Shape renderOffset(double width) {
+		Line offset = new Line(0.0, width / 4, width / 2, width / 4);
+		offset.setFill(Color.WHITE);
+		return offset;
 	}
 
 	private String setSugarColor(Cell cell, String color) {

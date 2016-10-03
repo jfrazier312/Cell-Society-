@@ -35,6 +35,7 @@ public abstract class CellGrid extends GridPane {
 	private String myShape;
 	private String myWrappings;
 	private boolean isToroidal;
+	private int isEven = 0;
 
 	public CellGrid(Configuration config) {
 		myResources = ResourceBundle.getBundle(RESRC_PATH);
@@ -46,11 +47,11 @@ public abstract class CellGrid extends GridPane {
 	}
 
 	public void renderGrid(GridPane cellPane, Configuration config) {
-		for (int i = 0; i < getNumRows(); i++) {
-			for (int j = 0; j < getNumCols(); j++) {
+		for (int i = 0; i < myConfig.getNumRows(); i++) {
+			for (int j = 0; j < myConfig.getNumCols(); j++) {
 				Cell currentCell = grid[i][j];
 				Render rend = new Render(myConfig);
-				Shape updatedCell = rend.chooseRender(currentCell, myShape);
+				Shape updatedCell = rend.chooseRender(currentCell, myShape, isEven++);
 				cellPane.add(updatedCell, j, i);
 				if (currentCell.hasPatch()){
 					Shape patchCell = rend.renderPatch(currentCell);
@@ -67,9 +68,9 @@ public abstract class CellGrid extends GridPane {
 			for (int i = 0; i < len; i++) {
 				if (config.getAllStates().getList().get(i).getValue().equals(currentCell.getCurrentstate())) {
 					currentCell.setCurrentstate(config.getAllStates().getList().get((i + 1) % len).getValue());
+					break;
 				}
 			}
-
 			String color = myConfig.getAllStates().getStateByName(currentCell.getCurrentstate()).getAttributes()
 					.get("color");
 			updatedCell.setFill(Color.web(color));
