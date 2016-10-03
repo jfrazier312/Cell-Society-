@@ -136,7 +136,7 @@ public class GameOfLifeSimulation extends CellGrid {
 		}
 	}
 	
-	public int countCellsOfState(List<Cell> currentNeighbors, String state){
+	private int countCellsOfState(List<Cell> currentNeighbors, String state){
 		int stateCount = 0;
 		for(Cell neighborCell: currentNeighbors){
 			if(neighborCell.getCurrentstate().equals(state)){

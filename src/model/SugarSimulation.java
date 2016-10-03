@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -14,8 +13,6 @@ import config.Configuration;
 public class SugarSimulation extends CellGrid{
 
 	public static final String SIMULATION_NAME = "SUGAR_SIMULATION";
-	private static final String AGENT = "agent";
-	private static final String NOAGENT = "no_agent";
 	private static final int MAX_METABOLISM = 4;
 	private static final int MAX_PATCH_SUGAR = 6;
 	
@@ -23,6 +20,9 @@ public class SugarSimulation extends CellGrid{
 	private int sugarGrowBackRate;
 	private double sugarGrowBackInterval;
 	private int maxVision;
+	
+	private String AGENT;
+	private String NOAGENT;
 	Random generator;
 	
 	public SugarSimulation(Configuration config) {
@@ -30,6 +30,8 @@ public class SugarSimulation extends CellGrid{
 		sugarGrowBackRate = 1;
 		sugarGrowBackCount = 0;
 		sugarGrowBackInterval = 1.0;
+		AGENT = myResources.getString("Agent");
+		NOAGENT = myResources.getString("NoAgent");
 		maxVision = (int) ((int) 100*Double.parseDouble(getConfig().getCustomParam("sugarGrowBackInterval")));
 	}
 	

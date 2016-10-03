@@ -164,7 +164,8 @@ public class PredatorPreySimulation extends CellGrid {
 			reproduce(myCreature, state, newCreatureCell);		
 		}
 	}
-
+	
+	
 	private void reproduce(Cell myCreature, String state, Cell newCreatureCell) {
 		if(state.equals(SHARK)){
 			giveBirth((Fish) myCreature, SHARK);

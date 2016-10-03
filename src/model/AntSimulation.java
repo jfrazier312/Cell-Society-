@@ -15,18 +15,18 @@ import view.Simulations;
 public class AntSimulation extends CellGrid {
 
 	private static final String SIMULATION_NAME = Simulations.ANT.getName();
-	private static final String OPEN = "open";
-	private static final String OBSTACLE = "obstacle";
 	private static final int SOURCE_PHEROMONES =  1000;
-	private static final String HOME_SOURCE = "home";
-	private static final String FOOD_SOURCE = "food";
 	private static final int VISION = 1;
 	
 	private static final int[] ROW_DELTAS = {-1, -1, 0, 1, 1, 1, 0, -1};
 	private static final int[] COL_DELTAS = {0, -1, -1, -1, 0, 1, 1, 1};
 	
-	private static final String HOME_ANT = "home_ant";
-	private static final String FOOD_ANT = "food_ant";	
+	private String HOME_ANT;
+	private String FOOD_ANT;
+	private String FOOD_SOURCE;
+	private String HOME_SOURCE;
+	private String OPEN;
+	private String OBSTACLE;
 	
 	private int pheromoneConstant;
 	private int pheromoneLoss;
@@ -43,12 +43,12 @@ public class AntSimulation extends CellGrid {
 		pheromoneLoss = pheromoneConstant/5;
 		pheromoneConstant = SOURCE_PHEROMONES/((getNumRows() + getNumCols())/2);
 		pheromoneLoss = pheromoneConstant/5;
-//		HOME_ANT = myResources.getString("HomeAnt");
-//		FOOD_ANT = myResources.getString("FoodAnt");
-//		HOME_SOURCE = myResources.getString("HomeSource");
-//		FOOD_SOURCE = myResources.getString("FoodSource");
-//		OPEN = myResources.getString("Open");
-//		OBSTACLE = myResources.getString("Obstacle");
+		HOME_ANT = myResources.getString("HomeAnt");
+		FOOD_ANT = myResources.getString("FoodAnt");
+		HOME_SOURCE = myResources.getString("HomeSource");
+		FOOD_SOURCE = myResources.getString("FoodSource");
+		OPEN = myResources.getString("Open");
+		OBSTACLE = myResources.getString("Obstacle");
 	}
 	
 	private void getFoodSourceLocation(){
