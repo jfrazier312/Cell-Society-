@@ -1,10 +1,11 @@
-package model;
+/*package model;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 
+@Deprecated
 public class Hexagon extends Cell {
 
 	@Override
@@ -67,4 +68,4 @@ public class Hexagon extends Cell {
 	public int[] getColDeltas() {
 		return colDeltas;
 	}
-}
+}*/

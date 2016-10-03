@@ -18,8 +18,8 @@ public abstract class CellGrid {
 	protected ResourceBundle myResources;
 	public static final String RESRC_PATH = "resources/SimulationResources";
 
-	private static final int[] HEX_ROW_DELTAS = { -1, 1, 0, 1, 1, 0};
-	private static final int[] HEX_COL_DELTAS = { 0, 1, -1, -1, 0, 1};
+	private static final int[] HEX_ROW_DELTAS = { -1, -1, 0, 1, 1, 0};
+	private static final int[] HEX_COL_DELTAS = { 0, -1, -1, -1, 0, 1};
 
 	private static final int[] TRI_ROW_DELTAS = { -1, -1, 0, 1, 1, 1, 0, -1 };
 	private static final int[] TRI_COL_DELTAS = { 0, -1, -1, -1, 0, 1, 1, 1 };
@@ -70,6 +70,7 @@ public abstract class CellGrid {
 			cellPane.getChildren().add(patchCell);
 		}
 	}
+	
 	private void allowClickableCells(Configuration config, Cell currentCell, Shape updatedCell) {
 		updatedCell.setOnMouseClicked(e -> {
 			int len = config.getAllStates().getList().size();
@@ -215,7 +216,7 @@ public abstract class CellGrid {
 		for (config.State s :getConfig().getInitialCells()) {
 			int row = Integer.parseInt(s.getAttributes().get("row"));
 			int col = Integer.parseInt(s.getAttributes().get("col"));
-			Cell r = new RectangleNoDiagonals(row, col, getConfig());
+			Cell r = new Rectangle(row, col, getConfig());
 			r.setCurrentstate(s.getAttributes().get("currentState"));
 			r.setFuturestate(s.getAttributes().get("futureState"));
 			setGridCell(row, col, r);

@@ -17,11 +17,11 @@ public class Render {
 	private Configuration myConfig;
 	private int isEven;
 
-	private static final double TRIANGLE_DIMENSION = 20.0;
-	private Double[] normalTrianglePoints = { TRIANGLE_DIMENSION / 2, 0.0, 0.0, TRIANGLE_DIMENSION, TRIANGLE_DIMENSION,
-			TRIANGLE_DIMENSION };
-	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_DIMENSION, 0.0, TRIANGLE_DIMENSION / 2,
-			TRIANGLE_DIMENSION };
+//	private static final double TRIANGLE_DIMENSION = 20.0;
+//	private Double[] normalTrianglePoints = { TRIANGLE_DIMENSION / 2, 0.0, 0.0, TRIANGLE_DIMENSION, TRIANGLE_DIMENSION,
+//			TRIANGLE_DIMENSION };
+//	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_DIMENSION, 0.0, TRIANGLE_DIMENSION / 2,
+//			TRIANGLE_DIMENSION };
 
 	private String[] colorList = { "#f6edd6", "#f4e5c0", "#f4dea9", "#f4d790", "#e7c675", "#ceaa55", "#b8943d",
 			"#a58026", "#967013", "#7e5900", "#9c5f00" };
@@ -69,6 +69,7 @@ public class Render {
 	}
 
 	private Shape renderTriangle(Cell cell, double xPos, double yPos, int yIndex, int xIndex) {
+//		width = width*2;
 		Polygon triangle = new Polygon();
 
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
@@ -76,16 +77,24 @@ public class Render {
 			color = setSugarColor(cell, color);
 		}
 		triangle.setFill(Color.web(color));
-		Double[] adjustedNormalTrianglePoints = { (xPos + width * xIndex), (yPos + height * yIndex), (xPos + width * xIndex) + width,
-				(yPos + height * yIndex), (xPos + width * xIndex) + width / 2, (yPos + height * yIndex) + height };
-		Double[] adjustedUpsideDownTrianglePoints = { (xPos + width * xIndex) + (width / 2), (yPos + height * (yIndex + 1)),
-				(xPos + width * (xIndex + 1)), (yPos + height * yIndex), (xPos + width * (xIndex + 1)) + width / 2, (yPos + height * (yIndex + 1)) };
+		Double[] upsideDownTrianglePoints = {xPos + (xIndex*width) - width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width) + width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width), yPos + (yIndex*height) + yPos/2};
+		Double[] trianglePoints = {xPos + (xIndex*width) - width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width) + width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width), yPos + (yIndex*height) - yPos/2};
 
 		if (isEven % 2 == 0) {
-			triangle.getPoints().addAll(adjustedNormalTrianglePoints);
+			triangle.getPoints().addAll(trianglePoints);
 		} else {
-			triangle.getPoints().addAll(adjustedUpsideDownTrianglePoints);
+			triangle.getPoints().addAll(upsideDownTrianglePoints);
 		}
+		
+//		Double[] adjustedNormalTrianglePoints = { (xPos + width * xIndex), (yPos + height * yIndex), (xPos + width * xIndex) + width,
+//				(yPos + height * yIndex), (xPos + width * xIndex) + width / 2, (yPos + height * yIndex) + height };
+//		Double[] adjustedUpsideDownTrianglePoints = { (xPos + width * xIndex) + (width / 2), (yPos + height * (yIndex + 1)),
+//				(xPos + width * (xIndex + 1)), (yPos + height * yIndex), (xPos + width * (xIndex + 1)) + width / 2, (yPos + height * (yIndex + 1)) };
+//		if (isEven % 2 == 0) {
+//			triangle.getPoints().addAll(adjustedNormalTrianglePoints);
+//		} else {
+//			triangle.getPoints().addAll(adjustedUpsideDownTrianglePoints);
+//		}
 		return triangle;
 	}
 /*
@@ -185,7 +194,7 @@ public class Render {
 	private double calculateSize(double edgeSize, double numSpots) {
 		return (edgeSize / numSpots);
 	}
-
+/*
 	private Double[] getAdjustedPoints(boolean normal, int rows, int cols) {
 		Double[] adjusted = new Double[normalTrianglePoints.length];
 		if (normal) {
@@ -210,5 +219,6 @@ public class Render {
 				/ (TRIANGLE_DIMENSION / ((SceneConstant.GRID_HEIGHT.getValue() - rows) / rows));
 		return adjusted;
 	}
+	*/
 
 }
