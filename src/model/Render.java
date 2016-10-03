@@ -69,16 +69,15 @@ public class Render {
 	}
 
 	private Shape renderTriangle(Cell cell, double xPos, double yPos, int yIndex, int xIndex) {
-//		width = width*2;
 		Polygon triangle = new Polygon();
-
+		width=width*2;
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		if (cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
 		}
 		triangle.setFill(Color.web(color));
-		Double[] upsideDownTrianglePoints = {xPos + (xIndex*width) - width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width) + width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width), yPos + (yIndex*height) + height/2};
-		Double[] trianglePoints = {xPos + (xIndex*width) - width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width) + width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width), yPos + (yIndex*height) - height/2};
+		Double[] upsideDownTrianglePoints = {xPos + (xIndex*width)/2 - width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width)/2 + width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width)/2, yPos + (yIndex*height) + height/2};
+		Double[] trianglePoints = {xPos + (xIndex*width)/2 - width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width)/2 + width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width)/2, yPos + (yIndex*height) - height/2};
 
 		if (isEven % 2 == 0) {
 			triangle.getPoints().addAll(trianglePoints);
