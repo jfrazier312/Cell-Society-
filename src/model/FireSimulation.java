@@ -1,5 +1,4 @@
 package model;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,21 +26,8 @@ public class FireSimulation extends CellGrid {
 		EMPTY = myResources.getString("Empty");
 		TREE = myResources.getString("Tree");
 		BURNING = myResources.getString("Burning");
-		//gonna have to change this
 		generator = new Random();
 	}
-	
-//	@Override
-//	public void load() {
-//		for (State s : getConfig().getInitialCells()) {
-//			int row = Integer.parseInt(s.getAttributes().get("row"));
-//			int col = Integer.parseInt(s.getAttributes().get("col"));
-//			Cell r = new RectangleNoDiagonals(row, col, getConfig());
-//			r.setCurrentstate(s.getAttributes().get("currentState"));
-//			r.setFuturestate(s.getAttributes().get("futureState"));
-//			setGridCell(row, col, r);
-//		}
-//	}
 	
 	public void getBurningTreePos(){
 		for (State s : getConfig().getInitialCells()) {
@@ -64,7 +50,7 @@ public class FireSimulation extends CellGrid {
 	public void createGrid() {
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleNoDiagonals(i, j, getConfig()));
+				setGridCell(i, j, new Rectangle(i, j, getConfig()));
 				if(i==0 || j==0 || i==getNumRows()-1 || j == getNumCols()-1){
 					getGridCell(i, j).setCurrentstate(EMPTY);
 				}
@@ -81,7 +67,7 @@ public class FireSimulation extends CellGrid {
 	public void createToroidalGrid() {
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleNoDiagonals(i, j, getConfig()));
+				setGridCell(i, j, new Rectangle(i, j, getConfig()));
 				if(i == initBurningRow && j == initBurningCol){
 					System.out.println(initBurningRow);
 					System.out.println(initBurningCol);
@@ -147,34 +133,4 @@ public class FireSimulation extends CellGrid {
 	public String getSimulationName() {
 		return SIMULATION_NAME;
 	}
-	
-//	public void printGrid(){
-//		Random generator = new Random();
-//		Cell[][] myGrid = getGrid();
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				if(myGrid[i][j].getCurrentstate().equals(EMPTY)){
-//					System.out.print("E");
-//				}
-//				else if(myGrid[i][j].getCurrentstate().equals(BURNING)){
-//					System.out.print("B");
-//				}
-//				else{
-//					System.out.print("T");
-//				}
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//	}
-//	
-//	public static void main(String[] args){
-//		FireSimulation test = new FireSimulation();
-//		int num = 0;
-//		while(num<10){
-//			test.printGrid();
-//			test.updateGrid();
-//			num++;
-//		}
-//	}
 }

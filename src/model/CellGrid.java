@@ -89,7 +89,6 @@ public abstract class CellGrid extends GridPane {
 	 */
 
 	public List<Cell> getNeighbors(Cell cell, int vision) {
-		// could change implementation based on definition of 'neighbor'
 		List<Cell> neighbors = new ArrayList<>();
 		int rowPos = cell.getRowPos();
 		int colPos = cell.getColPos();
@@ -113,16 +112,12 @@ public abstract class CellGrid extends GridPane {
 		if (!rowOutOfBounds(newRowPos) && !colOutOfBounds(newColPos)) {
 			neighbors.add(grid[newRowPos][newColPos]);
 		} else if (isToroidal) {
-			// System.out.println("out of bounds row pos is: " + newRowPos);
-			// System.out.println("out of bounds col pos is: " + newColPos);
 			if (rowOutOfBounds(newRowPos)) {
 				newRowPos = gridRowWrap(newRowPos);
 			}
 			if (colOutOfBounds(newColPos)) {
 				newColPos = gridColWrap(newColPos);
 			}
-			// System.out.println("Row Pos is: " + newRowPos);
-			// System.out.println("Col Pos is: " + newColPos);
 			neighbors.add(grid[newRowPos][newColPos]);
 		}
 	}
@@ -207,7 +202,7 @@ public abstract class CellGrid extends GridPane {
 		for (config.State s :getConfig().getInitialCells()) {
 			int row = Integer.parseInt(s.getAttributes().get("row"));
 			int col = Integer.parseInt(s.getAttributes().get("col"));
-			Cell r = new RectangleNoDiagonals(row, col, getConfig());
+			Cell r = new Rectangle(row, col, getConfig());
 			r.setCurrentstate(s.getAttributes().get("currentState"));
 			r.setFuturestate(s.getAttributes().get("futureState"));
 			setGridCell(row, col, r);

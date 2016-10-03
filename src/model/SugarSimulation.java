@@ -85,11 +85,9 @@ public class SugarSimulation extends CellGrid{
 	
 	@Override
 	public String getSimulationName() {
-		// TODO Auto-generated method stub
 		return SIMULATION_NAME;
 	}
 	
-	//add check to see if a cell has a future state
 	@Override
 	public void updateGrid() {
 		sugarGrowBackInterval = 100*Double.parseDouble(getConfig().getCustomParam("sugarGrowBackInterval"))+1;
@@ -160,7 +158,7 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 	
-	public void updateInfo(SugarAgent prevCell, SugarAgent newCell){
+	private void updateInfo(SugarAgent prevCell, SugarAgent newCell){
 		prevCell.updateSugar(newCell.getPatch().getSugar());
 		newCell.setSugar(prevCell.getSugar());
 		newCell.setSugarMetabolism(prevCell.getSugarMetabolism());
@@ -175,7 +173,7 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 	
-	public int findHighestSugar(List<Cell> neighbors){
+	private int findHighestSugar(List<Cell> neighbors){
 		int highestSugar = 0;
 		for(Cell neighbor: neighbors){
 			if(((SugarAgent) neighbor).isVacant() && neighbor.getCurrentstate().equals(NOAGENT)){
@@ -188,7 +186,7 @@ public class SugarSimulation extends CellGrid{
 		return highestSugar;
 	}
 	
-	public List<Cell> cellsWithMaxSugar(List<Cell> neighbors){
+	private List<Cell> cellsWithMaxSugar(List<Cell> neighbors){
 		List<Cell> highestPatches = new ArrayList<Cell>();
 		int highestSugar = findHighestSugar(neighbors);
 		for(Cell neighbor: neighbors){
@@ -201,7 +199,7 @@ public class SugarSimulation extends CellGrid{
 		return highestPatches;
 	}
 	
-	public Cell getClosest(SugarAgent myAgent, List<Cell> myNeighbors){
+	private Cell getClosest(SugarAgent myAgent, List<Cell> myNeighbors){
 		if(myNeighbors.size() == 0){
 			return null;
 		}

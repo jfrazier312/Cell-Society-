@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.ResourceBundle;
 
 import config.Configuration;
 import view.Simulations;
@@ -17,7 +16,7 @@ public class PredatorPreySimulation extends CellGrid {
 	private String FISH;
 	private String SHARK;
 	private static final String SIMULATION_NAME = Simulations.PREDATOR_PREY.getName();
-	public static final int VISION = 1;
+	private static final int VISION = 1;
 	private Random generator;
 
 	public PredatorPreySimulation(Configuration config) {
@@ -49,7 +48,7 @@ public class PredatorPreySimulation extends CellGrid {
 	}
 
 	private void createCell(int reproductionTime, int timeToDeath, List<String> initialization, int i, int j) {
-		setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath, getConfig()));
+		setGridCell(i, j, new Fish(i, j, reproductionTime, timeToDeath));
 		if(initialization.size() == 0){
 			getGridCell(i, j).setCurrentstate(EMPTY);
 		}
@@ -69,7 +68,7 @@ public class PredatorPreySimulation extends CellGrid {
 			int myReproductionTime = Integer.parseInt(s.getAttributes().get("myReproductionTime"));
 			int myMaxReproductionTime = Integer.parseInt(s.getAttributes().get("myMaxReproductionTime"));
 			int myTimeToDeath = Integer.parseInt(s.getAttributes().get("myTimeToDeath"));
-			Fish r = new Fish(row, col, myReproductionTime, myTimeToDeath, getConfig());
+			Fish r = new Fish(row, col, myReproductionTime, myTimeToDeath);
 			r.setReproductionTime(myReproductionTime);
 			r.setMaxReproductionTime(myMaxReproductionTime);
 			r.setCurrentstate(s.getAttributes().get("currentState"));
@@ -142,7 +141,6 @@ public class PredatorPreySimulation extends CellGrid {
 				eatFish(myCreature, myFishFriends);
 				return;
 			}
-			//kill shark if it runs out of life
 			if(((Fish) myCreature).getTimeToDeath() == 1){
 				myCreature.setFuturestate(EMPTY);
 				return;
@@ -154,7 +152,6 @@ public class PredatorPreySimulation extends CellGrid {
 			return;
 		}
 		Cell newCreatureCell = getNewCell(availableCells);
-		//fish moving to same cell as a shark and getting eaten
 		if(newCreatureCell.getFuturestate().equals(SHARK)){
 			((Fish) newCreatureCell).increaseTimeToDeath();
 			if(((Fish) myCreature).getReproductionTime()<=0){
@@ -252,34 +249,4 @@ public class PredatorPreySimulation extends CellGrid {
 	public String getSimulationName() {
 		return SIMULATION_NAME;
 	}
-
-//	public void printGrid(){
-//		Random generator = new Random();
-//		Cell[][] myGrid = getGrid();
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				if(myGrid[i][j].getCurrentstate().equals(EMPTY)){
-//					System.out.print("E");
-//				}
-//				else if(myGrid[i][j].getCurrentstate().equals(FISH)){
-//					System.out.print("F");
-//				}
-//				else{
-//					System.out.print("S");
-//				}
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//	}
-//	
-//	public static void main(String[] args){
-//		PredatorPreySimulation test = new PredatorPreySimulation();
-//		int num = 0;
-//		while(num<10){
-//			test.printGrid();
-//			test.updateGrid();
-//			num++;
-//		}
-//	}
 }

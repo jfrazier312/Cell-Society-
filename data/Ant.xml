@@ -6,7 +6,7 @@
 		</edge>
 	</neighborhood>
 	<states>
-		<state color="#00ff00">open</state>
+		<state color="#f6edd6">open</state>
 		<state color="#000000">obstacle</state>
 		<state color="#ff0000">home</state>
 		<state color="#0000ff">food</state>

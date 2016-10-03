@@ -15,7 +15,6 @@ public class GameOfLifeSimulation extends CellGrid {
 	private static final String SIMULATION_NAME = Simulations.GAME_OF_LIFE.getName();
 	private String DEAD;
 	private String ALIVE;
-	private int isEven;
 	
 	private String neighborConvention;
 	private List<Integer> numsToSurvive;
@@ -26,9 +25,9 @@ public class GameOfLifeSimulation extends CellGrid {
 		
 	public GameOfLifeSimulation(Configuration config) {
 		super(config);
-		isEven = 0;
 		DEAD = myResources.getString("Dead");
 		ALIVE = myResources.getString("Alive");
+		//could change here to decide the neighbor convention
 		neighborConvention = "B3 S23";
 		getNeighborConvention();
 	}
@@ -64,7 +63,7 @@ public class GameOfLifeSimulation extends CellGrid {
 		List<String> initialization = getStartingStateList(percentDead);
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
-				setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
+				setGridCell(i, j, new Rectangle(i, j, getConfig()));
 				if(initialization.size() == 0){
 					getGridCell(i, j).setCurrentstate(DEAD);
 				}
@@ -123,18 +122,6 @@ public class GameOfLifeSimulation extends CellGrid {
 		}
 	}
 	
-	
-//	private void liveCellUpdate(Cell myCell, int liveCount) {
-//		if(liveCount<2){
-//			myCell.setFuturestate(DEAD);
-//		}
-//		else if(liveCount>=2 && liveCount <=3){
-//			myCell.setFuturestate(ALIVE);
-//		}
-//		else{
-//			myCell.setFuturestate(DEAD);
-//		}
-//	}
 	private void liveCellUpdate(Cell myCell, int liveCount){
 		myCell.setFuturestate(DEAD);
 		if(numsToSurvive.contains(liveCount)){
@@ -142,21 +129,12 @@ public class GameOfLifeSimulation extends CellGrid {
 		}
 	}
 
-	
 	private void deadCellUpdate(Cell myCell, int liveCount){
 		myCell.setFuturestate(DEAD);
 		if(numsToBeBorn.contains(liveCount)){
 			myCell.setFuturestate(ALIVE);
 		}
 	}
-//	private void deadCellUpdate(Cell myCell, int liveCount) {
-//		if(liveCount == 3){
-//			myCell.setFuturestate(ALIVE);
-//		}
-//		else{
-//			myCell.setFuturestate(DEAD);
-//		}
-//	}
 	
 	public int countCellsOfState(List<Cell> currentNeighbors, String state){
 		int stateCount = 0;
@@ -172,44 +150,4 @@ public class GameOfLifeSimulation extends CellGrid {
 	public String getSimulationName() {
 		return SIMULATION_NAME;
 	}
-	/**
-	 * This method is used for testing purposes to print grid locally
-	 */
-	
-	/**
-	 * This method is used for testing purposes to print grid locally
-	 */
-//	public void printGrid(){
-//		Random generator = new Random();
-//		Cell[][] myGrid = getGrid();
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				if(myGrid[i][j].getCurrentstate().equals(DEAD)){
-//					System.out.print(0);
-//				}
-//				else{
-//					System.out.print(1);
-//				}
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//		System.out.println();
-//	}
-	
-	/**
-	 * Uncomment this method to test simulation locally
-	 * @param args
-	 */
-	/*
-	public static void main(String[] args){
-		GameOfLifeSimulation test = new GameOfLifeSimulation();
-		int num = 0;
-		while(num<10){
-			test.printGrid();
-			test.updateGrid();
-			num++;
-		}
-	}
-	*/
 }
