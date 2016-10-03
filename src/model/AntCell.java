@@ -7,9 +7,6 @@ import java.util.List;
  *
  */
 public class AntCell extends Cell{
-
-	private static final int myMaxPheromones = 1000;
-	
 	List<Ant> myAnts;
 	private int myHomePheromones;
 	private int myFoodPheromones;
@@ -31,12 +28,7 @@ public class AntCell extends Cell{
 	public List<Ant> getAnts(){
 		return myAnts;
 	}
-	
-//	@Override
-//	public boolean hasPatch(){
-//		return myAnts.size()>0;
-//	}
-	
+
 	public void loseFoodPheromones(int lostFood){
 		myFoodPheromones-=lostFood;
 		if(myFoodPheromones<0){

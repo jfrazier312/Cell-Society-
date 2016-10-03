@@ -106,7 +106,6 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 	
-	//do agent rules in random order
 	public void updateFutureStates(){
 		sugarGrowBackCount++;
 		List<Cell> randomOrder = getAgentCells();
@@ -146,7 +145,6 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 	
-	//if my cell has an agent and doesn't move then i need to update it's future state
 	@Override
 	public void updateCell(Cell myCell) {
 		if(!((SugarAgent) myCell).isDead()){
@@ -224,43 +222,4 @@ public class SugarSimulation extends CellGrid{
 		}
 		return bestCell;
 	}
-//	
-//	public void printGrid(){
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				System.out.print(((SugarAgent)getGridCell(i,j)).getSugar() + " ");
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//		
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				System.out.print(((SugarAgent)getGridCell(i,j)).getPatch().getSugar() + " ");
-//			}
-//			System.out.println();
-//		}
-//		
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				if(getGridCell(i, j).getCurrentstate().equals(AGENT)){
-//					System.out.print("A");
-//				}
-//				else{
-//					System.out.print("E");
-//				}
-//			}
-//			System.out.println();
-//		}
-//		//System.out.println();
-//	}
-//	
-//	public static void main(String[] args){
-//		SugarSimulation austin = new SugarSimulation(2, 2);
-//		austin.createGrid(.3);
-//		austin.printGrid();
-//		System.out.println();
-//		austin.updateGrid();
-//		austin.printGrid();
-//	}
 }

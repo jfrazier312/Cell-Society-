@@ -11,18 +11,11 @@ public class Ant{
 	
 	private int rowPos;
 	private int colPos;
-	private int myRowOrientation;
-	private int myColOrientation;
 	private String myType;
 	
-	//there are obstacles and ant limits
-	
-	//public Ant(int row, int col, int rowOrientation, int colOrientation, int pheromones, String type){
 	public Ant(int row, int col, String type){
 		rowPos = row;
 		colPos = col;
-		//myRowOrientation = rowOrientation;
-		//myColOrientation = colOrientation;
 		myType = type;
 	}
 	
@@ -93,22 +86,4 @@ public class Ant{
 		myType = newType;
 	}
 	
-//	public void setRowOrientation(int newOrientation){
-//		myRowOrientation = newOrientation;
-//	}
-//	
-//	public void setColOrientation(int newOrientation){
-//		myColOrientation = newOrientation;
-//	}
-//	
-//	public int getRowOrientation(){
-//		return myRowOrientation;
-//	}
-//	
-//	public int getColOrientation(){
-//		return myColOrientation;
-//	}
-	
-	
-
 }

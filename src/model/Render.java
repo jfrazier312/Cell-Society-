@@ -77,6 +77,9 @@ public class Render {
 		if (cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
 		}
+		if(cell.isAntCell() && !isSource(cell)){
+			color = setAntColor(cell, color);
+		}
 		triangle.setFill(Color.web(color));
 
 		if (isEven % 2 == 0) {
@@ -107,6 +110,9 @@ public class Render {
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		if (cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
+		}
+		if(cell.isAntCell() && !isSource(cell)){
+			color = setAntColor(cell, color);
 		}
 		hexagon.setFill(Color.web(color));
 		return hexagon;

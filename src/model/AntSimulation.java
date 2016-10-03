@@ -167,7 +167,7 @@ public class AntSimulation extends CellGrid {
 	}
 	
 	public void putAntsInCell(int row, int col, AntCell myCell){
-		int numToAdd = generator.nextInt(3);
+		int numToAdd = generator.nextInt(2);
 		int numAdded = 0;
 		while(numAdded<numToAdd){
 			int antTypeChoice = generator.nextInt(2);
