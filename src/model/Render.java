@@ -70,6 +70,10 @@ public class Render {
 
 	private Shape renderTriangle(Cell cell, double xPos, double yPos, int yIndex, int xIndex) {
 		Polygon triangle = new Polygon();
+		if (cols % 2 == 0) {
+			cols--;
+			myConfig.setNumCols((int)cols);
+		}
 		width=width*2;
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		if (cell.isSugarCell()) {
@@ -85,15 +89,6 @@ public class Render {
 			triangle.getPoints().addAll(upsideDownTrianglePoints);
 		}
 		
-//		Double[] adjustedNormalTrianglePoints = { (xPos + width * xIndex), (yPos + height * yIndex), (xPos + width * xIndex) + width,
-//				(yPos + height * yIndex), (xPos + width * xIndex) + width / 2, (yPos + height * yIndex) + height };
-//		Double[] adjustedUpsideDownTrianglePoints = { (xPos + width * xIndex) + (width / 2), (yPos + height * (yIndex + 1)),
-//				(xPos + width * (xIndex + 1)), (yPos + height * yIndex), (xPos + width * (xIndex + 1)) + width / 2, (yPos + height * (yIndex + 1)) };
-//		if (isEven % 2 == 0) {
-//			triangle.getPoints().addAll(adjustedNormalTrianglePoints);
-//		} else {
-//			triangle.getPoints().addAll(adjustedUpsideDownTrianglePoints);
-//		}
 		return triangle;
 	}
 /*
