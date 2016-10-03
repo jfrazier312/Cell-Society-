@@ -12,7 +12,6 @@ import view.SceneConstant;
  */
 public class Rectangle extends Cell {
 
-	// included diagonals
 	private int[] rowDeltas = { -1, 0, 1, 0, 1, 1, -1, -1 };
 	private int[] colDeltas = { 0, -1, 0, 1, 1, -1, 1, -1 };
 	private Configuration myConfig;

@@ -38,7 +38,6 @@ public class SegregationSimulation extends CellGrid {
 	public void initSimulation() {
 		super.initSimulation();
 		setDeltas(ROW_DELTAS, COL_DELTAS);
-		myProbability  = Double.parseDouble(getConfig().getCustomParam("probability"));
 		myMovingCells = new ArrayList<Cell>();
 		double percentEmptyCells = Double.parseDouble(getConfig().getCustomParam("percentEmpty"));
 		double percenttypeA = Double.parseDouble(getConfig().getCustomParam("percentTypeA"));
@@ -57,7 +56,7 @@ public class SegregationSimulation extends CellGrid {
 	}
 
 	private void createCell(List<String> initialization, int i, int j) {
-		setGridCell(i, j, new RectangleWithDiagonals(i, j, getConfig()));
+		setGridCell(i, j, new Rectangle(i, j, getConfig()));
 		if(initialization.size() == 0){
 			getGridCell(i, j).setCurrentstate(EMPTY);
 		}
@@ -87,6 +86,7 @@ public class SegregationSimulation extends CellGrid {
 	
 	@Override
 	public void updateGrid(){
+		myProbability  = Double.parseDouble(getConfig().getCustomParam("probability"));
 		updateFutureStates();
 		for (int i = 0; i < getNumRows(); i++) {
 			for (int j = 0; j < getNumCols(); j++) {
@@ -180,34 +180,4 @@ public class SegregationSimulation extends CellGrid {
 	public String getSimulationName() {
 		return SIMULATION_NAME;
 	}
-	
-//	public void printGrid(){
-//		Cell[][] myGrid = getGrid();
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				if(myGrid[i][j].getCurrentstate().equals(EMPTY)){
-//					System.out.print("E");
-//				}
-//				else if(myGrid[i][j].getCurrentstate().equals(typeA)){
-//					System.out.print(1);
-//				}
-//				else{
-//					System.out.print(2);
-//				}
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//	}
-//
-//	public static void main(String[] args){
-//		SegregationSimulation test = new SegregationSimulation();
-//		int num = 0;
-//		while(num<10){
-//			test.printGrid();
-//			test.updateGrid();
-//			num++;
-//		}
-//	}
-
 }

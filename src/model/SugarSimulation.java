@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -14,8 +13,6 @@ import config.Configuration;
 public class SugarSimulation extends CellGrid{
 
 	public static final String SIMULATION_NAME = "SUGAR_SIMULATION";
-	private static final String AGENT = "agent";
-	private static final String NOAGENT = "no_agent";
 	private static final int MAX_METABOLISM = 4;
 	private static final int MAX_PATCH_SUGAR = 6;
 	
@@ -23,6 +20,9 @@ public class SugarSimulation extends CellGrid{
 	private int sugarGrowBackRate;
 	private double sugarGrowBackInterval;
 	private int maxVision;
+	
+	private String AGENT;
+	private String NOAGENT;
 	Random generator;
 	
 	public SugarSimulation(Configuration config) {
@@ -30,6 +30,8 @@ public class SugarSimulation extends CellGrid{
 		sugarGrowBackRate = 1;
 		sugarGrowBackCount = 0;
 		sugarGrowBackInterval = 1.0;
+		AGENT = myResources.getString("Agent");
+		NOAGENT = myResources.getString("NoAgent");
 		maxVision = (int) ((int) 100*Double.parseDouble(getConfig().getCustomParam("sugarGrowBackInterval")));
 	}
 	
@@ -85,11 +87,9 @@ public class SugarSimulation extends CellGrid{
 	
 	@Override
 	public String getSimulationName() {
-		// TODO Auto-generated method stub
 		return SIMULATION_NAME;
 	}
 	
-	//add check to see if a cell has a future state
 	@Override
 	public void updateGrid() {
 		sugarGrowBackInterval = 100*Double.parseDouble(getConfig().getCustomParam("sugarGrowBackInterval"))+1;
@@ -106,7 +106,6 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 	
-	//do agent rules in random order
 	public void updateFutureStates(){
 		sugarGrowBackCount++;
 		List<Cell> randomOrder = getAgentCells();
@@ -146,7 +145,6 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 	
-	//if my cell has an agent and doesn't move then i need to update it's future state
 	@Override
 	public void updateCell(Cell myCell) {
 		if(!((SugarAgent) myCell).isDead()){
@@ -162,7 +160,7 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 	
-	public void updateInfo(SugarAgent prevCell, SugarAgent newCell){
+	private void updateInfo(SugarAgent prevCell, SugarAgent newCell){
 		prevCell.updateSugar(newCell.getPatch().getSugar());
 		newCell.setSugar(prevCell.getSugar());
 		newCell.setSugarMetabolism(prevCell.getSugarMetabolism());
@@ -177,7 +175,7 @@ public class SugarSimulation extends CellGrid{
 		}
 	}
 	
-	public int findHighestSugar(List<Cell> neighbors){
+	private int findHighestSugar(List<Cell> neighbors){
 		int highestSugar = 0;
 		for(Cell neighbor: neighbors){
 			if(((SugarAgent) neighbor).isVacant() && neighbor.getCurrentstate().equals(NOAGENT)){
@@ -190,7 +188,7 @@ public class SugarSimulation extends CellGrid{
 		return highestSugar;
 	}
 	
-	public List<Cell> cellsWithMaxSugar(List<Cell> neighbors){
+	private List<Cell> cellsWithMaxSugar(List<Cell> neighbors){
 		List<Cell> highestPatches = new ArrayList<Cell>();
 		int highestSugar = findHighestSugar(neighbors);
 		for(Cell neighbor: neighbors){
@@ -203,11 +201,7 @@ public class SugarSimulation extends CellGrid{
 		return highestPatches;
 	}
 	
-	public double distance(int x1, int y1, int x2, int y2){
-		return Math.sqrt(1.0*((x1-x2)*(x1-x2) + (y2-y1)*(y2-y1)));
-	}
-	
-	public Cell getClosest(SugarAgent myAgent, List<Cell> myNeighbors){
+	private Cell getClosest(SugarAgent myAgent, List<Cell> myNeighbors){
 		if(myNeighbors.size() == 0){
 			return null;
 		}
@@ -228,43 +222,4 @@ public class SugarSimulation extends CellGrid{
 		}
 		return bestCell;
 	}
-//	
-//	public void printGrid(){
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				System.out.print(((SugarAgent)getGridCell(i,j)).getSugar() + " ");
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//		
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				System.out.print(((SugarAgent)getGridCell(i,j)).getPatch().getSugar() + " ");
-//			}
-//			System.out.println();
-//		}
-//		
-//		for (int i = 0; i < getNumRows(); i++) {
-//			for (int j = 0; j < getNumCols(); j++) {
-//				if(getGridCell(i, j).getCurrentstate().equals(AGENT)){
-//					System.out.print("A");
-//				}
-//				else{
-//					System.out.print("E");
-//				}
-//			}
-//			System.out.println();
-//		}
-//		//System.out.println();
-//	}
-//	
-//	public static void main(String[] args){
-//		SugarSimulation austin = new SugarSimulation(2, 2);
-//		austin.createGrid(.3);
-//		austin.printGrid();
-//		System.out.println();
-//		austin.updateGrid();
-//		austin.printGrid();
-//	}
 }

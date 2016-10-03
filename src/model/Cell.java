@@ -11,19 +11,7 @@ import javafx.scene.shape.Shape;
  *
  */
 
-//put all row deltas here nad have the get row delta methods be here
 public abstract class Cell extends Shape {
-	
-	//make getters and setters for all of these and put them in the classes?
-//	private int[] noDiagonalRowDeltas = { -1, 0, 1, 0, };
-//	private int[] noDiagonalColDeltas = { 0, -1, 0, 1 };
-//	
-//	private int[] diagonalRowDeltas = {-1, 0, 1, 0, 1, 1, -1, -1};
-//	private int[] diagonalColDeltas = {0, -1, 0, 1, 1, -1, 1, -1};
-//	
-//	private int[] rowDeltas = { -1, 0, 1 };
-//	private int[] evenColDeltas = { 0, 1, 0 };
-//	private int[] oddColDeltas = { 0, -1, 0 };
 	
 	private int rowPos;
 	private int colPos;
@@ -31,12 +19,9 @@ public abstract class Cell extends Shape {
 	
 	private String futurestate;
 	private String currentstate;
-	//private String myShape;
-	//public Cell(int row, int col, String shape){
 	public Cell(int row, int col){
 		rowPos = row;
 		colPos = col;
-		//myShape = shape;
 	}
 	
 	public int getRowPos() {
@@ -81,8 +66,10 @@ public abstract class Cell extends Shape {
 	
 	public Shape render() { return null; }
 	
+	@Deprecated
 	public abstract int[] getRowDeltas();
 	
+	@Deprecated
 	public abstract int[] getColDeltas();
 	
 	public boolean hasPatch(){
@@ -112,7 +99,6 @@ public abstract class Cell extends Shape {
 
 	@Override
 	public com.sun.javafx.geom.Shape impl_configShape() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
