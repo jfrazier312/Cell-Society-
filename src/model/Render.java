@@ -21,7 +21,7 @@ public class Render {
 	private Double[] upsideDownTrianglePoints = { 0.0, 0.0, TRIANGLE_WIDTH, 0.0, TRIANGLE_WIDTH / 2, TRIANGLE_WIDTH };
 
 	private String[] colorList = { "#f6edd6", "#f4e5c0", "#f4dea9", "#f4d790", "#e7c675", "#ceaa55", "#b8943d",
-			"#a58026", "#967013", "#7e5900" };
+			"#a58026", "#967013", "#7e5900", "#9c5f00"};
 
 	public Render(Configuration config) {
 		myConfig = config;
@@ -52,6 +52,9 @@ public class Render {
 		if(cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
 		}
+		if(cell.isAntCell() && !isSource(cell)){
+			color = setAntColor(cell, color);
+		}
 		rect.setFill(Color.web(color));
 		return rect;
 	}
@@ -81,6 +84,17 @@ public class Render {
 		int sugarLevel = ((SugarAgent) cell).getPatch().getSugar();
 		color = colorList[sugarLevel - 1];
 		return color;
+	}
+	
+	private String setAntColor(Cell cell, String color){
+		int antLevel = ((AntCell) cell).getAnts().size();
+		color = colorList[antLevel];
+		return color;
+	}
+	
+	private boolean isSource(Cell cell){
+		return cell.getCurrentstate().equals("home") || cell.getCurrentstate().equals("food") ||
+				cell.getCurrentstate().equals("obstacle");
 	}
 
 	public Shape renderPatch(Cell cell) {

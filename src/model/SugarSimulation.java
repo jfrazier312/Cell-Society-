@@ -7,8 +7,6 @@ import java.util.Random;
 
 import config.Configuration;
 
-//TODO: talk with Jordan to make it so that the agent only renders if it is alive
-//right now every patch has an agent, but should only display if it's sugar is above 0
 /**
  * @author austingartside
  *
@@ -230,7 +228,7 @@ public class SugarSimulation extends CellGrid{
 		}
 		return bestCell;
 	}
-	
+//	
 //	public void printGrid(){
 //		for (int i = 0; i < getNumRows(); i++) {
 //			for (int j = 0; j < getNumCols(); j++) {

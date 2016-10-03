@@ -93,6 +93,10 @@ public abstract class Cell extends Shape {
 		return false;
 	}
 	
+	public boolean isAntCell(){
+		return false;
+	}
+	
 	/**
 	 * Serialize to an element in XML
 	 * @param parser
