@@ -25,33 +25,38 @@ public class Render {
 
 	private String[] colorList = { "#f6edd6", "#f4e5c0", "#f4dea9", "#f4d790", "#e7c675", "#ceaa55", "#b8943d",
 			"#a58026", "#967013", "#7e5900", "#9c5f00" };
-
+	
+	private double rows;
+	private double cols;
+	private double width;
+	private double height;
+	
 	public Render(Configuration config) {
 		myConfig = config;
+		rows = myConfig.getNumRows();
+		cols = myConfig.getNumCols();
+		width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
+		height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
 	}
 
-	public Shape chooseRender(Cell cell, String shape, int isEven, double x, double y, int i, int j) {
+	public Shape chooseRender(Cell cell, String shape, int isEven, double xPos, double yPos, int yIndex, int xIndex) {
 		this.isEven = isEven;
 		Shape renderedShape = null;
 		if (shape.equals("rectangle")) {
-			renderedShape = renderRectangle(cell, x, y, i, j);
+			renderedShape = renderRectangle(cell, xPos, yPos, yIndex, xIndex);
 		} else if (shape.equals("triangle")) {
-			renderedShape = renderTriangle(cell, x, y, i, j);
+			renderedShape = renderTriangle(cell, xPos, yPos, yIndex, xIndex);
 		} else if (shape.equals("hexagon")) {
-			renderedShape = renderHexagon(cell, x, y, i, j);
+			renderedShape = renderHexagon(cell, xPos, yPos, yIndex, xIndex);
 		} else {
 			// fuck = new Polygon();
 		}
 		return renderedShape;
 	}
 
-	private Shape renderRectangle(Cell cell, double x, double y, int i, int j) {
-		double rows = myConfig.getNumRows();
-		double cols = myConfig.getNumCols();
-		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
-		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
-
-		Shape rect = new javafx.scene.shape.Rectangle(x + (width * i), y + (width * j), width, height);
+	private Shape renderRectangle(Cell cell, double xPos, double yPos, int yIndex, int xIndex) {
+		
+		Shape rect = new javafx.scene.shape.Rectangle(xPos + (width * xIndex), yPos + (height * yIndex), width, height);
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		if (cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
@@ -64,11 +69,6 @@ public class Render {
 	}
 
 	private Shape renderTriangle(Cell cell, double x, double y, int i, int j) {
-		int rows = myConfig.getNumRows();
-		int cols = myConfig.getNumCols();
-		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
-		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
-
 		Polygon triangle = new Polygon();
 
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
@@ -88,11 +88,9 @@ public class Render {
 		}
 		return triangle;
 	}
-
+/*
 	@Deprecated
 	private Shape renderTriangle(Cell cell) {
-		int rows = myConfig.getNumRows();
-		int cols = myConfig.getNumCols();
 		if (cols % 2 == 0) {
 			cols--;
 			myConfig.setNumCols(cols);
@@ -114,13 +112,9 @@ public class Render {
 		}
 		return triangle;
 	}
+	*/
 
 	public Shape renderHexagon(Cell cell, double x, double y, int i, int j) {
-		double rows = myConfig.getNumRows();
-		double cols = myConfig.getNumCols();
-		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
-		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
-
 		Polygon hexagon = new Polygon();
 		double[] center = new double[2];
 		if (isEven % 2 == 0) {
@@ -135,15 +129,6 @@ public class Render {
 			Double[] a = getPoint(center, width / 2, k);
 			hexagon.getPoints().addAll(a[0], a[1]);
 		}
-		
-//		if (isEven % cols == cols - 1 || (isEven != 0 && isEven % cols == 0)) {
-//			return renderOffset(width / 2);
-//		} else {
-//			for (int k = 0; k < 6; k++) {
-//				Double[] a = getPoint(center, width / 2, k);
-//				hexagon.getPoints().addAll(a[0], a[1]);
-//			}
-//		}
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		if (cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
@@ -161,6 +146,7 @@ public class Render {
 		return a;
 	}
 
+	@Deprecated
 	private Shape renderOffset(double width) {
 		Line offset = new Line(0.0, width / 4, width / 2, width / 4);
 		offset.setFill(Color.WHITE);

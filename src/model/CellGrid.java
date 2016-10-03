@@ -18,8 +18,13 @@ public abstract class CellGrid {
 	protected ResourceBundle myResources;
 	public static final String RESRC_PATH = "resources/SimulationResources";
 
-	private static final int[] HEX_ROW_DELTAS = { -1, -1, 0, 1, 1, 0 };
-	private static final int[] HEX_COL_DELTAS = { 0, -1, -1, -1, 0, 1 };
+//	private static final int[] HEX_ROW_DELTAS = { -1, 1, 0, 1, 1, 0};
+//	private static final int[] HEX_COL_DELTAS = { 0, 1, -1, -1, 0, 1};
+	
+	private static final int[] HEX_ROW_DELTAS = { -1};
+	private static final int[] HEX_COL_DELTAS = { -1};
+
+
 
 	private static final int[] TRI_ROW_DELTAS = { -1, -1, 0, 1, 1, 1, 0, -1 };
 	private static final int[] TRI_COL_DELTAS = { 0, -1, -1, -1, 0, 1, 1, 1 };
@@ -51,11 +56,9 @@ public abstract class CellGrid {
 	public void renderGrid(Pane cellPane, Configuration config) {
 		yPos = (SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2;
 		xPos = SceneConstant.GRID_PADDING.getValue();
+
 		for (int i = 0; i < myConfig.getNumRows(); i++) {
-//			yPos+=SceneConstant.GRID_HEIGHT.getValue() / myConfig.getNumRows();
-			xPos = SceneConstant.GRID_PADDING.getValue();
 			for (int j = 0; j < myConfig.getNumCols(); j++) {
-//				xPos+=SceneConstant.GRID_WIDTH.getValue() / myConfig.getNumCols();
 				Cell currentCell = grid[i][j];
 				Render rend = new Render(myConfig);
 				Shape updatedCell = rend.chooseRender(currentCell, myShape, isEven++, xPos, yPos, i, j);
