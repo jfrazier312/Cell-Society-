@@ -239,7 +239,8 @@ public class MainView {
 
 		VBox basicBtnBox = new VBox(SceneConstant.PADDING.getValue());
 		basicBtnBox.getChildren().addAll(Simulations.COMBOBOX.getSimulationComboBox(),
-				Simulations.COMBOBOX.getShapesComboBox(), Simulations.COMBOBOX.getWrappingsComboBox(), hbox1, hbox2, vbox, fpsSlider.getGenericSlider(), hbox3);
+				Simulations.COMBOBOX.getShapesComboBox(), Simulations.COMBOBOX.getWrappingsComboBox(), hbox1, hbox2,
+				vbox, fpsSlider.getGenericSlider(), hbox3);
 		basicBtnBox.setMinWidth(300);
 		buttonContainer.getChildren().add(basicBtnBox);
 
@@ -369,7 +370,7 @@ public class MainView {
 	private void setSimulationEventHandler() {
 		ComboBox<String> simulationBox = Simulations.COMBOBOX.getSimulationComboBox();
 		setComboBoxProperties(simulationBox, myConfig.getSimulationName());
-		
+
 		simulationBox.valueProperty().addListener(e -> {
 			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
@@ -390,7 +391,7 @@ public class MainView {
 			}
 		});
 	}
-	
+
 	private void handleExceptionDialog() {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Exception");
@@ -405,7 +406,7 @@ public class MainView {
 	private void setShapesEventHandler() {
 		ComboBox<String> shapeBox = Simulations.COMBOBOX.getShapesComboBox();
 		setComboBoxProperties(shapeBox, "Rectangle");
-		
+
 		shapeBox.valueProperty().addListener(e -> {
 			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
@@ -419,14 +420,14 @@ public class MainView {
 			}
 		});
 	}
-	
+
 	private void setWrappingsEventHandler() {
 		ComboBox<String> wrappingsBox = Simulations.COMBOBOX.getWrappingsComboBox();
 		setComboBoxProperties(wrappingsBox, "Finite");
 		myConfig.setWrapping(wrappingsBox.getValue());
-		
+
 		wrappingsBox.valueProperty().addListener(e -> {
-			myGameloop.stop(); 
+			myGameloop.stop();
 			myRoot.getChildren().removeAll(myRoot.getChildren());
 			myConfig.setWrapping(wrappingsBox.getValue());
 			try {
@@ -444,27 +445,28 @@ public class MainView {
 		box.setMaxWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() + SceneConstant.PADDING.getValue());
 		box.setValue(myResources.getString(resourceName));
 	}
+/*
+	private void setGridLinesVisible(SimulationButton btn) {
+		setDimensions(btn);
+		btn.setOnAction(e -> {
+			if (!gridLinesVisible) {
+				setGridLines(true);
+			} else {
+				setGridLines(false);
+			}
+		});
+	}
 
-	// private void setGridLinesVisible(SimulationButton btn) {
-	// setDimensions(btn);
-	// btn.setOnAction(e -> {
-	// if (!gridLinesVisible) {
-	// setGridLines(true);
-	// } else {
-	// setGridLines(false);
-	// }
-	// });
-	// }
-	//
-	// private void setGridLines(boolean isVisible) {
-	// if (isVisible) {
-	// cellPane.setGridLinesVisible(true);
-	// gridLinesVisible = true;
-	// } else {
-	// cellPane.setGridLinesVisible(false);
-	// gridLinesVisible = false;
-	// }
-	// }c
+	private void setGridLines(boolean isVisible) {
+		if (isVisible) {
+			cellPane.setGridLinesVisible(true);
+			gridLinesVisible = true;
+		} else {
+			cellPane.setGridLinesVisible(false);
+			gridLinesVisible = false;
+		}
+	}
+*/
 
 	private void setDimensions(SimulationButton btn) {
 		btn.setMinWidth(SceneConstant.BUTTON_CONTAINER_WIDTH.getValue() / 2);
