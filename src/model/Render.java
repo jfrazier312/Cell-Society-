@@ -29,13 +29,13 @@ public class Render {
 		myConfig = config;
 	}
 
-	public Shape chooseRender(Cell cell, String shape, int isEven) {
+	public Shape chooseRender(Cell cell, String shape, int isEven, double x, double y, int i, int j) {
 		this.isEven = isEven;
 		Shape renderedShape = null;
 		if (shape.equals("rectangle")) {
-			renderedShape = renderRectangle(cell);
+			renderedShape = renderRectangle(cell, x, y, i, j);
 		} else if (shape.equals("triangle")) {
-			renderedShape = renderTriangle(cell);
+			renderedShape = renderTriangle(cell, x, y, i, j);
 		} else if (shape.equals("hexagon")) {
 			renderedShape = renderHexagon(cell);
 		} else {
@@ -44,13 +44,13 @@ public class Render {
 		return renderedShape;
 	}
 
-	private Shape renderRectangle(Cell cell) {
+	private Shape renderRectangle(Cell cell, double x, double y, int i, int j) {
 		double rows = myConfig.getNumRows();
 		double cols = myConfig.getNumCols();
 		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
 		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
 
-		Shape rect = new javafx.scene.shape.Rectangle(width, height);
+		Shape rect = new javafx.scene.shape.Rectangle(x + (width*i), y + (width*j), width, height);
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		if (cell.isSugarCell()) {
 			color = setSugarColor(cell, color);
@@ -61,7 +61,35 @@ public class Render {
 		rect.setFill(Color.web(color));
 		return rect;
 	}
+	
+	private Shape renderTriangle(Cell cell, double x, double y, int i, int j) {
+		int rows = myConfig.getNumRows();
+		int cols = myConfig.getNumCols();
+		double width = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols);
+		double height = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows);
+		
+		Polygon triangle = new Polygon();
 
+		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
+		if (cell.isSugarCell()) {
+			color = setSugarColor(cell, color);
+		}
+		triangle.setFill(Color.web(color));
+		Double[] adjustedNormalTrianglePoints = {(x + width*j), (y + height*i), (x + width*j) + width, (y + height*i), (x + width*j) + width/2, (y + height*i) + height};
+		Double[] adjustedUpsideDownTrianglePoints = {(x + width*j) + (width/2), (y + height*(i+1)), (x+width*(j + 1)), (y + height*i), (x + width*(j+1)) + width/2, (y + height*(i+1))};
+
+		if (isEven % 2 == 0) {
+			triangle.getPoints().addAll(adjustedNormalTrianglePoints);
+		} else {
+			triangle.getPoints().addAll(adjustedUpsideDownTrianglePoints);
+		}
+		return triangle;
+	}
+	
+	
+	
+
+	@Deprecated
 	private Shape renderTriangle(Cell cell) {
 		int rows = myConfig.getNumRows();
 		int cols = myConfig.getNumCols();

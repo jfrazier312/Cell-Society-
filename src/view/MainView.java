@@ -22,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import model.AntSimulation;
@@ -41,7 +42,7 @@ public class MainView {
 
 	private Scene myScene;
 	private Group myRoot;
-	private GridPane myCellPane;
+	private Pane myCellPane;
 	private CellGrid mySimulation;
 	private Timeline myGameloop;
 
@@ -470,7 +471,7 @@ public class MainView {
 	}
 
 	private void createCellPane() {
-		myCellPane = new GridPane();
+		myCellPane = new Pane();
 		myCellPane.setPadding(cellPanePadding);
 		myCellPane.setMaxWidth(SceneConstant.GRID_WIDTH.getValue() + SceneConstant.GRID_PADDING.getValue());
 		// cellPane.setMinWidth(GRID_WIDTH + GRID_PADDING);
