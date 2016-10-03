@@ -77,8 +77,8 @@ public class Render {
 			color = setSugarColor(cell, color);
 		}
 		triangle.setFill(Color.web(color));
-		Double[] upsideDownTrianglePoints = {xPos + (xIndex*width) - width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width) + width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width), yPos + (yIndex*height) + yPos/2};
-		Double[] trianglePoints = {xPos + (xIndex*width) - width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width) + width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width), yPos + (yIndex*height) - yPos/2};
+		Double[] upsideDownTrianglePoints = {xPos + (xIndex*width) - width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width) + width/2, yPos + (yIndex*height) - height/2, xPos + (xIndex*width), yPos + (yIndex*height) + height/2};
+		Double[] trianglePoints = {xPos + (xIndex*width) - width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width) + width/2, yPos + (yIndex*height) + height/2, xPos + (xIndex*width), yPos + (yIndex*height) - height/2};
 
 		if (isEven % 2 == 0) {
 			triangle.getPoints().addAll(trianglePoints);
