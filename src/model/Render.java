@@ -68,7 +68,7 @@ public class Render {
 		return rect;
 	}
 
-	private Shape renderTriangle(Cell cell, double x, double y, int i, int j) {
+	private Shape renderTriangle(Cell cell, double xPos, double yPos, int yIndex, int xIndex) {
 		Polygon triangle = new Polygon();
 
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
@@ -76,10 +76,10 @@ public class Render {
 			color = setSugarColor(cell, color);
 		}
 		triangle.setFill(Color.web(color));
-		Double[] adjustedNormalTrianglePoints = { (x + width * j), (y + height * i), (x + width * j) + width,
-				(y + height * i), (x + width * j) + width / 2, (y + height * i) + height };
-		Double[] adjustedUpsideDownTrianglePoints = { (x + width * j) + (width / 2), (y + height * (i + 1)),
-				(x + width * (j + 1)), (y + height * i), (x + width * (j + 1)) + width / 2, (y + height * (i + 1)) };
+		Double[] adjustedNormalTrianglePoints = { (xPos + width * xIndex), (yPos + height * yIndex), (xPos + width * xIndex) + width,
+				(yPos + height * yIndex), (xPos + width * xIndex) + width / 2, (yPos + height * yIndex) + height };
+		Double[] adjustedUpsideDownTrianglePoints = { (xPos + width * xIndex) + (width / 2), (yPos + height * (yIndex + 1)),
+				(xPos + width * (xIndex + 1)), (yPos + height * yIndex), (xPos + width * (xIndex + 1)) + width / 2, (yPos + height * (yIndex + 1)) };
 
 		if (isEven % 2 == 0) {
 			triangle.getPoints().addAll(adjustedNormalTrianglePoints);
@@ -114,15 +114,15 @@ public class Render {
 	}
 	*/
 
-	public Shape renderHexagon(Cell cell, double x, double y, int i, int j) {
+	public Shape renderHexagon(Cell cell, double xPos, double yPos, int yIndex, int xIndex) {
 		Polygon hexagon = new Polygon();
 		double[] center = new double[2];
 		if (isEven % 2 == 0) {
-			center[0] = x + width * j;
-			center[1] = y + height * i;
+			center[0] = xPos + width * xIndex;
+			center[1] = yPos + height * yIndex;
 		} else {
-			center[0] = x + width * j;
-			center[1] = (y + height * i) + height/2;
+			center[0] = xPos + width * xIndex;
+			center[1] = (yPos + height * yIndex) + height/2;
 		}
 
 		for (int k = 0; k < 6; k++) {
@@ -170,13 +170,11 @@ public class Render {
 				|| cell.getCurrentstate().equals("obstacle");
 	}
 
-	public Shape renderPatch(Cell cell) {
-		double rows = myConfig.getNumRows();
-		double cols = myConfig.getNumCols();
+	public Shape renderPatch(Cell cell, double xPos, double yPos, int yIndex, int xIndex) {
 		double radiusX = calculateSize(SceneConstant.GRID_WIDTH.getValue(), cols) / 5;
 		double radiusY = calculateSize(SceneConstant.GRID_HEIGHT.getValue(), rows) / 5;
 
-		Shape ellipse = new Ellipse(radiusX, radiusY);
+		Shape ellipse = new Ellipse(xPos + (width * xIndex) + width/2, yPos + (height * yIndex) + height/2, radiusX, radiusY);
 		String color = myConfig.getAllStates().getStateByName(cell.getCurrentstate()).getAttributes().get("color");
 		ellipse.setFill(Color.web(color));
 

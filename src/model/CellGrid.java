@@ -18,13 +18,8 @@ public abstract class CellGrid {
 	protected ResourceBundle myResources;
 	public static final String RESRC_PATH = "resources/SimulationResources";
 
-//	private static final int[] HEX_ROW_DELTAS = { -1, 1, 0, 1, 1, 0};
-//	private static final int[] HEX_COL_DELTAS = { 0, 1, -1, -1, 0, 1};
-	
-	private static final int[] HEX_ROW_DELTAS = { -1};
-	private static final int[] HEX_COL_DELTAS = { -1};
-
-
+	private static final int[] HEX_ROW_DELTAS = { -1, 1, 0, 1, 1, 0};
+	private static final int[] HEX_COL_DELTAS = { 0, 1, -1, -1, 0, 1};
 
 	private static final int[] TRI_ROW_DELTAS = { -1, -1, 0, 1, 1, 1, 0, -1 };
 	private static final int[] TRI_COL_DELTAS = { 0, -1, -1, -1, 0, 1, 1, 1 };
@@ -63,19 +58,18 @@ public abstract class CellGrid {
 				Render rend = new Render(myConfig);
 				Shape updatedCell = rend.chooseRender(currentCell, myShape, isEven++, xPos, yPos, i, j);
 				cellPane.getChildren().add(updatedCell);
-				checkIfPatchCell(cellPane, currentCell, rend);
+				checkifPatchCell(cellPane, i, j, currentCell, rend);
 				allowClickableCells(config, currentCell, updatedCell);
 			}
 		}
 	}
 
-	private void checkIfPatchCell(Pane cellPane, Cell currentCell, Render rend) {
+	private void checkifPatchCell(Pane cellPane, int i, int j, Cell currentCell, Render rend) {
 		if (currentCell.hasPatch()){
-			Shape patchCell = rend.renderPatch(currentCell);
+			Shape patchCell = rend.renderPatch(currentCell, xPos, yPos, i, j);
 			cellPane.getChildren().add(patchCell);
 		}
 	}
-
 	private void allowClickableCells(Configuration config, Cell currentCell, Shape updatedCell) {
 		updatedCell.setOnMouseClicked(e -> {
 			int len = config.getAllStates().getList().size();
