@@ -18,11 +18,11 @@ public class AntCell extends Cell{
 	private boolean gainedHomeAnts;
 	private boolean gainedFoodAnts;
 		
-	public AntCell(int row, int col, int homePheromones, int foodPheromones, int maxHomePheromones, int maxFoodPheromones) {
+	public AntCell(int row, int col, int maxHomePheromones, int maxFoodPheromones) {
 		super(row, col);
 		myAnts = new ArrayList<Ant>();
-		myHomePheromones = homePheromones;
-		myFoodPheromones = foodPheromones;
+		myHomePheromones = maxHomePheromones;
+		myFoodPheromones = maxFoodPheromones;
 		myMaxHomePheromones = maxHomePheromones;
 		myMaxFoodPheromones = maxFoodPheromones;
 		gainedHomeAnts = false;

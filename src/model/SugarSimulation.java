@@ -203,10 +203,6 @@ public class SugarSimulation extends CellGrid{
 		return highestPatches;
 	}
 	
-	public double distance(int x1, int y1, int x2, int y2){
-		return Math.sqrt(1.0*((x1-x2)*(x1-x2) + (y2-y1)*(y2-y1)));
-	}
-	
 	public Cell getClosest(SugarAgent myAgent, List<Cell> myNeighbors){
 		if(myNeighbors.size() == 0){
 			return null;

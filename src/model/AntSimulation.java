@@ -12,8 +12,6 @@ import view.Simulations;
  *
  */
 
-//set row deltas in each simulation based on what shape is chosen
-//define all the row deltas in cell grid
 public class AntSimulation extends CellGrid {
 
 	private static final String SIMULATION_NAME = Simulations.ANT.getName();
@@ -41,7 +39,7 @@ public class AntSimulation extends CellGrid {
 	
 	public AntSimulation(Configuration config) {
 		super(config);
-		pheromoneConstant = SOURCE_PHEROMONES/getNumRows();
+		pheromoneConstant = SOURCE_PHEROMONES/((getNumRows() + getNumCols())/2);
 		pheromoneLoss = pheromoneConstant/5;
 	}
 	
@@ -57,7 +55,6 @@ public class AntSimulation extends CellGrid {
 		super.initSimulation();
 		setDeltas(ROW_DELTAS, COL_DELTAS);
 		getFoodSourceLocation();
-		//should get this from config
 		double percentObstacles = Double.parseDouble(getConfig().getCustomParam("percentObstacles"));;
 		createGrid(percentObstacles);
 	}
@@ -75,18 +72,33 @@ public class AntSimulation extends CellGrid {
 		initAllFoodPheromones();
 		initAllHomePheromones();
 	}
+	
+	
+	private List<String> getStartingStates(double percentObstacles) {
+		int size = getNumRows()*getNumCols();
+		double numObstacles = size*percentObstacles;
+		int numNonObstacles = (int) (size-numObstacles);
+		List<String> obstacleOrNot = new ArrayList<String>();
+		for(int i = 0; i<numObstacles; i++){
+			obstacleOrNot.add(OBSTACLE);
+		}
+		for(int i = 0; i<numNonObstacles; i++){
+			obstacleOrNot.add(OPEN);
+		}
+		return obstacleOrNot;
+	}
 
 	private void makeStartingCells(List<String> myStates, int i, int j) {
 		if(i == foodRow && j == foodCol){
-			setGridCell(i, j, new AntCell(i, j, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES, 0));
-			getGridCell(i, j).setCurrentstate(HOME_SOURCE);
+			setGridCell(i, j, new AntCell(i, j, 0, SOURCE_PHEROMONES));
+			getGridCell(i, j).setCurrentstate(FOOD_SOURCE);
 		}
 		//have the xml set these
 		else if(i == getNumRows()-2 && j == getNumRows()-2){
 			homeRow = i;
 			homeCol = j;
-			setGridCell(i, j, new AntCell(i, j, 0, SOURCE_PHEROMONES, 0, SOURCE_PHEROMONES));
-			getGridCell(i, j).setCurrentstate(FOOD_SOURCE);
+			setGridCell(i, j, new AntCell(i, j, SOURCE_PHEROMONES, 0));
+			getGridCell(i, j).setCurrentstate(HOME_SOURCE);
 		}
 		else{
 			int typeChoice = generator.nextInt(myStates.size());
@@ -98,11 +110,11 @@ public class AntSimulation extends CellGrid {
 	
 	public void createRandomCell(int row, int col, String state){
 		if(state.equals(OBSTACLE)){
-			setGridCell(row, col, new AntCell(row, col, -1, -1, -1, -1));
+			setGridCell(row, col, new AntCell(row, col, -1, -1));
 			getGridCell(row, col).setCurrentstate(OBSTACLE);
 		}
 		else{
-			setGridCell(row, col, new AntCell(row, col, -1, -1, -1, -1));
+			setGridCell(row, col, new AntCell(row, col, -1, -1));
 			getGridCell(row, col).setCurrentstate(OPEN);
 		}		
 	}
@@ -112,7 +124,7 @@ public class AntSimulation extends CellGrid {
 		List<Cell> homeNeighbors = getNeighbors(home, VISION);
 		for(Cell neighbor: homeNeighbors){
 			((AntCell)neighbor).setMaxHomePheromones(SOURCE_PHEROMONES - pheromoneConstant);
-			//System.out.println(((AntCell)neighbor).getMaxHomePheromones());
+			((AntCell)neighbor).addHomePheromones();
 		}
 	}
 	
@@ -121,8 +133,7 @@ public class AntSimulation extends CellGrid {
 		List<Cell> homeNeighbors = getNeighbors(foodSource, VISION);
 		for(Cell neighbor: homeNeighbors){
 			((AntCell)neighbor).setMaxFoodPheromones(SOURCE_PHEROMONES - pheromoneConstant);
-			//((AntCell)neighbor).setMaxFoodPheromones(SOURCE_PHEROMONES - pheromoneConstant);
-			//System.out.println(((AntCell)neighbor).getMaxFoodPheromones());
+			((AntCell)neighbor).addFoodPheromones();
 		}
 	}
 	
@@ -131,14 +142,12 @@ public class AntSimulation extends CellGrid {
 			for (int j = 0; j < getNumCols(); j++) {
 				AntCell currentCell = (AntCell) getGridCell(i, j);
 				List<Cell> neighbors = getNeighbors(currentCell, VISION);
-				if(!currentCell.getCurrentstate().equals(OBSTACLE)){
 					if(currentCell.getMaxFoodPheromones() < 0){
-						AntCell highestNeighbor = (AntCell) getMaxPheromoneNeighbor(neighbors, true);
+						AntCell highestNeighbor = (AntCell) getMaxPheromoneNeighbor(neighbors, true, true);
 						currentCell.setMaxFoodPheromones(highestNeighbor.getMaxFoodPheromones() - pheromoneConstant);
+						currentCell.addFoodPheromones();
 					}
 					putAntsInCell(i, j, currentCell);
-					//System.out.println(currentCell.getMaxFoodPheromones());
-				}
 			}
 		}
 	}
@@ -148,14 +157,11 @@ public class AntSimulation extends CellGrid {
 			for (int j = getNumCols()-1; j >= 0; j--) {
 				AntCell currentCell = (AntCell) getGridCell(i, j);
 				List<Cell> neighbors = getNeighbors(currentCell, VISION);
-				if(!currentCell.getCurrentstate().equals(OBSTACLE)){
 					if(currentCell.getMaxHomePheromones() < 0){
-						AntCell highestNeighbor = (AntCell) getMaxPheromoneNeighbor(neighbors, false);
+						AntCell highestNeighbor = (AntCell) getMaxPheromoneNeighbor(neighbors, false, true);
 						currentCell.setMaxHomePheromones(highestNeighbor.getMaxHomePheromones() - pheromoneConstant);
+						currentCell.addHomePheromones();
 					}
-					//putAntsInCell(i, j, currentCell);
-					System.out.println(currentCell.getMaxHomePheromones());
-				}
 			}
 		}
 	}
@@ -175,20 +181,6 @@ public class AntSimulation extends CellGrid {
 			myCell.addAnt(antToAdd);
 			numAdded++;
 		}
-	}
-	
-	private List<String> getStartingStates(double percentObstacles) {
-		int size = getNumRows()*getNumCols();
-		double numObstacles = size*percentObstacles;
-		int numNonObstacles = (int) (size-numObstacles);
-		List<String> obstacleOrNot = new ArrayList<String>();
-		for(int i = 0; i<numObstacles-1; i++){
-			obstacleOrNot.add(OBSTACLE);
-		}
-		for(int i = 0; i<numNonObstacles-1; i++){
-			obstacleOrNot.add(OPEN);
-		}
-		return obstacleOrNot;
 	}
 
 	@Override
@@ -239,16 +231,16 @@ public class AntSimulation extends CellGrid {
 	private void antForage(Ant myAnt){
 		if(myAnt.getType().equals(FOOD_ANT)){
 			getAntMove(myAnt, true);
+
 		}
 		else{
 			getAntMove(myAnt, false);
 		}
 	}
 	
-	//for both food and home to reduce code
 	private void getAntMove(Ant myAnt, boolean isFood){
 		Cell myCurrentCell = getGridCell(myAnt.getRow(), myAnt.getCol());
-		Cell bestNeighbor = getMaxPheromoneNeighbor(getNeighbors(myCurrentCell, VISION), isFood);
+		Cell bestNeighbor = getMaxPheromoneNeighbor(getNeighbors(myCurrentCell, VISION), isFood, false);
 		List<Cell> neighbors = getNeighbors(myCurrentCell, VISION);
 		List<Cell> forwardCells = myAnt.getForwardCells(neighbors, bestNeighbor);
 		List<Cell> availableCells = getOpenCells(forwardCells);
@@ -256,12 +248,12 @@ public class AntSimulation extends CellGrid {
 			List<Cell> nonForwardCells = myAnt.getNonForwardCells(neighbors, bestNeighbor);
 			availableCells = getOpenCells(nonForwardCells);
 			if(availableCells.size()!=0){				
-				Cell newCell = getMaxPheromoneNeighbor(availableCells, isFood);
+				Cell newCell = getMaxPheromoneNeighbor(availableCells, isFood, false);
 				moveAnt(myAnt, (AntCell) myCurrentCell, (AntCell) newCell, isFood);
 			}
 		}
 		else{
-			Cell newCell = getMaxPheromoneNeighbor(availableCells, isFood);
+			Cell newCell = getMaxPheromoneNeighbor(availableCells, isFood, false);
 			moveAnt(myAnt, (AntCell) myCurrentCell, (AntCell) newCell, isFood);
 		}
 	}
@@ -274,7 +266,6 @@ public class AntSimulation extends CellGrid {
 		else{
 			newCell.homeAntGain();
 		}
-		//currentCell.removeAnt(movingAnt);
 		antsToRemove.add(movingAnt);
 		movingAnt.setRow(newCell.getRowPos());
 		movingAnt.setCol(newCell.getColPos());
@@ -296,20 +287,26 @@ public class AntSimulation extends CellGrid {
 		return availableCells;
 	}
 	
-	private Cell getMaxPheromoneNeighbor(List<Cell> neighbors, boolean isFoodNeighbor){
+	private Cell getMaxPheromoneNeighbor(List<Cell> neighbors, boolean isFoodNeighbor, boolean initiatingStates){
 		int highestPheromones = 0;
 		int tempPheromones;
 		Cell cellWithHighest = neighbors.get(0);
 		for(Cell neighbor: neighbors){
 			if(isFoodNeighbor){
-				tempPheromones = ((AntCell)neighbors.get(0)).getFoodPheromones();
+				tempPheromones = ((AntCell)neighbor).getFoodPheromones();
 			}
 			else{
-				tempPheromones = ((AntCell)neighbors.get(0)).getHomePheromones();
+				tempPheromones = ((AntCell)neighbor).getHomePheromones();
 			}
 			if(tempPheromones>highestPheromones){
-				highestPheromones = tempPheromones;
-				cellWithHighest = neighbor;
+				if(initiatingStates){
+					highestPheromones = tempPheromones;
+					cellWithHighest = neighbor;
+				}
+				else if(!neighbor.getCurrentstate().equals(OBSTACLE)){
+					highestPheromones = tempPheromones;
+					cellWithHighest = neighbor;
+				}
 			}
 		}
 		return cellWithHighest;	
@@ -319,44 +316,4 @@ public class AntSimulation extends CellGrid {
 	public String getSimulationName() {
 		return SIMULATION_NAME;
 	}
-	
-//	public void printGrid(){
-//	for (int i = 0; i < getNumRows(); i++) {
-//		for (int j = 0; j < getNumCols(); j++) {
-//			System.out.print(((SugarAgent)getGridCell(i,j)).getSugar() + " ");
-//		}
-//		System.out.println();
-//	}
-//	System.out.println();
-//	
-//	for (int i = 0; i < getNumRows(); i++) {
-//		for (int j = 0; j < getNumCols(); j++) {
-//			System.out.print(((SugarAgent)getGridCell(i,j)).getPatch().getSugar() + " ");
-//		}
-//		System.out.println();
-//	}
-//	
-//	for (int i = 0; i < getNumRows(); i++) {
-//		for (int j = 0; j < getNumCols(); j++) {
-//			if(getGridCell(i, j).getCurrentstate().equals(AGENT)){
-//				System.out.print("A");
-//			}
-//			else{
-//				System.out.print("E");
-//			}
-//		}
-//		System.out.println();
-//	}
-//	//System.out.println();
-//}
-//
-//public static void main(String[] args){
-//	SugarSimulation austin = new SugarSimulation(2, 2);
-//	austin.createGrid(.3);
-//	austin.printGrid();
-//	System.out.println();
-//	austin.updateGrid();
-//	austin.printGrid();
-//}
-
 }

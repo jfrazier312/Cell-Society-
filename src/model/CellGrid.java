@@ -233,6 +233,10 @@ public abstract class CellGrid extends GridPane {
 	public Configuration getConfig() {
 		return myConfig;
 	}
+	
+	public double distance(int x1, int y1, int x2, int y2){
+		return Math.sqrt(1.0*((x1-x2)*(x1-x2) + (y2-y1)*(y2-y1)));
+	}
 
 	public abstract void updateGrid();
 
