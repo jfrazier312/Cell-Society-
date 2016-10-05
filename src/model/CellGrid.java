@@ -11,6 +11,7 @@ import javafx.scene.shape.Shape;
 import view.SceneConstant;
 
 /**
+ * An abstract class that must be extended by each simulation, used in MainView.java. 
  * author: Austin Gartside, Jordan Frazier and Charles Xu
  */
 public abstract class CellGrid {
@@ -48,6 +49,11 @@ public abstract class CellGrid {
 		grid = new Cell[config.getNumRows()][config.getNumCols()];
 	}
 
+	/**
+	 * Renders the grid based on the Configuration and state of current cells
+	 * @param cellPane
+	 * @param config
+	 */
 	public void renderGrid(Pane cellPane, Configuration config) {
 		yPos = (SceneConstant.SCENE_HEIGHT.getValue() - SceneConstant.GRID_HEIGHT.getValue()) / 2;
 		xPos = SceneConstant.GRID_PADDING.getValue();
@@ -191,6 +197,11 @@ public abstract class CellGrid {
 		}
 	}
 
+	/**
+	 * Sets the deltas that will be used to calculate the cells neighbors
+	 * @param newRowDeltas
+	 * @param newColDeltas
+	 */
 	public void setDeltas(int[] newRowDeltas, int[] newColDeltas) {
 		rowDeltas = newRowDeltas;
 		colDeltas = newColDeltas;
@@ -238,16 +249,34 @@ public abstract class CellGrid {
 		return myConfig;
 	}
 	
+	/**
+	 * Used to get the distance between two locations
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return
+	 */
 	public double distance(int x1, int y1, int x2, int y2){
 		return Math.sqrt(1.0*((x1-x2)*(x1-x2) + (y2-y1)*(y2-y1)));
 	}
-
+	
+	/**
+	 * Updates grid based on specific simulation functionality
+	 */
 	public abstract void updateGrid();
-
+	
+	/**
+	 * Updates specific cell based on simulation rules
+	 * @param myCell cell to update
+	 */
 	public abstract void updateCell(Cell myCell);
 
 	public abstract String getSimulationName();
 
+	/**
+	 * Begins specific simulation, creating grid and updating cells.
+	 */
 	public void initSimulation() {
 		myShape = myConfig.getShape().toLowerCase();
 		myWrappings = myConfig.getWrapping().toLowerCase();
