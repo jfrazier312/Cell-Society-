@@ -31,21 +31,24 @@ Resource Files:
 * Resource files are located in resources package and define string constants used in our program
 
 Interesting Information: 
-* ??? TODO
+* The Game Of Life with 40+ rows/cols produces fascinating patterns 
 
 Bugs:
 * UI:
     * Hexagon rendering does not always line up hexagons in perfect order, depending on the number of rows/cols the user has specified.
-    * Patch cells on Sugar Simulation do not line up when using triangles
+    * Patch cells on Sugar Simulation do not line up when using triangles, or perfectly on hexagons either
     * Comboboxes cannot be selected twice in a row, need to click another button before reselecting
-    * TODO
+    * Triangle uses a hack to ensure that the number of triangles in a row is odd, so that the next row will flip the triangle correctly
 * Back-end:
     * TODO
 * XML
     * Save only works for rectangular shapes ? TODO
 
 Extra Features:
-* lol none
+* 
 
 Impressions: 
-* TODO
+* Jordan : 
+I enjoyed working on this project and am happy with the final result. I wish I had more time to spend on it to get it bug-free. I liked how
+it was up to us to decide how the work was split up, but disappointing that we did not all get to learn the same topics and collaborate more.
+It would be interesting to meet with other groups to discuss how they implemented the features. 
