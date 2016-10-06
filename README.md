@@ -2,12 +2,12 @@
 
 #### Duke CompSci 308 Cell Society Project Team 19
 
-Jordan Frazier (jrf30), Austin Gartside (aeg36), Charles Xu ( ) <br>
+Jordan Frazier (jrf30), Austin Gartside (aeg36), Charles Xu (cx15) <br>
 Sept 13 - October 2, Hours: 100+
 
 Jordan: Front-end, GUI <br>
 Austin: Back-end, Simulations (Note: my branch was actually newstaginglol because the austin branch got messed up at some point)<br>
-Charles: XML, Configuration<br>
+Charles: XML, Configuration, Unit Tests<br>
 
 Jordan:
 * Used online JavaFX API Documentation
@@ -16,7 +16,7 @@ Austin:
 * Used online Java Documentation
 
 Charles:
-* TODO
+* Used online Java Documentation
 
 Instructions on starting project:
 * Open the Main.java class and run program. Program should open the main screen that offers a user options to begin simulation, switch 
@@ -24,7 +24,6 @@ simulation, and more.
 
 Test:
 * ConfigurationLoaderTest.java and ConfigurationTest.java
-* TODO: Charles ? 
 
 Resource Files:
 * XML files must be in a specific format to run correctly, as shown in each of our data files. 
@@ -44,7 +43,8 @@ Bugs:
     * Changing states in the Ant Simulation to the food and home source does not affect pheromone levels
     * Sharks win a lot in Wat-or because they get to move first
 * XML
-    * Save only works for rectangular shapes ? TODO
+    * Save/Restore was only implemented for FireSimulation to demonstrate our design is capable of extending to this feature, and we spent
+     the time implementing many other features to show the flexibility
 
 Extra Features:
 * 
@@ -56,5 +56,9 @@ it was up to us to decide how the work was split up, but disappointing that we d
 It would be interesting to meet with other groups to discuss how they implemented the features. 
 * Austin:
 I enjoyed working on the project as well, and I'm proud of what we were able to do. I wish that it was more spread out so we could add more of
-the features. It was great getting to work in a group on the large scale project, but I think it would have been mroe enjoyable if we had a little more time. I agree
+the features. It was great getting to work in a group on the large scale project, but I think it would have been more enjoyable if we had a little more time. I agree
 with Jordan in that I wish we had some time to talk to other groups about what they did and what they were able to acomplish.
+* Charles:
+The project is interesting and challenging from a design perspective. It was definitely different cooperating with other people on a big project like this.
+So fortunate to have two hardworking teammates and definitely learned a lot along the way. I wish we had more time to do more features and make it bug free, but given
+the time constrain we had, I am happy with what we had accomplished. 
