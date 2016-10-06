@@ -127,7 +127,10 @@ Add Simulation:
 * Add the simulation to the combo box with the simulations and add it's xml to the config so that the data can be retrieved
 * Get any string constants about the state or other string from the resources folder
 
-Add XMl?: 
+Add XML and Configuration: 
+* Allow and suuport any XML query method such as Xpath, XSLT, Xquery to be used by the XMLParser to get items from XML.
+* Validate the XML such that it fits our schema definition. Throw exceptions otherwise.
+* Able to serialize and de-serialize a configuration to XML so users could save and restore current simulation
 
 
 
