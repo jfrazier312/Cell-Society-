@@ -123,12 +123,12 @@ each class is doing as little as possible to function correctly
 Add Simulation:
 * Create a new simulation class that extends CellGrid and implements the updateGrid, intiSimulation, updateCell, and createGrid methods.
 * Create a cell class if the simulation needs a specfic type of cell, but have it extend the general cell class
-* Retrieve initialiation data from the config on the init method, retrieve dynamically updating data in the updateGrid method
-* Add the simulation to the combo box with the simulations and add it's xml to the config so that the data can be retrieved
+* Retrieve initialization data from the config on the init method, retrieve dynamically updating data in the updateGrid method
+* Add the simulation to the combo box with the simulations and add its xml to the config so that the data can be retrieved
 * Get any string constants about the state or other string from the resources folder
 
 Add XML and Configuration: 
-* Allow and suuport any XML query method such as Xpath, XSLT, Xquery to be used by the XMLParser to get items from XML.
+* Allow and support any XML query method such as Xpath, XSLT, Xquery to be used by the XMLParser to get items from XML.
 * Validate the XML such that it fits our schema definition. Throw exceptions otherwise.
 * Able to serialize and de-serialize a configuration to XML so users could save and restore current simulation
 
