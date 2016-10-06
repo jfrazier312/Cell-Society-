@@ -2,6 +2,7 @@ package model;
 /**
  * @author austingartside
  *
+ *the actual cell for the sugar simulation that contains the sugar
  */
 public class SugarPatch{
 	private int mySugar;

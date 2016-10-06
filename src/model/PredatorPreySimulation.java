@@ -9,6 +9,7 @@ import view.Simulations;
 /**
  * @author austingartside
  *
+ *creates and updates grid for the predator prey simulation
  */
 public class PredatorPreySimulation extends CellGrid {
 

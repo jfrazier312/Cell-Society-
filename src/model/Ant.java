@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  * @author austingartside
- *
+ * Class for ants contained in cells in the ant simulation
  */
 public class Ant{
 	
