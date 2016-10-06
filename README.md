@@ -39,7 +39,7 @@ Bugs:
     * Comboboxes cannot be selected twice in a row, need to click another button before reselecting
     * Triangle uses a hack to ensure that the number of triangles in a row is odd, so that the next row will flip the triangle correctly
 * Back-end:
-    * Running the simulation at a very fast speed makes it look like the simulation sin't working.
+    * Running the simulation at a very fast speed makes it look like the simulation isn't working
     * Changing states in the Ant Simulation to the food and home source does not affect pheromone levels
     * Sharks win a lot in Wat-or because they get to move first
 * XML
@@ -55,9 +55,9 @@ I enjoyed working on this project and am happy with the final result. I wish I h
 it was up to us to decide how the work was split up, but disappointing that we did not all get to learn the same topics and collaborate more.
 It would be interesting to meet with other groups to discuss how they implemented the features. 
 * Austin:
-I enjoyed working on the project as well, and I'm proud of what we were able to do. I wish that it was more spread out so we could add more of
-the features. It was great getting to work in a group on the large scale project, but I think it would have been more enjoyable if we had a little more time. I agree
-with Jordan in that I wish we had some time to talk to other groups about what they did and what they were able to acomplish.
+I enjoyed working on the project, and I'm proud of what we were able to do. I wish that it was more spread out so we could add more of
+the features. It was great getting to work in a group on the large scale project, but I think it would have been more enjoyable if we had a little more time.
+I wish we had some time to talk to other groups about what they did and what they were able to acomplish.
 * Charles:
 The project is interesting and challenging from a design perspective. It was definitely different cooperating with other people on a big project like this.
 So fortunate to have two hardworking teammates and definitely learned a lot along the way. I wish we had more time to do more features and make it bug free, but given
