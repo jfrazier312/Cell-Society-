@@ -10,6 +10,7 @@ import view.Simulations;
 /**
  * @author austingartside
  *
+ *creates and updates the grid for the sugar simulation
  */
 public class SugarSimulation extends CellGrid{
 

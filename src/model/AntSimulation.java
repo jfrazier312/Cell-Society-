@@ -9,7 +9,8 @@ import config.State;
 import view.Simulations;
 /**
  * @author austingartside
- *
+ * creates and updates the grid based on the rules for the ant simulation
+ * 
  */
 
 public class AntSimulation extends CellGrid {

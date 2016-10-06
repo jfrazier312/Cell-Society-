@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  * @author austingartside
- *
+ * Cell used in the ant class. Methods for controlling pheromone levels and the movement of ants
  */
 public class AntCell extends Cell{
 	List<Ant> myAnts;

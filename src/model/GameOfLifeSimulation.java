@@ -9,6 +9,7 @@ import view.Simulations;
 /**
  * @author austingartside
  *
+ *Creates and updates grid for game of life simulations, allows different neighbor conventions
  */
 public class GameOfLifeSimulation extends CellGrid {
 	

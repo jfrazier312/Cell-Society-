@@ -9,6 +9,7 @@ import view.Simulations;
 /**
  * @author austingartside
  *
+ *creates and updates the grid for the segregation simulation
  */
 public class SegregationSimulation extends CellGrid {
 	

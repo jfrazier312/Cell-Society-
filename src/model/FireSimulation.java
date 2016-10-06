@@ -9,6 +9,7 @@ import view.Simulations;
 /**
  * @author austingartside
  *
+ * Creates and updates grid for the fire simulation
  */
 public class FireSimulation extends CellGrid {
 	public static final String SIMULATION_NAME = Simulations.FIRE.getName();
@@ -69,8 +70,6 @@ public class FireSimulation extends CellGrid {
 			for (int j = 0; j < getNumCols(); j++) {
 				setGridCell(i, j, new Rectangle(i, j, getConfig()));
 				if(i == initBurningRow && j == initBurningCol){
-					System.out.println(initBurningRow);
-					System.out.println(initBurningCol);
 					getGridCell(i, j).setCurrentstate(BURNING);
 				}
 				else{

@@ -13,6 +13,7 @@ import view.SceneConstant;
 /**
  * An abstract class that must be extended by each simulation, used in MainView.java. 
  * author: Austin Gartside, Jordan Frazier and Charles Xu
+ * Superclass for all of the simulations
  */
 public abstract class CellGrid {
 
@@ -70,6 +71,10 @@ public abstract class CellGrid {
 		}
 	}
 
+	
+	/**
+	 * Check if its a cell in a simulation that has some sort of agent/object on top of the cell
+	 */
 	private void checkifPatchCell(Pane cellPane, int i, int j, Cell currentCell, Render rend) {
 		if (currentCell.hasPatch()){
 			Shape patchCell = rend.renderPatch(currentCell, xPos, yPos, i, j);
@@ -137,7 +142,7 @@ public abstract class CellGrid {
 		}
 	}
 
-	public int gridRowWrap(int newRowPos) {
+	private int gridRowWrap(int newRowPos) {
 		int wrapRowPos;
 		if (newRowPos < 0) {
 			wrapRowPos = getNumRows() + newRowPos;
@@ -147,7 +152,7 @@ public abstract class CellGrid {
 		return wrapRowPos;
 	}
 
-	public int gridColWrap(int newColPos) {
+	private int gridColWrap(int newColPos) {
 		int wrapColPos;
 		if (newColPos < 0) {
 			wrapColPos = getNumCols() + newColPos;
@@ -157,11 +162,11 @@ public abstract class CellGrid {
 		return wrapColPos;
 	}
 
-	public boolean rowOutOfBounds(int row) {
+	private boolean rowOutOfBounds(int row) {
 		return row < 0 || row >= getNumRows();
 	}
 
-	public boolean colOutOfBounds(int col) {
+	private boolean colOutOfBounds(int col) {
 		return col < 0 || col >= getNumCols();
 	}
 

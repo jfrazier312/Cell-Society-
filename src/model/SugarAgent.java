@@ -5,6 +5,8 @@ import config.State;
 /**
  * @author austingartside
  *
+ *Cell type used in the sugar simulation. Each one has a patch, and only actually exists if sugar levels above 0
+ *controls the sugar consumption of agents
  */
 public class SugarAgent extends Cell {
 

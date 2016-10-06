@@ -5,6 +5,8 @@ import config.State;
 /**
  * @author austingartside
  *
+ * Cell used in the PredatprPrey Simulation
+ * Controls the attributes of the fish and sharks such as time to birth and death
  */
 public class Fish extends Cell{
 
