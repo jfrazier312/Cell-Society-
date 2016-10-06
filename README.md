@@ -46,9 +46,6 @@ Bugs:
     * Save/Restore was only implemented for FireSimulation to demonstrate our design is capable of extending to this feature, and we spent
      the time implementing many other features to show the flexibility
 
-Extra Features:
-* 
-
 Impressions: 
 * Jordan : 
 I enjoyed working on this project and am happy with the final result. I wish I had more time to spend on it to get it bug-free. I liked how
