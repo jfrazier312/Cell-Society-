@@ -121,6 +121,11 @@ In the future, I would like to encapsulate all button functionality into another
 each class is doing as little as possible to function correctly
 
 Add Simulation:
+* Create a new simulation class that extends CellGrid and implements the updateGrid, intiSimulation, updateCell, and createGrid methods.
+* Create a cell class if the simulation needs a specfic type of cell, but have it extend the general cell class
+* Retrieve initialiation data from the config on the init method, retrieve dynamically updating data in the updateGrid method
+* Add the simulation to the combo box with the simulations and add it's xml to the config so that the data can be retrieved
+* Get any string constants about the state or other string from the resources folder
 
 Add XMl?: 
 
