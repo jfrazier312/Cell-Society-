@@ -6,7 +6,7 @@ Jordan Frazier (jrf30), Austin Gartside (aeg36), Charles Xu ( ) <br>
 Sept 13 - October 2, Hours: 100+
 
 Jordan: Front-end, GUI <br>
-Austin: Back-end, Simulations <br>
+Austin: Back-end, Simulations (Note: my branch was actually newstaginglol because the austin branch got messed up at some point)<br>
 Charles: XML, Configuration<br>
 
 Jordan:
