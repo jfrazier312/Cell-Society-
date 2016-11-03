@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<simulation name="The Game of Life" author="team19">
+	<grid width="20" height="30"/>
+	<neighborhood size="5">
+		<edge type="constant" value="state1">
+		</edge>
+	</neighborhood>
+	<states>
+		<state color="color1">state1</state>
+		<state color="color2" lifeTime="20">state2</state>
+	</states>
+	<init default="state1" mode="enum" shape="Rectangle">
+		<cell state="state2" row="10" col="20"></cell>
+		<cell state="state2" row="11" col="20"></cell>
+	</init>
+	<animation framesPerSec="1"></animation>
+	<param name="probability" value="0.8"></param>
+</simulation>
